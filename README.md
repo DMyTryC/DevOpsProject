@@ -3,7 +3,7 @@
 ## Utilisation de maven
 Pour cette commande on peut specifier un parametre -Tx (x*4 etant le nombre de threads a utiliser)
 
-mvn [cycle de vie]https://github.com/DMyTryC/DevOpsProject/blob/master/README.md#9
+mvn [cycle de vie]
 
 
 Les cycle de vie : 
