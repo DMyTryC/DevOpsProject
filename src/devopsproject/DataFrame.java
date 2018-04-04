@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package src.devopsproject;
+package devopsproject;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -15,20 +17,58 @@ import java.util.HashMap;
  */
 public class DataFrame {
     
-    public String label;
-    public ArrayList column;
-
-    public DataFrame(String label, ArrayList column) {
-        this.label = label;
-        this.column = column;
-    }
+    HashMap<String, ArrayList> estructure;
     
-    public DataFrame(String nameFile){
-        File file = new File(nameFile);
-        
-    }
-
+    
+    public DataFrame(){
         
     }
     
+    
+    public DataFrame(String nameFile, String separator){
+        String [] extension= nameFile.split(".");
+        if(extension[1].equalsIgnoreCase("csv")){
+            FileReader file;
+            BufferedReader br = null;
+      
+      try {
+         file= new FileReader(nameFile);
+         br =new BufferedReader(file);
+         String line = br.readLine();
+         while (null!=line) {
+            String [] fields = line.split(separator);
+            line = br.readLine();
+         }
+         
+      } catch (Exception e) {
+         //Exception fichier
+      } finally {
+         if (null!=br) {
+            br.close();
+         }
+      }
 
+            
+            
+            
+            
+    }
+
+        
+        
+        
+        
+            
+        }
+        
+        
+        
+        
+         
+        
+        
+        
+        
+    }
+    
+}
