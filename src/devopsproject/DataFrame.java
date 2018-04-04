@@ -7,9 +7,13 @@ package devopsproject;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -17,52 +21,74 @@ import java.util.HashMap;
  */
 public class DataFrame {
     
-    HashMap<String, ArrayList> estructure;
+    HashMap<String, ArrayList> data;
+    
+
     
     
-    public DataFrame(){
-        
-    }
-    
-    
+
+       
     public DataFrame(String nameFile, String separator){
-        String [] extension= nameFile.split(".");
-        if(extension[1].equalsIgnoreCase("csv")){
-            FileReader file;
-            BufferedReader br = null;
+    
+        FileReader fr = null;
+        BufferedReader br = null;
+        ArrayList donne;
+        String [] values;
       
-      try {
-         file= new FileReader(nameFile);
-         br =new BufferedReader(file);
-         String line = br.readLine();
-         while (null!=line) {
-            String [] fields = line.split(separator);
-            line = br.readLine();
-         }
-         
-      } catch (Exception e) {
-         //Exception fichier
-      } finally {
-         if (null!=br) {
-            br.close();
-         }
-      }
+        try {		
+		fr = new FileReader (nameFile);
+		br = new BufferedReader(fr);
+                
+                System.out.println(nameFile);
+                String linea="";
+                linea =br.readLine();
+                
+                String [] labels= linea.split(separator);
+                donne= new ArrayList();
 
-            
-            
-            
-            
+                
+                while((linea =br.readLine())!=null){
+                        values = linea.split(separator);
+                        for(int i=0;i<labels.length;i++){
+                            donne = this.data.get(labels[i]);
+                            //verificar el tipo
+                            donne.add(values[i]);
+                            this.data.put(labels[i],donne);
+                        }
+                        
+                }
+                        
+            }catch(Exception e){
+           
+            }finally{
+
+
+           try{
+
+              if( null != fr ){
+
+                 fr.close();
+              }
+
+                }catch (Exception e2){
+              e2.printStackTrace();
+
+           }
+        }
     }
 
+    
+    
         
-        
-        
-        
+ public static void main(String [] args) throws IOException {
+     
+     DataFrame d= new DataFrame("/home/stephanie/Documents/Documents/NewFolder/DevOps/src/src/devopsproject/test.csv",",");
+     ArrayList toprint = d.data.get("Age");
+     System.out.println(toprint.get(0));
+ }    
             
-        }
-        
-        
-        
+            
+            
         
          
         
@@ -71,4 +97,4 @@ public class DataFrame {
         
     }
     
-}
+
