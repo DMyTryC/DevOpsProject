@@ -27,9 +27,8 @@ public class TestType {
     //
     // @Test
     // public void hello() {}
-    @Test(expected = IndexOutOfBoundsException.class)
+    /*@Test(expected = IndexOutOfBoundsException.class)
     public void testForException() {
-	dataFrame.iloc(0) ;
-    }
+    }*/
     
 }

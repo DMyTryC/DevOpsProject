@@ -11,17 +11,20 @@ import java.util.List;
 import java.util.TreeMap;
 
 public class DataFrame implements DataFrameItf {
-    
-    //private HashMap<String, ArrayList<E>> data;
 
-    /*public DataFrame(String[] labels, ArrayList<E>[]){
-        for (Iterator<String> i = labels.iterator(); i.hasNext();) {
-            String label = i.next();
-            this.data.put(label,null)
+    private HashMap<String, List> data;
+
+    public DataFrame(){
+        this.data = new HashMap<String, List>();
+    }
+
+    public DataFrame(String[] labels, List<List> elements){
+        this.data = new HashMap<String, List>();
+        List<String> element;
+        for(int i=0;i< elements.size();i++) {
+            this.data.put(labels[i], elements.get(i));
         }
-    }*/
-    
-    TreeMap<String, Column<Object>> columns = new TreeMap<>() ;
+    } 
 
     @Override
     public void show() {
@@ -98,9 +101,17 @@ public class DataFrame implements DataFrameItf {
     public void addToColumn(String label, List values) {
 	// check if label exists
 	// check if the values have the same type
-	//columns.put(label, values);
-	
-	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	if (!values.isEmpty()){
+	    if (!data.containsKey(label)){
+		data.put(label, values);
+	    } else if (!data.get(label).isEmpty()){
+		if (data.get(label).getClass().getTypeName().equals(values.get(0).getClass().getTypeName())){
+		    data.put(label, values);
+		} else {
+		    throw new IllegalArgumentException("The type of the values is incompatible with the type of the column at label : "+label);
+		}
+	    }
+	}
     }
 
     @Override
