@@ -4,11 +4,22 @@
  * and open the template in the editor.
  */
 package devopsproject;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import java.util.List;
 import java.util.TreeMap;
 
 public class DataFrame implements DataFrameItf {
+    
+    //private HashMap<String, ArrayList<E>> data;
+
+    /*public DataFrame(String[] labels, ArrayList<E>[]){
+        for (Iterator<String> i = labels.iterator(); i.hasNext();) {
+            String label = i.next();
+            this.data.put(label,null)
+        }
+    }*/
     
     TreeMap<String, Column<Object>> columns = new TreeMap<>() ;
 
@@ -84,7 +95,7 @@ public class DataFrame implements DataFrameItf {
     }
 
     @Override
-    public void addColumn(String label, List values) {
+    public void addToColumn(String label, List values) {
 	// check if label exists
 	// check if the values have the same type
 	//columns.put(label, values);
@@ -93,10 +104,9 @@ public class DataFrame implements DataFrameItf {
     }
 
     @Override
-    public void deleteColumn(String label) {
+    public void deleteFromColumn(String label) {
 	// check if label exists
 	//columns.remove(label);
 	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 }

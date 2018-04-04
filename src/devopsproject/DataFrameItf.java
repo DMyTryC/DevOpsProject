@@ -14,13 +14,13 @@ public interface DataFrameItf {
      * @param label the label for the  column to add
      * @param values the values for the column
      */
-    public void addColumn(String label, List values);
+    public void addToColumn(String label, List values);
     
     /**
      * Deletes a column from the dataframe
      * @param label the label of the column to delete
      */
-    public void deleteColumn(String label);
+    public void deleteFromColumn(String label);
     
     /**
      * @return Prints the dataframe
