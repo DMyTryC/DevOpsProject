@@ -12,12 +12,17 @@ import java.util.HashMap;
  * @author bleuzeb
  */
 public class DataFrame {
-    private HashMap<String, ArrayList<E>> data;
+    private HashMap<String, ArrayList> data;
 
-    public DataFrame(String[] labels, ArrayList<E>[]){
-        for (Iterator<String> i = labels.iterator(); i.hasNext();) {
-            String label = i.next();
-            this.data.put(label,null)
+    public DataFrame(){
+        this.data = new HashMap<String, ArrayList>();
+    }
+
+    public DataFrame(String[] labels, ArrayList<ArrayList>  elements){
+        this.data = new HashMap<String, ArrayList>();
+        ArrayList<String> element;
+        for(int i=0;i< elements.size();i++) {
+            this.data.put(labels[i], elements.get(i));
         }
     }
 }
