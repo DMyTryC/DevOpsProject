@@ -8,6 +8,19 @@ package devopsproject;
 import java.util.List;
 
 public interface DataFrameItf {
+
+    /**
+     * Add a column to the dataframe
+     * @param label the label for the  column to add
+     * @param values the values for the column
+     */
+    public void addColumn(String label, List values);
+    
+    /**
+     * Deletes a column from the dataframe
+     * @param label the label of the column to delete
+     */
+    public void deleteColumn(String label);
     
     /**
      * @return Prints the dataframe
@@ -30,7 +43,7 @@ public interface DataFrameItf {
      * @param label the column to select
      * @return A dataframe containing the label and the column associated
      */
-    public DataFrameItf loc(String label);
+    public List loc(String label);
     
     /**
      * @param labels the list of columns to select

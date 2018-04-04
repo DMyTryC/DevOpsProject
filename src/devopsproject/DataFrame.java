@@ -28,7 +28,8 @@ public class DataFrame implements DataFrameItf {
     }
 
     @Override
-    public DataFrameItf loc(String label) {
+    public List loc(String label) {
+	//return columns.get(label);
 	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -79,6 +80,22 @@ public class DataFrame implements DataFrameItf {
 
     @Override
     public Integer maxColumn(String label) {
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addColumn(String label, List values) {
+	// check if label exists
+	// check if the values have the same type
+	//columns.put(label, values);
+	
+	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void deleteColumn(String label) {
+	// check if label exists
+	//columns.remove(label);
 	throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

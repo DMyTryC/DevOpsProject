@@ -6,27 +6,43 @@
 package devopsproject;
 
 import java.util.ArrayList;
+import java.util.List;
 
-/**
- *
- * @author bleuzeb
- */
-public class Column <E> {
+public class Column<Elements> {
+
+    List<Elements> list;
+    String typeVariables;
     
-    String label ;
-    ArrayList <E> content ;
-    //String dataType ; 
-
-    public E getContentAt(int i) {
-	return content.get(i) ;
-    }
-
-    public void setContentAt(int i, E elt) {
-	content.set(i, elt) ;
+    public Column(){
+	this.typeVariables = "Undefined";
+	list = new ArrayList<>();
     }
     
-    /*public String getDataType() {
-	return dataType ;
-    }*/
+    public Column(List<Elements> list){
+	this.list = list;
+	if (!list.isEmpty()){
+	    this.typeVariables = list.get(0).getClass().getTypeName() ;
+	} else {
+	    this.typeVariables = "Undefined";
+	}
+    }
+
+    public List<Elements> getList() {
+	return list;
+    }
+
+    public String getTypeVariables() {
+	return typeVariables;
+    }
+
+    public void setList(List<Elements> list) {
+	this.list = list;
+	if (!list.isEmpty()){
+	    this.typeVariables = list.get(0).getClass().getTypeName() ;
+	} else {
+	    this.typeVariables = "Undefined";
+	}
+    }
     
+    // Modification of the column (adding a cell to it)
 }
