@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package src.devopsproject;
+package devopsproject;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -17,21 +12,24 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author bleuzeb
- */
 public class DataFrame {
-    
-    HashMap<String, ArrayList> data = new HashMap<String, ArrayList>();
-    
-
-    
-    
-
-       
+  
+    HashMap<String, ArrayList> data;
+  
+    public DataFrame(){
+        this.data = new HashMap<String, ArrayList>();
+    }
+  
+      public DataFrame(String[] labels, ArrayList<ArrayList>  elements){
+        this();
+        ArrayList<String> element;
+        for(int i=0;i< elements.size();i++) {
+            this.data.put(labels[i], elements.get(i));
+        }
+    }
+  
     public DataFrame(String nameFile, String separator){
-    
+        this();
         FileReader fr = null;
         BufferedReader br = null;
         ArrayList donne;
@@ -102,10 +100,13 @@ public class DataFrame {
              values="";
              l++;
      }while(l<3);
-   
-}
-    
-  public void head(String label, int n){
+
+
+
+
+
+    // To check with Riad, head function doesn't need to work like this
+  /*public void head(String label, int n){
      ArrayList head;
     for (Map.Entry<String, ArrayList> entry : this.data.entrySet()) { 
         if(label.equals(entry.getKey()) && n<entry.getValue().size()){
@@ -132,7 +133,7 @@ public class DataFrame {
         }
     
     }
-    }
+    }*/
   
   public void head(int n){
      String labels="";
@@ -175,27 +176,3 @@ public class DataFrame {
   
   
   }
-    
-            
-        
-        
-        
-        
-    
-
-    
-    
-        
-
-            
-            
-            
-        
-         
-        
-        
-        
-        
-    
-    
-
