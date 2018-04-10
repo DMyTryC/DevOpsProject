@@ -1,7 +1,7 @@
 # DevOpsProject
 
 ## Utilisation de maven
-Pour cette commande on peut specifier un parametre -Tx (x*4 etant le nombre de threads a utiliser)
+Pour cette commande on peut specifier un parametre -Tx
 
 mvn [cycle de vie]
 
