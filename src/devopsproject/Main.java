@@ -17,7 +17,6 @@ public class Main {
     
      public static void main(String [] args) throws IOException {
      
-<<<<<<< HEAD
      DataFrame d= new DataFrame("Users/r_benounnas/Desktop/test.csv",",");
 
     HashMap<String,Integer> hash = new HashMap<>();
@@ -32,12 +31,10 @@ public class Main {
 	System.out.println(key + " "+ value);
 
     }
-=======
      /*DataFrame d= new DataFrame("/home/stephanie/Documents/Documents/NewFolder/DevOps/src/src/devopsproject/test.csv",",");
     // d.show();
     //d.head(3);
     d.tail(2);*/
->>>>>>> 60be96ac359c677144d03ed32f9b002445675e43
     //d.head("Age", 2);
      //d.last("Age", 2);
      //ArrayList toprint = d.data.get("Age");
