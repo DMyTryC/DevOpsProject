@@ -16,9 +16,6 @@ public class TestsDataframe {
     
     DataFrame df;
     
-    @Rule
-    public TemporaryFolder tf = new TemporaryFolder();
-    
     public TestsDataframe() {
         
     }
@@ -67,9 +64,7 @@ public class TestsDataframe {
     }
     
     @Test
-    public void dataframeCreationFile() throws IOException, Exception{
-        File fileTest = tf.newFile("file1.csv");
-        fileTest.deleteOnExit();
-        assertTrue(fileTest.exists());
+    public void dataframeCreationFile() throws IOException{
+        df = new DataFrame("resources/file1.csv", ",");
     }
 }
