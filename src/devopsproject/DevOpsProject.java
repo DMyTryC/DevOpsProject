@@ -6,6 +6,7 @@
 package devopsproject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DevOpsProject {
 
@@ -18,16 +19,16 @@ public class DevOpsProject {
         labels[1] = String.valueOf('b');
         labels[2] = String.valueOf('c');
 
-        ArrayList<String> element1 = new ArrayList<String>();
+        List<String> element1 = new ArrayList<>();
         element1.add("s1");element1.add("s2");element1.add("s3");
 
-        ArrayList<Integer> element2 = new ArrayList<Integer>();
+        List<Integer> element2 = new ArrayList<>();
         element2.add(1);element2.add(2);element2.add(3);
 
-        ArrayList<Float> element3 = new ArrayList<Float>();
+        List<Float> element3 = new ArrayList<>();
         element3.add((float) 1.4);element3.add((float) 2.4);element3.add((float) 3.5);
 
-        ArrayList<ArrayList> elements = new ArrayList<ArrayList>();
+        List<List> elements = new ArrayList<>();
         elements.add(element1);elements.add(element2);elements.add(element3);
 
         DataFrame dataFrame = new DataFrame(labels,elements);
