@@ -1,4 +1,4 @@
-package devopsproject;
+package src.devopsproject;
 
 import java.util.List;
 
@@ -110,5 +110,10 @@ public interface DataFrameItf {
      * @return the maximum of the column
      */
     public Integer maxColumn(String label);
+    
+    
+    public void showLabels();
+    
+    public void size();
     
 }
