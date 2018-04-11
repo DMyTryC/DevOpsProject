@@ -8,6 +8,7 @@ package devopsproject;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,44 +41,62 @@ public class DataFrame implements DataFrameItf {
         String extension;
         List donne;
         String[] values;
-        Integer typeEntier;
-        double typeDouble;
-        float typeFloat;
-        String typeCadena;
-        HashMap prueba;
-
+        //verificar extension y si el archivo exist
         extension = nameFile.substring(nameFile.lastIndexOf(".") + 1);
         if (extension.equalsIgnoreCase("csv")) {
 
             try {
-                fr = new FileReader(nameFile);
-                br = new BufferedReader(fr);
-                System.out.println(nameFile);
-                String linea = "";
-                linea = br.readLine();
-                String[] labels = linea.split(separator);
-                for (int j = 0; j < labels.length; j++) {
-                    donne = new ArrayList();
-                    this.data.put(labels[j], donne);
-                }
-
-                while ((linea = br.readLine()) != null) {
-                    //System.out.println(linea);
-                    values = linea.split(separator);
-                    for (int i = 0; i < labels.length; i++) {
-                        donne = this.data.get(labels[i]);
-                        //verificar el tipo
+            fr = new FileReader(nameFile);
+            br = new BufferedReader(fr);
+            String linea = "";
+            linea = br.readLine();
+            String[] labels = linea.split(separator);
+            for (int j = 0; j < labels.length; j++) {
+                donne = new ArrayList();
+                this.data.put(labels[j], donne);
+            }
+            String lineaType  = br.readLine();
+            String[] firstElement = lineaType.split(separator);
+            String elementString = "";
+            for (int j = 0; j < firstElement.length; j++) {
+               try {
+                      System.out.print(firstElement[j]);
+                      int  op1 = Integer.parseInt(firstElement[j]);
+                      donne = this.data.get(labels[j]);
+                      donne.add(op1);
+                      
+                    } 
+               catch (NumberFormatException e1) {
+                   try {
+                            float  op2 = Float.parseFloat(firstElement[j]);
+                            donne = this.data.get(labels[j]);
+                            donne.add(op2);
+                    }
+                    catch(NumberFormatException e2){
+                            elementString = firstElement[j];
+                            donne = this.data.get(labels[j]);
+                            donne.add(elementString);
+                    }
+                } 
+            }
+            
+            while ((linea = br.readLine()) != null) {
+                values = linea.split(separator);
+                for (int i = 0; i < labels.length; i++) {
+                    donne = this.data.get(labels[i]);
+                    if(values[i].getClass().equals((donne.get(donne.size()-1)).getClass())){
                         donne.add(values[i]);
-
-                        /*typeEntier = Integer.parseInt(values[i]);
-                            typeDouble = Double.parseDouble(values[i]);
-                            typeFloat = Float.parseFloat(values[i]);
-                            typeCadena = (values[i]).toString();*/
+                    }
+                    else {
+                        throw new EmptyStackException();
                     }
                 }
-            } catch (Exception type) {
 
             }
+
+        } catch (Exception fileNull) {
+
+        }
 
         }
 
