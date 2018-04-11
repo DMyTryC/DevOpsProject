@@ -3,10 +3,12 @@ package devopsproject;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 
 public class DataFrame implements DataFrameItf {
 
@@ -33,11 +35,10 @@ public class DataFrame implements DataFrameItf {
         String[] values;
         HashMap prueba;
         //verificar extension y si el archivo existe
-
         try {
+            System.out.print("hi");
             fr = new FileReader(nameFile);
             br = new BufferedReader(fr);
-
             System.out.println(nameFile);
             String linea = "";
             linea = br.readLine();
@@ -46,15 +47,42 @@ public class DataFrame implements DataFrameItf {
                 donne = new ArrayList();
                 this.data.put(labels[j], donne);
             }
-
+            String lineaType  = br.readLine();
+            String[] firstElement = lineaType.split(separator);
+            String elementString = "";
+            for (int j = 0; j < firstElement.length; j++) {
+               try {
+                      System.out.print(firstElement[j]);
+                      int  op1 = Integer.parseInt(firstElement[j]);
+                      donne = this.data.get(labels[j]);
+                      donne.add(op1);
+                      
+                    } 
+               catch (NumberFormatException e1) {
+                   try {
+                            float  op2 = Float.parseFloat(firstElement[j]);
+                            donne = this.data.get(labels[j]);
+                            donne.add(op2);
+                    }
+                    catch(NumberFormatException e2){
+                            elementString = firstElement[j];
+                            donne = this.data.get(labels[j]);
+                            donne.add(elementString);
+                    }
+                } 
+            }
+            
             while ((linea = br.readLine()) != null) {
-                //System.out.println(linea);
                 values = linea.split(separator);
                 for (int i = 0; i < labels.length; i++) {
                     donne = this.data.get(labels[i]);
-                    //verificar el tipo
-                    prueba = this.data;
-                    donne.add(values[i]);
+                    Object obj = donne.get(donne.size()-1);
+                    if(values[i].getClass().equals(obj.getClass())){
+                        donne.add(values[i]);
+                    }
+                    else {
+                        throw new EmptyStackException();
+                    }
                 }
 
             }
