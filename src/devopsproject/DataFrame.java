@@ -57,17 +57,18 @@ public class DataFrame implements DataFrameItf {
     }
 
     public DataFrame(String nameFile, String separator) {
-	this();
+        this();
         FileReader fr = null;
         BufferedReader br = null;
         String extension;
         List donne;
         String[] values;
-        //verificar extension y si el archivo exist
+
         extension = nameFile.substring(nameFile.lastIndexOf(".") + 1);
         if (extension.equalsIgnoreCase("csv")) {
 
             try {
+
             fr = new FileReader(nameFile);
             br = new BufferedReader(fr);
             String linea = "";
@@ -108,23 +109,18 @@ public class DataFrame implements DataFrameItf {
                 for (int i = 0; i < labels.length; i++) {
                     donne = this.data.get(labels[i]);
                     if(values[i].getClass().equals((donne.get(donne.size()-1)).getClass())){
+
                         donne.add(values[i]);
-                    }
-                    else {
-                        throw new EmptyStackException();
+
                     }
                 }
+            } catch (Exception type) {
 
             }
-
-        } catch (Exception fileNull) {
-
-        }
 
         }
 
     }
-
 
     public void show() {
         String labelsHash = "";
