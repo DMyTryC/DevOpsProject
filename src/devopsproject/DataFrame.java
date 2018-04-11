@@ -16,9 +16,11 @@ import java.util.Map;
 
 public class DataFrame implements DataFrameItf {
 
-    HashMap<String, List> data;
+    List<String> labels ;
+    HashMap<String, List> data ;
     
     public DataFrame(){
+	this.labels = new ArrayList<>() ;
         this.data = new HashMap<>();
     }
 
@@ -198,13 +200,19 @@ public class DataFrame implements DataFrameItf {
 
     @Override
     public List loc(String label) {
-        //return columns.get(label);
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	List column ;
+	if ((column = data.get(label)) == null)
+	    throw new IllegalArgumentException("Label " + label + " does not exist !") ;
+        return column ;
     }
 
     @Override
     public DataFrameItf loc(List<String> labels) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	List<List> elements = new ArrayList<>(labels.size());
+	for (String label : labels) {
+	    elements.add(loc(label)) ;
+	}
+	return new DataFrame((String [])labels.toArray(), elements) ;
     }
 
     @Override
@@ -214,7 +222,11 @@ public class DataFrame implements DataFrameItf {
 
     @Override
     public DataFrameItf loc(String... labels) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	List<String> labelsList = new ArrayList<>(labels.length);
+	for (String label : labels) {
+	    labelsList.add(label) ;
+	}
+        return loc(labelsList) ;
     }
 
     @Override
