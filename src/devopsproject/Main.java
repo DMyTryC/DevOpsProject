@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package src.devopsproject;
+package devopsproject;
 
 import java.io.IOException;
 
@@ -18,7 +18,7 @@ public class Main {
      DataFrame d= new DataFrame("/home/stephanie/Documents/Documents/NewFolder/DevOps/src/src/devopsproject/test.csv",",");
     // d.show();
     //d.head(3);
-    d.lost(2);
+    d.tail(2);
     //d.head("Age", 2);
      //d.last("Age", 2);
      //ArrayList toprint = d.data.get("Age");

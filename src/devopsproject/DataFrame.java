@@ -6,27 +6,33 @@
 package src.devopsproject;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-/**
- *
- * @author bleuzeb
- */
-public class DataFrame {
 
-    HashMap<String, ArrayList> data = new HashMap<String, ArrayList>();
+public class DataFrame implements DataFrameItf {
+
+    HashMap<String, List> data;
+    
+    public DataFrame(){
+        this.data = new HashMap<>();
+    }
+
+    public DataFrame(String[] labels, List<List> elements) {
+        this();
+        List<String> element;
+
+        for (int i = 0; i < elements.size(); i++) {
+            this.data.put(labels[i], elements.get(i));
+        }
+    }
 
     public DataFrame(String nameFile, String separator) {
-
+	this();
         FileReader fr = null;
         BufferedReader br = null;
         String extension;
@@ -75,7 +81,7 @@ public class DataFrame {
 
     }
 
-    public void show() {
+        public void show() {
         String labels = "";
         String values = "";
         ArrayList d = new ArrayList();
@@ -119,9 +125,8 @@ public class DataFrame {
                 for (int i = last.size() - n; i < last.size(); i++) {
                     System.out.println((String) last.get(i));
                 }
-            }
-
-        }
+   	    }
+	}
     }
 
     public void head(int n) {
@@ -179,7 +184,6 @@ public class DataFrame {
     }
 
 
-
    public void size(){
    int size=0;
    ArrayList values= new ArrayList();
@@ -192,4 +196,83 @@ public class DataFrame {
        System.out.println(size);
 }
 
+    @Override
+    public List loc(String label) {
+        //return columns.get(label);
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public DataFrameItf loc(List<String> labels) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public DataFrameItf loc(String labelInf, String labelSup) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public DataFrameItf loc(String... labels) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public DataFrameItf iloc(int index) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public DataFrameItf iloc(List<Integer> indexes) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public DataFrameItf iloc(Integer... indexes) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public DataFrameItf iloc(int indexInf, int indexSup) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Integer meanColumn(String label) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Integer minColumn(String label) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Integer maxColumn(String label) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void addToColumn(String label, List values) {
+        // check if label exists
+        // check if the values have the same type
+        if (!values.isEmpty()) {
+            if (!data.containsKey(label)) {
+                data.put(label, values);
+            } else if (!data.get(label).isEmpty()) {
+                if (data.get(label).getClass().getTypeName().equals(values.get(0).getClass().getTypeName())) {
+                    data.put(label, values);
+                } else {
+                    throw new IllegalArgumentException("The type of the values is incompatible with the type of the column at label : " + label);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void deleteFromColumn(String label) {
+        // check if label exists
+        //columns.remove(label);
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
