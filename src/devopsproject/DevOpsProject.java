@@ -32,7 +32,6 @@ public class DevOpsProject {
         elements.add(element1);elements.add(element2);elements.add(element3);
 
         DataFrame dataFrame = new DataFrame(labels,elements);
-
     }
     
 }
