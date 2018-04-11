@@ -12,7 +12,7 @@
 		<finalName>${project.artifactId}-${project.version}</finalName>
 		<testOutputDirectory>${project.build.directory}/test-classes</testOutputDirectory>
 		<sourceDirectory>${project.basedir}/src</sourceDirectory>
-		<testSourceDirectory>${project.basedir}/tests/test-package</testSourceDirectory>
+		<testSourceDirectory>${project.basedir}/tests/testsPackage</testSourceDirectory>
 		<resources>
 			<resource>
 				<directory>${project.basedir}/src/resources</directory>
@@ -20,7 +20,7 @@
 		</resources>
 		<testResources>
 			<testResource>
-				<directory>${project.basedir}/tests/test-package/resources</directory>
+				<directory>${project.basedir}/tests/testsPackage/resources</directory>
 			</testResource>
 		</testResources>
 		<plugins>
