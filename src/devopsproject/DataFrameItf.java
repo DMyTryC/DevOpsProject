@@ -38,7 +38,7 @@ public interface DataFrameItf {
      * @param label the column to select
      * @return A dataframe containing the label and the column associated
      */
-    public List loc(String label);
+    public DataFrameItf loc(String label);
     
     /**
      * @param labels the list of columns to select
@@ -110,5 +110,10 @@ public interface DataFrameItf {
      * @return the maximum of the column
      */
     public Integer maxColumn(String label);
+    
+    
+    public void showLabels();
+    
+    public void size();
     
 }
