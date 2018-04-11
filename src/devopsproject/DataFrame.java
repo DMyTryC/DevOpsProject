@@ -67,30 +67,55 @@ public class DataFrame implements DataFrameItf {
         if (extension.equalsIgnoreCase("csv")) {
 
             try {
-                fr = new FileReader(nameFile);
-                br = new BufferedReader(fr);
-                System.out.println(nameFile);
-                String linea = "";
-                linea = br.readLine();
-                String[] labels = linea.split(separator);
-                for (int j = 0; j < labels.length; j++) {
-                    this.orderedLabels.add(labels[j]);
-                    this.indexLabels.put(labels[j], j);
-                    donne = new ArrayList();
-                    this.data.put(labels[j], donne);
-                }
 
-                while ((linea = br.readLine()) != null) {
-                    //System.out.println(linea);
-                    values = linea.split(separator);
-                    for (int i = 0; i < labels.length; i++) {
-                        donne = this.data.get(labels[i]);
-                        //verificar el tipo
+            fr = new FileReader(nameFile);
+            br = new BufferedReader(fr);
+            String linea = "";
+            linea = br.readLine();
+            String[] labels = linea.split(separator);
+            for (int j = 0; j < labels.length; j++) {
+                donne = new ArrayList();
+                this.data.put(labels[j], donne);
+                this.indexLabels.put(labels[j], j);
+            }
+            String lineaType  = br.readLine();
+            String[] firstElement = lineaType.split(separator);
+            String elementString = "";
+            for (int j = 0; j < firstElement.length; j++) {
+               try {
+                      System.out.print(firstElement[j]);
+                      int  op1 = Integer.parseInt(firstElement[j]);
+                      donne = this.data.get(labels[j]);
+                      donne.add(op1);
+                      
+                    } 
+               catch (NumberFormatException e1) {
+                   try {
+                            float  op2 = Float.parseFloat(firstElement[j]);
+                            donne = this.data.get(labels[j]);
+                            donne.add(op2);
+                    }
+                    catch(NumberFormatException e2){
+                            elementString = firstElement[j];
+                            donne = this.data.get(labels[j]);
+                            donne.add(elementString);
+                    }
+                } 
+            }
+            
+            while ((linea = br.readLine()) != null) {
+                values = linea.split(separator);
+                for (int i = 0; i < labels.length; i++) {
+                    donne = this.data.get(labels[i]);
+                    if(values[i].getClass().equals((donne.get(donne.size()-1)).getClass())){
+
                         donne.add(values[i]);
 
                     }
                 }
-            } catch (Exception type) {
+	    }
+            
+	    } catch (Exception type) {
 
             }
 
