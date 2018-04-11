@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package src.devopsproject;
+package devopsproject;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -36,7 +36,7 @@ public class DataFrame implements DataFrameItf {
         FileReader fr = null;
         BufferedReader br = null;
         String extension;
-        ArrayList donne;
+        List donne;
         String[] values;
         Integer typeEntier;
         double typeDouble;
@@ -102,8 +102,8 @@ public class DataFrame implements DataFrameItf {
     }
 
     public void head(String label, int n) {
-        ArrayList head;
-        for (Map.Entry<String, ArrayList> entry : this.data.entrySet()) {
+        List head;
+        for (Map.Entry<String, List> entry : this.data.entrySet()) {
             if (label.equals(entry.getKey()) && n < entry.getValue().size()) {
                 head = entry.getValue();
                 System.out.println(label);
@@ -116,9 +116,9 @@ public class DataFrame implements DataFrameItf {
     }
 
     public void tail(String label, int n) {
-        ArrayList last;
+        List last;
 
-        for (Map.Entry<String, ArrayList> entry : this.data.entrySet()) {
+        for (Map.Entry<String, List> entry : this.data.entrySet()) {
             if (label.equals(entry.getKey()) && n < entry.getValue().size()) {
                 last = entry.getValue();
                 System.out.println(label);
