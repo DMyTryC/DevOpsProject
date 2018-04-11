@@ -3,7 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package src.devopsproject;
+
+package devopsproject;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -16,9 +17,11 @@ import java.util.Map;
 
 public class DataFrame implements DataFrameItf {
 
-    HashMap<String, List> data;
+    List<String> labels ;
+    HashMap<String, List> data ;
     
     public DataFrame(){
+	this.labels = new ArrayList<>() ;
         this.data = new HashMap<>();
     }
 
@@ -36,7 +39,7 @@ public class DataFrame implements DataFrameItf {
         FileReader fr = null;
         BufferedReader br = null;
         String extension;
-        ArrayList donne;
+        List donne;
         String[] values;
         Integer typeEntier;
         double typeDouble;
@@ -102,8 +105,8 @@ public class DataFrame implements DataFrameItf {
     }
 
     public void head(String label, int n) {
-        ArrayList head;
-        for (Map.Entry<String, ArrayList> entry : this.data.entrySet()) {
+        List head;
+        for (Map.Entry<String, List> entry : this.data.entrySet()) {
             if (label.equals(entry.getKey()) && n < entry.getValue().size()) {
                 head = entry.getValue();
                 System.out.println(label);
@@ -116,9 +119,9 @@ public class DataFrame implements DataFrameItf {
     }
 
     public void tail(String label, int n) {
-        ArrayList last;
+        List last;
 
-        for (Map.Entry<String, ArrayList> entry : this.data.entrySet()) {
+        for (Map.Entry<String, List> entry : this.data.entrySet()) {
             if (label.equals(entry.getKey()) && n < entry.getValue().size()) {
                 last = entry.getValue();
                 System.out.println(label);
@@ -170,8 +173,30 @@ public class DataFrame implements DataFrameItf {
             System.out.println(values);
             values = "";
         } while (p < d.size() - 1);
+    }
+
+    public void showLabels() {
+        String lab = "";
+        for (Iterator iter = this.data.entrySet().iterator(); iter.hasNext();) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            lab = lab + " || " + entry.getKey();
+        }
+        System.out.println(lab);
 
     }
+
+
+   public void size(){
+   int size=0;
+   ArrayList values= new ArrayList();
+    for (Iterator iter = this.data.entrySet().iterator(); iter.hasNext();) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                
+                values = (ArrayList) entry.getValue();
+                size+=values.size();
+    }
+       System.out.println(size);
+}
 
     public void showLabels() {
         String lab = "";
@@ -198,13 +223,19 @@ public class DataFrame implements DataFrameItf {
 
     @Override
     public List loc(String label) {
-        //return columns.get(label);
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	List column ;
+	if ((column = data.get(label)) == null)
+	    throw new IllegalArgumentException("Label " + label + " does not exist !") ;
+        return column ;
     }
 
     @Override
     public DataFrameItf loc(List<String> labels) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	List<List> elements = new ArrayList<>(labels.size());
+	for (String label : labels) {
+	    elements.add(loc(label)) ;
+	}
+	return new DataFrame((String [])labels.toArray(), elements) ;
     }
 
     @Override
@@ -214,7 +245,11 @@ public class DataFrame implements DataFrameItf {
 
     @Override
     public DataFrameItf loc(String... labels) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	List<String> labelsList = new ArrayList<>(labels.length);
+	for (String label : labels) {
+	    labelsList.add(label) ;
+	}
+        return loc(labelsList) ;
     }
 
     @Override

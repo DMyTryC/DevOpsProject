@@ -5,20 +5,15 @@
  */
 package devopsproject;
 
-<<<<<<< HEAD
-=======
 import java.util.ArrayList;
 import java.util.List;
 
->>>>>>> origin/master
 public class DevOpsProject {
 
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-<<<<<<< HEAD
-=======
         String [] labels = new String[3];
         labels[0] = String.valueOf('a');
         labels[1] = String.valueOf('b');
@@ -37,8 +32,6 @@ public class DevOpsProject {
         elements.add(element1);elements.add(element2);elements.add(element3);
 
         DataFrame dataFrame = new DataFrame(labels,elements);
-
->>>>>>> origin/master
     }
     
 }
