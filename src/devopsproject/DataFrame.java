@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package src.devopsproject;
+package devopsproject;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -13,16 +13,17 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 
 public class DataFrame implements DataFrameItf {
 
-    List<String> labels;
-    HashMap<String, Integer> indexLabels;
-    TreeMap<String, List> data;
+    private List<String> orderedLabels ;
+    private HashMap<String, Integer> indexLabels ;
+    private TreeMap<String, List> data ;
 
     public DataFrame() {
-        this.labels = new ArrayList<>();
+        this.orderedLabels = new ArrayList<>();
         this.indexLabels= new HashMap<>();
         this.data = new TreeMap<>(new Comparator<String>() {
             @Override
@@ -32,7 +33,7 @@ public class DataFrame implements DataFrameItf {
                     return -1 ;
                 }
                 
-                if(indexLabels.get(o1) == indexLabels.get(o2)){
+                if(Objects.equals(indexLabels.get(o1), indexLabels.get(o2))){
                     return 0 ;
                 }
                 
@@ -44,12 +45,11 @@ public class DataFrame implements DataFrameItf {
                 
             }
         });
+	
     }
 
     public DataFrame(String[] labels, List<List> elements) {
         this();
-        List<String> element;
-
         for (int i = 0; i < elements.size(); i++) {
             this.data.put(labels[i], elements.get(i));
         }
@@ -113,7 +113,9 @@ public class DataFrame implements DataFrameItf {
 
                     }
                 }
-            } catch (Exception type) {
+	    }
+            
+	    } catch (Exception type) {
 
             }
 
@@ -228,10 +230,6 @@ public class DataFrame implements DataFrameItf {
         } while (p < d.size() - 1);
     }
 
-    /**
-     *
-     */
-    @Override
     public void showLabels() {
         String lab = " ";
         for (Iterator iter = this.data.entrySet().iterator(); iter.hasNext();) {
@@ -242,36 +240,75 @@ public class DataFrame implements DataFrameItf {
 
     }
 
-    public void size() {
-        int size = 0;
-        ArrayList values = new ArrayList();
-        for (Iterator iter = this.data.entrySet().iterator(); iter.hasNext();) {
-            Map.Entry entry = (Map.Entry) iter.next();
+    public void size(){
+	int size=0;
+	ArrayList values= new ArrayList();
+	 for (Iterator iter = this.data.entrySet().iterator(); iter.hasNext();) {
+		     Map.Entry entry = (Map.Entry) iter.next();
+		     values = (ArrayList) entry.getValue();
+		     size+=values.size();
+	 }
+	    System.out.println(size);
+    }
+    
+    private class InfosColumn {
+	List column ;
+	String label ;
 
-            values = (ArrayList) entry.getValue();
-            size += values.size();
-        }
-        System.out.println(size);
+	public InfosColumn(List column, String label) {
+	    this.column = column;
+	    this.label = label;
+	}
+	
+    }
+   
+    private InfosColumn column(String label) {
+	
+	List column ;
+	if ((column = data.get(label)) == null)
+	    throw new IllegalArgumentException("Label " + label + " does not exist !") ;
+	return new InfosColumn(column, label) ;
     }
 
-    public List loc(String label) {
-        List column;
-        if ((column = data.get(label)) == null) {
-            throw new IllegalArgumentException("Label " + label + " does not exist !");
-        }
-        return column;
+    public DataFrameItf loc(String label) {
+	List<List> elements = new ArrayList<>();
+	elements.add(column(label).column) ;
+	String [] labels = {label} ;
+        return new DataFrame(labels, elements) ;
     }
 
     public DataFrameItf loc(List<String> labels) {
-        List<List> elements = new ArrayList<>(labels.size());
-        for (String label : labels) {
-            elements.add(loc(label));
-        }
-        return new DataFrame((String[]) labels.toArray(), elements);
+	List<List> elements = new ArrayList<>(labels.size());
+	for (String label : labels) {
+	    elements.add(column(label).column) ;
+	}
+	return new DataFrame((String [])labels.toArray(), elements) ;
     }
 
     public DataFrameItf loc(String labelInf, String labelSup) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+	InfosColumn infosInf = column(labelInf) ;
+	InfosColumn infosSup = column(labelSup) ;
+	
+	int inf = indexLabels.get(infosInf.label), sup = indexLabels.get(infosSup.label) ;
+	
+	int size = Math.abs(sup - inf) ;
+	List<List> elements = new ArrayList<>(size) ;
+	String [] labels = new String[size] ;
+	
+	if (inf > sup) {
+	    int tmp = inf ;
+	    sup = inf ;
+	    inf = tmp ;
+	}
+	
+	for (int i = inf, j = 0 ; i <= sup; i++, j++) {
+	    labels[j] = this.orderedLabels.get(i) ;
+	    elements.add(data.get(this.orderedLabels.get(i))) ;
+	}
+    
+	return new DataFrame(labels, elements) ;
+	
     }
 
     public DataFrameItf loc(String... labels) {
@@ -283,7 +320,11 @@ public class DataFrame implements DataFrameItf {
     }
 
     public DataFrameItf iloc(int index) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	List elements = new ArrayList<>(orderedLabels.size());
+        for (String label : orderedLabels) {
+	    elements.add(data.get(label).get(index)) ;
+	}
+	return new DataFrame() ;
     }
 
     public DataFrameItf iloc(List<Integer> indexes) {

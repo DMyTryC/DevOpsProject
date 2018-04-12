@@ -1,4 +1,13 @@
 -------------------------------------------------------------------------------
 Test set: testsPackage.TestsDataframe
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.328 sec
+Tests run: 3, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.046 sec <<< FAILURE! - in testsPackage.TestsDataframe
+dataframeCreationLists(testsPackage.TestsDataframe)  Time elapsed: 0.003 sec  <<< ERROR!
+java.lang.NullPointerException: null
+	at devopsproject.DataFrame$1.compare(DataFrame.java:32)
+	at devopsproject.DataFrame$1.compare(DataFrame.java:28)
+	at java.util.TreeMap.compare(TreeMap.java:1291)
+	at java.util.TreeMap.put(TreeMap.java:538)
+	at devopsproject.DataFrame.<init>(DataFrame.java:54)
+	at testsPackage.TestsDataframe.dataframeCreationLists(TestsDataframe.java:63)
+

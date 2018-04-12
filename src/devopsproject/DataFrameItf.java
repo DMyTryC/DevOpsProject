@@ -1,4 +1,4 @@
-package src.devopsproject;
+package devopsproject;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public interface DataFrameItf {
      * @param label the column to select
      * @return A dataframe containing the label and the column associated
      */
-    public List loc(String label);
+    public DataFrameItf loc(String label);
     
     /**
      * @param labels the list of columns to select
