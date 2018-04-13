@@ -1,4 +1,5 @@
-nbproject/
-build/
-dist/
-.idea/
+/nbproject/
+/build/
+/dist/
+/target/
+/.idea/
