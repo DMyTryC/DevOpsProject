@@ -24,25 +24,11 @@ public class DataFrame implements DataFrameItf {
 
     public DataFrame() {
         this.labels = new ArrayList<>();
-        this.indexLabels= new HashMap<>();
+        this.indexLabels = new HashMap<>();
         this.data = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                
-                if(indexLabels.get(o1) < indexLabels.get(o2)){
-                    return -1 ;
-                }
-                
-                if(indexLabels.get(o1) == indexLabels.get(o2)){
-                    return 0 ;
-                }
-                
-                if(indexLabels.get(o1) > indexLabels.get(o2)){
-                    return 1 ;
-                }
-                
-                return -1 ;
-                
+                return o1.compareTo(o2);
             }
         });
     }
@@ -114,6 +100,7 @@ public class DataFrame implements DataFrameItf {
 
                     }
                 }
+            }
             } catch (Exception type) {
 
             }
