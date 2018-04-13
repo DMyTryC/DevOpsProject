@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package src.devopsproject;
+package devopsproject;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,25 +24,11 @@ public class DataFrame implements DataFrameItf {
 
     public DataFrame() {
         this.labels = new ArrayList<>();
-        this.indexLabels= new HashMap<>();
+        this.indexLabels = new HashMap<>();
         this.data = new TreeMap<>(new Comparator<String>() {
             @Override
             public int compare(String o1, String o2) {
-                
-                if(indexLabels.get(o1) < indexLabels.get(o2)){
-                    return -1 ;
-                }
-                
-                if(indexLabels.get(o1) == indexLabels.get(o2)){
-                    return 0 ;
-                }
-                
-                if(indexLabels.get(o1) > indexLabels.get(o2)){
-                    return 1 ;
-                }
-                
-                return -1 ;
-                
+                return o1.compareTo(o2);
             }
         });
     }
@@ -113,6 +100,7 @@ public class DataFrame implements DataFrameItf {
 
                     }
                 }
+            }
             } catch (Exception type) {
 
             }
@@ -231,7 +219,6 @@ public class DataFrame implements DataFrameItf {
     /**
      *
      */
-    @Override
     public void showLabels() {
         String lab = " ";
         for (Iterator iter = this.data.entrySet().iterator(); iter.hasNext();) {
