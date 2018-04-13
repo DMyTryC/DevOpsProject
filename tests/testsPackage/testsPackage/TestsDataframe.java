@@ -1,16 +1,12 @@
 package testsPackage;
 
 import devopsproject.DataFrame;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.Rule;
 
 public class TestsDataframe {
     
@@ -42,7 +38,7 @@ public class TestsDataframe {
         labels[1] = String.valueOf('b');
         labels[2] = String.valueOf('c');
         
-        List<String> element1 = new ArrayList<>();
+        List<Comparable<String>> element1 = new ArrayList<>();
         element1.add("s1");element1.add("s2");element1.add("s3");
 
         List<Integer> element2 = new ArrayList<>();
@@ -55,7 +51,7 @@ public class TestsDataframe {
         element3.add((float) 2.4);
         element3.add((float) 3.5);
         
-        List <List> elements = new ArrayList<>();
+        List <List<Comparable<?>>> elements = new ArrayList<>();
         elements.add(element1);
         elements.add(element2);
         elements.add(element3);
