@@ -8,6 +8,8 @@ package devopsproject;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -99,9 +101,8 @@ public class DataFrame implements DataFrameItf {
 
                     }
                 }
-	    }
-            
-	    } catch (Exception type) {
+            }
+            } catch (Exception type) {
 
             }
 
@@ -184,6 +185,7 @@ public class DataFrame implements DataFrameItf {
             values = ""+l;
         } while (p < d.size() - 1);
     }
+
 
     public void showLabels() {
         String lab = " ";
