@@ -52,10 +52,9 @@ public class DataFrame implements DataFrameItf {
         String extension;
         List donnees;
         String[] values;
-
+        //verificar extension y si el archivo exist
         extension = nameFile.substring(nameFile.lastIndexOf(".") + 1);
         if (extension.equalsIgnoreCase("csv")) {
-
             try {
                 
                 // Stockage des labels
@@ -144,7 +143,6 @@ public class DataFrame implements DataFrameItf {
             }
 
         }
-
     }
     
     
