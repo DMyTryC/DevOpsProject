@@ -14,6 +14,7 @@ import java.util.Map;
  * @author stephanie
  */
 public class Main {
+<<<<<<< HEAD
 
     public static void main(String[] args) throws IOException {
 
@@ -28,9 +29,20 @@ public class Main {
         for (Map.Entry<String, Integer> entrySet : hash.entrySet()) {
             String key = entrySet.getKey();
             Integer value = entrySet.getValue();
+=======
+    
+    public static void main(String [] args) throws IOException {
+        DataFrame d = new DataFrame("tests/resources/test1.csv",",");
+        d.head(5);
+/*
+    for (Map.Entry<String, Integer> entrySet : hash.entrySet()) {
+	String key = entrySet.getKey();
+	Integer value = entrySet.getValue();
+>>>>>>> origin/master
 
             System.out.println(key + " " + value);
 
+<<<<<<< HEAD
         }
         //d.head("Age", 2);
         //d.last("Age", 2);
@@ -44,6 +56,9 @@ public class Main {
         //d.last("Age", 2);
         //ArrayList toprint = d.data.get("Age");
     }
+=======
+    }*/
+>>>>>>> origin/master
      /*DataFrame d= new DataFrame("/home/stephanie/Documents/Documents/NewFolder/DevOps/src/src/devopsproject/test.csv",",");
     // d.show();
     //d.head(3);

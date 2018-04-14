@@ -123,5 +123,7 @@ public interface DataFrameItf {
     public void showLabels();
 
     public int size();
+    
+    public Integer getMaxColumnSize();
 
 }
