@@ -20,7 +20,7 @@
 		</resources>
 		<testResources>
 			<testResource>
-				<directory>${project.basedir}/tests/testsPackage/resources</directory>
+				<directory>${project.basedir}/tests/resources</directory>
 			</testResource>
 		</testResources>
 		<plugins>

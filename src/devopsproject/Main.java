@@ -15,22 +15,17 @@ import java.util.Map;
  */
 public class Main {
     
-     public static void main(String [] args) throws IOException {
-     
-     DataFrame d= new DataFrame("Users/r_benounnas/Desktop/test.csv",",");
-
-    HashMap<String,Integer> hash = new HashMap<>();
-    hash.put("b", 1);
-    hash.put("a", 2);
-
-
+    public static void main(String [] args) throws IOException {
+        DataFrame d = new DataFrame("tests/resources/test.csv",",");
+        d.show();
+/*
     for (Map.Entry<String, Integer> entrySet : hash.entrySet()) {
 	String key = entrySet.getKey();
 	Integer value = entrySet.getValue();
 
 	System.out.println(key + " "+ value);
 
-    }
+    }*/
      /*DataFrame d= new DataFrame("/home/stephanie/Documents/Documents/NewFolder/DevOps/src/src/devopsproject/test.csv",",");
     // d.show();
     //d.head(3);

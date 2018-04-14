@@ -79,19 +79,16 @@ public DataFrame(String nameFile, String separator) {
                         int op1 = Integer.parseInt(firstElement[j]);
                         donnees = this.data.get(labels[j]);
                         donnees.add(op1);
-                        System.out.println(op1);
 
                     } catch (NumberFormatException e1) {
                         try {
                             float op2 = Float.parseFloat(firstElement[j]);
                             donnees = this.data.get(labels[j]);
                             donnees.add(op2);
-                            System.out.println(op2);
                         } catch (NumberFormatException e2) {
                             elementString = firstElement[j];
                             donnees = this.data.get(labels[j]);
                             donnees.add(elementString);
-                            System.out.println(elementString);
                         }
                     }
                 }
@@ -125,7 +122,6 @@ public DataFrame(String nameFile, String separator) {
 
                 // Stockage de la taille de la plus grande colonne
                 for (Map.Entry<String, List> entry : data.entrySet()) {
-                    System.out.println(entry.getValue());
                     linesNumber = Math.max(linesNumber, entry.getValue().size());
                 }
 
