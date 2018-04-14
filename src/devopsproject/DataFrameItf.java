@@ -1,4 +1,4 @@
-package src.devopsproject;
+package devopsproject;
 
 import java.util.List;
 

@@ -1,4 +1,7 @@
 nbproject/
 build/
 dist/
+target/
 .idea/
+build.xml
+src/devopsproject/Main.java
