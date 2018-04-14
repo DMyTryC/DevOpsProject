@@ -24,6 +24,7 @@ public class DataFrame implements DataFrameItf {
     private HashMap<String, Integer> indexLabels; // Permet de retrouver la position d'un label/d'une colonne
     private TreeMap<String, List> data; // Table d'association Label -> données
     
+    // Comparator pour ordonner les labels selon leur position donnée à la construction
     private class DataComparator implements Comparator<String> {
         @Override
         public int compare(String o1, String o2) {
@@ -36,7 +37,6 @@ public class DataFrame implements DataFrameItf {
         this.linesNumber = 0;
         this.orderedLabels = new ArrayList<>();
         this.indexLabels = new HashMap<>();
-        // Comparator pour ordonner les labels selon leur position donnée à la construction
         this.data = new TreeMap<>(new DataComparator()) ;
     }
 
