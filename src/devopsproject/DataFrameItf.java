@@ -114,6 +114,6 @@ public interface DataFrameItf {
     
     public void showLabels();
     
-    public void size();
+    public int size();
     
 }

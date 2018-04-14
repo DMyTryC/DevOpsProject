@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("rawtypes")
 public class TestsDataframe {
     
     DataFrame df;
@@ -38,7 +39,7 @@ public class TestsDataframe {
         labels[1] = String.valueOf('b');
         labels[2] = String.valueOf('c');
         
-        List<Comparable<String>> element1 = new ArrayList<>();
+        List<String> element1 = new ArrayList<>();
         element1.add("s1");element1.add("s2");element1.add("s3");
 
         List<Integer> element2 = new ArrayList<>();
@@ -51,16 +52,26 @@ public class TestsDataframe {
         element3.add((float) 2.4);
         element3.add((float) 3.5);
         
-        List <List<Comparable<?>>> elements = new ArrayList<>();
+        List <List> elements = new ArrayList<>();
         elements.add(element1);
         elements.add(element2);
         elements.add(element3);
         
         df = new DataFrame(labels, elements);
+        df.head(2) ;
+        System.out.println("");
+        df.show();
+        System.out.println("");
+        df.tail(2);
     }
     
     @Test
     public void dataframeCreationFile() throws IOException{
-        df = new DataFrame("resources/file1.csv", ",");
+        df = new DataFrame("tests/testsPackage/resources/file1.csv", ",");
+        df.head(2) ;
+        System.out.println("");
+        df.show();
+        System.out.println("");
+        df.tail(2);
     }
 }
