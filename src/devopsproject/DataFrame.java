@@ -127,7 +127,6 @@ public class DataFrame implements DataFrameItf {
             } catch (IOException type) {
                 System.err.print(type);
             }
-
         }
     }
 
