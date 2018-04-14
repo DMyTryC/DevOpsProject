@@ -6,8 +6,13 @@
 package devopsproject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  *
@@ -17,28 +22,36 @@ public class Main {
     
      public static void main(String [] args) throws IOException {
      
-     DataFrame d= new DataFrame("Users/r_benounnas/Desktop/test.csv",",");
 
-    HashMap<String,Integer> hash = new HashMap<>();
-    hash.put("b", 1);
-    hash.put("a", 2);
+        /*TreeMap<String, List> data;
+        
+        List<List> lists = new ArrayList<List>();
+        
+        String[] labels = {"A","B","C"};
+        
+        List A = new ArrayList<Integer>();
+        List B = new ArrayList<Integer>();
+        List C = new ArrayList<Integer>();
+        
+        lists.add(A); lists.add(B); lists.add(C);
+        
+        A.add(1);A.add(2);A.add(3);
+        B.add(4);B.add(5);B.add(6);
+        C.add(7);C.add(8);C.add(9);
+        DataFrame dataframe = new DataFrame(labels, lists);
+        
+        dataframe.show();
+        String[] labelsGr = {"A"};
+        Optional<String> b = Optional.of("count");
+        TreeMap<String, List> grouped = dataframe.groupby(labelsGr,b);
+        for(int i=0;i<grouped.get("count(A)").size();i++){
+               System.out.print(grouped.get("count(A)").get(i));
+        }
+        //System.out.print(grouped.get("A").size());
+        
+        */
 
-
-    for (Map.Entry<String, Integer> entrySet : hash.entrySet()) {
-	String key = entrySet.getKey();
-	Integer value = entrySet.getValue();
-
-	System.out.println(key + " "+ value);
-
-    }
-     /*DataFrame d= new DataFrame("/home/stephanie/Documents/Documents/NewFolder/DevOps/src/src/devopsproject/test.csv",",");
-    // d.show();
-    //d.head(3);
-    d.tail(2);*/
-    //d.head("Age", 2);
-     //d.last("Age", 2);
-     //ArrayList toprint = d.data.get("Age");
-     System.out.println(d.data.size());
- }    
+       
+    }    
     
 }

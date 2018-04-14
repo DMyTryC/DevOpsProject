@@ -1,6 +1,7 @@
 package devopsproject;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.TreeMap;
 
 public interface DataFrameItf {
@@ -119,6 +120,8 @@ public interface DataFrameItf {
     
     public TreeMap<String, List> groupby(String[] labels);
     
-    public List<String> groupby(String label);
+    public List groupby(String label);
+    
+    public TreeMap<String, List> groupby(String[] labels, String aggregate);
     
 }
