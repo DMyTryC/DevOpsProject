@@ -31,8 +31,6 @@ public class Main {
 	System.out.println(key + " "+ value);
 
     }
-<<<<<<< HEAD
-=======
      /*DataFrame d= new DataFrame("/home/stephanie/Documents/Documents/NewFolder/DevOps/src/src/devopsproject/test.csv",",");
     // d.show();
     //d.head(3);
@@ -41,7 +39,6 @@ public class Main {
      //d.last("Age", 2);
      //ArrayList toprint = d.data.get("Age");
      System.out.println(d.data.size());
->>>>>>> DataFrameCSV
  }    
     
 }
