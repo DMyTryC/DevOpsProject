@@ -1,18 +1,12 @@
-package src;
-
 import devopsproject.DataFrame;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
-import org.junit.Assert;
-import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-import org.junit.Rule;
 
+@SuppressWarnings("rawtypes")
 public class TestsDataframe {
     
     DataFrame df;
@@ -36,7 +30,7 @@ public class TestsDataframe {
         df = new DataFrame();
     }
     
-    /*@Test
+    @Test
     public void dataframeCreationLists(){
         String [] labels = new String[3];
         labels[0] = String.valueOf('a');
@@ -62,11 +56,32 @@ public class TestsDataframe {
         elements.add(element3);
         
         df = new DataFrame(labels, elements);
-    }*/
+        System.out.println("");
+        df.head(2);
+        System.out.println("");
+        df.show();
+        System.out.println("");
+        df.tail(2);
+        System.out.println("");
+        df.head("b", 2);
+        System.out.println("");
+        df.tail("b", 2);
+        System.out.println("");
+    }
     
     @Test
     public void dataframeCreationFile() throws IOException{
-        df = new DataFrame("resources/file1.csv", ",");
-        
+        df = new DataFrame("tests/testsPackage/resources/test1.csv", ",");
+        System.out.println("");
+        df.head(3);
+        System.out.println("");
+        df.show();
+        System.out.println("");
+        df.tail(3);
+        System.out.println("");
+        df.head("Age", 5);
+        System.out.println("");
+        df.tail("Age", 5);
+        System.out.println("");
     }
 }
