@@ -99,14 +99,14 @@ public DataFrame(String nameFile, String separator) {
                         donnees = this.data.get(labels[i]);
                         try {
                             Integer op1 = Integer.parseInt(values[i]);
-                            if (op1.getClass().equals((donnees.get(donnees.size() - 1)).getClass())) {
+                            if (op1.getClass().equals((donnees.get(0).getClass()))) {
                                 donnees.add(op1);
                             }
 
                         } catch (NumberFormatException e1) {
                             try {
                                 Float op2 = Float.parseFloat(values[i]);
-                                if (op2.getClass().equals((donnees.get(donnees.size() - 1)).getClass())) {
+                                if (op2.getClass().equals((donnees.get(0)).getClass())) {
                                     donnees.add(op2);
                                 }
                             } catch (NumberFormatException e2) {
