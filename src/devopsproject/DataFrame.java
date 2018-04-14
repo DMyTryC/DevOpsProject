@@ -18,12 +18,11 @@ import java.util.TreeMap;
 
 public class DataFrame implements DataFrameItf {
 
-    List<String> labels;
+    
     HashMap<String, Integer> indexLabels;
     TreeMap<String, List> data;
 
     public DataFrame() {
-        this.labels = new ArrayList<>();
         this.indexLabels = new HashMap<>();
         this.data = new TreeMap<>(new Comparator<String>() {
             @Override
