@@ -23,25 +23,27 @@ public class DataFrame implements DataFrameItf {
     private List<String> orderedLabels; // Stocke l'ordre des labels pour afficher les colonnes du Dataframe dans le même ordre que celui donné lors de la construction
     private HashMap<String, Integer> indexLabels; // Permet de retrouver la position d'un label/d'une colonne
     private TreeMap<String, List> data; // Table d'association Label -> données
+    
+    private class DataComparator implements Comparator<String> {
+        @Override
+        public int compare(String o1, String o2) {
+            return indexLabels.get(o1) < indexLabels.get(o2) ? -1
+                    : indexLabels.get(o1) > indexLabels.get(o2) ? 1 : 0;
+        }
+    }
 
     public DataFrame() {
         this.linesNumber = 0;
         this.orderedLabels = new ArrayList<>();
         this.indexLabels = new HashMap<>();
         // Comparator pour ordonner les labels selon leur position donnée à la construction
-        this.data = new TreeMap<>(new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return indexLabels.get(o1) < indexLabels.get(o2) ? -1
-                        : indexLabels.get(o1) > indexLabels.get(o2) ? 1 : 0;
-            }
-        });
+        this.data = new TreeMap<>(new DataComparator()) ;
     }
 
     public DataFrame(String[] labels, List<List> elements) {
         this();
         for (int i = 0; i < elements.size(); i++) {
-            this.linesNumber = Math.max(linesNumber, elements.size());
+            this.linesNumber = Math.max(linesNumber, elements.get(i).size());
             this.orderedLabels.add(labels[i]);
             this.indexLabels.put(labels[i], i);
             this.data.put(labels[i], elements.get(i));
@@ -203,7 +205,7 @@ public class DataFrame implements DataFrameItf {
 
     private List column(String label) {
         try {
-            data.containsKey(label) ;
+            data.containsKey(label);
         } catch (NullPointerException ex) {
             throw new IllegalArgumentException("Label " + label + " does not exist !");
         }
@@ -213,7 +215,7 @@ public class DataFrame implements DataFrameItf {
     @Override
     public DataFrameItf loc(String label) {
         List<List> elements = new ArrayList<>();
-        elements.add(column(label));
+        elements.add(new ArrayList<>(column(label)));
         String[] labels = {label};
         return new DataFrame(labels, elements);
     }
@@ -222,9 +224,10 @@ public class DataFrame implements DataFrameItf {
     public DataFrameItf loc(List<String> labels) {
         List<List> elements = new ArrayList<>(labels.size());
         for (String label : labels) {
-            elements.add(column(label));
+            elements.add(new ArrayList<>(column(label)));
         }
-        return new DataFrame((String[]) labels.toArray(), elements);
+        String[] labelsArray = new String[labels.size()];
+        return new DataFrame(labels.toArray(labelsArray), elements);
     }
 
     @Override
@@ -235,16 +238,15 @@ public class DataFrame implements DataFrameItf {
 
         int inf = indexLabels.get(labelInf), sup = indexLabels.get(labelSup);
 
-        int size = Math.abs(sup - inf);
+        int size = Math.abs(sup - inf) + 1;
         List<List> elements = new ArrayList<>(size);
         String[] labels = new String[size];
 
         if (inf > sup) {
             int tmp = inf;
-            sup = inf;
-            inf = tmp;
+            inf = sup;
+            sup = tmp;
         }
-
         for (int i = inf, j = 0; i <= sup; i++, j++) {
             labels[j] = this.orderedLabels.get(i);
             elements.add(data.get(this.orderedLabels.get(i)));
@@ -266,6 +268,7 @@ public class DataFrame implements DataFrameItf {
         df.linesNumber = linesNumber;
         df.orderedLabels = new ArrayList<>(orderedLabels);
         df.indexLabels = new HashMap<>(indexLabels);
+        df.data = new TreeMap<>(data);
         return df;
     }
 
@@ -318,8 +321,8 @@ public class DataFrame implements DataFrameItf {
         int inf = indexInf, sup = indexSup;
         if (inf > sup) {
             int tmp = inf;
-            sup = inf;
-            inf = tmp;
+            inf = sup;
+            sup = tmp;
         }
         checkingIndex(sup);
         if (inf < 0) {
