@@ -44,5 +44,4 @@ public class Main {
         //d.last("Age", 2);
         //ArrayList toprint = d.data.get("Age");
     }
-
 }
