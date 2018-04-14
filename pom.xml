@@ -12,7 +12,7 @@
 		<finalName>${project.artifactId}-${project.version}</finalName>
 		<testOutputDirectory>${project.build.directory}/test-classes</testOutputDirectory>
 		<sourceDirectory>${project.basedir}/src</sourceDirectory>
-		<testSourceDirectory>${project.basedir}/tests/testsPackage/src</testSourceDirectory>
+		<testSourceDirectory>${project.basedir}/tests/src</testSourceDirectory>
 		<resources>
 			<resource>
 				<directory>${project.basedir}/src/resources</directory>
@@ -20,7 +20,7 @@
 		</resources>
 		<testResources>
 			<testResource>
-				<directory>${project.basedir}/tests/testsPackage/resources</directory>
+				<directory>${project.basedir}/tests/resources</directory>
 			</testResource>
 		</testResources>
 		<plugins>
@@ -45,11 +45,6 @@
 			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.opencsv</groupId>
-			<artifactId>opencsv</artifactId>
-			<version>4.0</version>
-		</dependency>
 	</dependencies>
 	
 	<reporting>
@@ -70,7 +65,9 @@
 				<configuration>
 					<formats>
 						<format>html</format>
+						<format>xml</format>
 					</formats>
+					<aggregate>true</aggregate>
 				</configuration>
 			</plugin>
 		</plugins>
