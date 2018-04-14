@@ -79,19 +79,16 @@ public class DataFrame implements DataFrameItf {
                         int op1 = Integer.parseInt(firstElement[j]);
                         donnees = this.data.get(labels[j]);
                         donnees.add(op1);
-                        System.out.println(op1);
 
                     } catch (NumberFormatException e1) {
                         try {
                             float op2 = Float.parseFloat(firstElement[j]);
                             donnees = this.data.get(labels[j]);
                             donnees.add(op2);
-                            System.out.println(op2);
                         } catch (NumberFormatException e2) {
                             elementString = firstElement[j];
                             donnees = this.data.get(labels[j]);
                             donnees.add(elementString);
-                            System.out.println(elementString);
                         }
                     }
                 }
@@ -99,6 +96,7 @@ public class DataFrame implements DataFrameItf {
                 // Stockage des lignes restantes, inférence des classes de chaun de leus éléments et comparaison des classes avec la classe du premier élément
                 while ((linea = br.readLine()) != null) {
                     values = linea.split(separator);
+                    System.out.println(Arrays.toString(values));
                     for (int i = 0; i < labels.length; i++) {
                         donnees = this.data.get(labels[i]);
                         try {
@@ -115,9 +113,7 @@ public class DataFrame implements DataFrameItf {
                                 }
                             } catch (NumberFormatException e2) {
                                 elementString = values[i];
-                                if (elementString.getClass().equals((donnees.get(donnees.size() - 1)).getClass())) {
-                                    donnees.add(elementString);
-                                }
+                                donnees.add(elementString);
                             }
                         }
                     }
@@ -125,7 +121,6 @@ public class DataFrame implements DataFrameItf {
 
                 // Stockage de la taille de la plus grande colonne
                 for (Map.Entry<String, List> entry : data.entrySet()) {
-                    System.out.println(entry.getValue());
                     linesNumber = Math.max(linesNumber, entry.getValue().size());
                 }
 
@@ -142,60 +137,46 @@ public class DataFrame implements DataFrameItf {
         while (l < n) {
             String values = "";
             for (Map.Entry<String, List> entry : data.entrySet()) {
-                values = values + " | " + entry.getValue().get(l);
+                values = values + " | " + (l < entry.getValue().size() ? entry.getValue().get(l).toString() : " ");
             }
             values = l + " " + values;
             System.out.println(values);
             l++;
         }
     }
+    
+    private enum PrintingType {HEAD, TAIL};
+    
+    private int checkingLinesNumber(int n, PrintingType type) {
+        if (linesNumber - n < 0) {
+            throw new IllegalArgumentException("Number of lines > Number of lines of Dataframe !");
+        }
+        return type == PrintingType.HEAD ? n : linesNumber - n ;
+    }
 
     @Override
     public void show() {
         print(0, linesNumber);
     }
-
+    
     public void head(String label, int n) {
-        List head;
-        for (Map.Entry<String, List> entry : this.data.entrySet()) {
-            if (label.equals(entry.getKey()) && n < entry.getValue().size()) {
-                head = entry.getValue();
-                System.out.println("    " + label);
-                for (int i = 0; i < n; i++) {
-                    System.out.println(i + " | " + head.get(i));
-                }
-            }
-        }
+        column(label);
+        System.out.println(label + " : " + data.get(label).subList(0, checkingLinesNumber(n, PrintingType.HEAD)));
     }
 
     public void tail(String label, int n) {
-        List last;
-        for (Map.Entry<String, List> entry : this.data.entrySet()) {
-            if (label.equals(entry.getKey()) && n < entry.getValue().size()) {
-                last = entry.getValue();
-                System.out.println("    " + label);
-                for (int i = last.size() - n; i < last.size(); i++) {
-                    System.out.println(i + " | " + last.get(i));
-                }
-            }
-        }
+        column(label);
+        System.out.println(label + " : " + data.get(label).subList(checkingLinesNumber(n, PrintingType.TAIL), data.get(label).size()));
     }
 
     @Override
     public void head(int n) {
-        if (n > linesNumber) {
-            throw new IllegalArgumentException("Number of lines > Number of lines of Dataframe !");
-        }
-        print(0, n);
+        print(0, checkingLinesNumber(n, PrintingType.HEAD));
     }
 
     @Override
     public void tail(int n) {
-        int l;
-        if ((l = linesNumber - n) < 0) {
-            throw new IllegalArgumentException("Number of lines > Number of lines of Dataframe !");
-        }
-        print(l, linesNumber);
+        print(checkingLinesNumber(n, PrintingType.TAIL), linesNumber);
     }
 
     @Override
@@ -216,31 +197,18 @@ public class DataFrame implements DataFrameItf {
         return size;
     }
 
-    private class InfosColumn {
-
+    private List column(String label) {
         List column;
-        String label;
-
-        public InfosColumn(List column, String label) {
-            this.column = column;
-            this.label = label;
-        }
-
-    }
-
-    private InfosColumn column(String label) {
-
-        List column;
-        if ((column = data.get(label)) == null) {
+        if (!data.containsKey(label)) {
             throw new IllegalArgumentException("Label " + label + " does not exist !");
         }
-        return new InfosColumn(column, label);
+        return data.get(label) ;
     }
 
     @Override
     public DataFrameItf loc(String label) {
         List<List> elements = new ArrayList<>();
-        elements.add(column(label).column);
+        elements.add(column(label));
         String[] labels = {label};
         return new DataFrame(labels, elements);
     }
@@ -249,7 +217,7 @@ public class DataFrame implements DataFrameItf {
     public DataFrameItf loc(List<String> labels) {
         List<List> elements = new ArrayList<>(labels.size());
         for (String label : labels) {
-            elements.add(column(label).column);
+            elements.add(column(label));
         }
         return new DataFrame((String[]) labels.toArray(), elements);
     }
@@ -257,10 +225,10 @@ public class DataFrame implements DataFrameItf {
     @Override
     public DataFrameItf loc(String labelInf, String labelSup) {
 
-        InfosColumn infosInf = column(labelInf);
-        InfosColumn infosSup = column(labelSup);
+        column(labelInf);
+        column(labelSup);
 
-        int inf = indexLabels.get(infosInf.label), sup = indexLabels.get(infosSup.label);
+        int inf = indexLabels.get(labelInf), sup = indexLabels.get(labelSup);
 
         int size = Math.abs(sup - inf);
         List<List> elements = new ArrayList<>(size);
@@ -288,44 +256,131 @@ public class DataFrame implements DataFrameItf {
         return loc(labelsList);
     }
 
+    private DataFrame initDataFrameBeforeSelectingLines(int linesNumber) {
+        DataFrame df = new DataFrame();
+        df.linesNumber = linesNumber;
+        df.orderedLabels = new ArrayList<>(orderedLabels);
+        df.indexLabels = new HashMap<>(indexLabels);
+        return df;
+    }
+
+    private void checkingIndex(int index) {
+        if (index > linesNumber) {
+            throw new IllegalArgumentException("index > Number of lines of DataFrame !");
+        }
+    }
+
     @Override
     public DataFrameItf iloc(int index) {
-        List elements = new ArrayList<>(orderedLabels.size());
+        checkingIndex(index);
+        DataFrame df = initDataFrameBeforeSelectingLines(1);
         for (String label : orderedLabels) {
-            elements.add(data.get(label).get(index));
+            df.data.get(label).add(data.get(label).get(index));
         }
-        return new DataFrame();
+        return df;
     }
 
     @Override
     public DataFrameItf iloc(List<Integer> indexes) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (Integer index : indexes) {
+            checkingIndex(index);
+        }
+        DataFrame df = initDataFrameBeforeSelectingLines(indexes.size());
+        for (Integer index : indexes) {
+            for (String label : orderedLabels) {
+                df.data.get(label).add(data.get(label).get(index));
+            }
+        }
+        return df;
     }
 
     @Override
     public DataFrameItf iloc(Integer... indexes) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        for (Integer index : indexes) {
+            checkingIndex(index);
+        }
+        DataFrame df = initDataFrameBeforeSelectingLines(indexes.length);
+        for (Integer index : indexes) {
+            for (String label : orderedLabels) {
+                df.data.get(label).add(data.get(label).get(index));
+            }
+        }
+        return df;
     }
 
     @Override
     public DataFrameItf iloc(int indexInf, int indexSup) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        int inf = indexInf, sup = indexSup;
+        if (inf > sup) {
+            int tmp = inf;
+            sup = inf;
+            inf = tmp;
+        }
+        checkingIndex(sup);
+        if (inf < 0) {
+            throw new IllegalArgumentException("Lower Bound < 0 ! ");
+        }
+        DataFrame df = initDataFrameBeforeSelectingLines(sup - inf + 1);
+        for (int i = inf; i <= sup; i++) {
+            for (String label : orderedLabels) {
+                df.data.get(label).add(data.get(label).get(i));
+            }
+        }
+        return df;
+    }
+    
+    private void checkingNumberFormat(String label) {
+        if (!(data.get(label).get(0) instanceof Number))
+            throw new IllegalArgumentException("Column at Label " + label + " is not Numeric !");
+    }
+    
+    private void checkingComparable(String label) {
+        if (!(data.get(label).get(0) instanceof Comparable))
+            throw new IllegalArgumentException("Column at Label " + label + " is not Comparable !");
+    }
+    
+    @Override
+    public Float meanColumn(String label) {
+        column(label) ;
+        checkingNumberFormat(label);
+        Float sum = (Float)data.get(label).get(0) ;
+        for (int i = 1; i < data.get(label).size(); i++) {
+            sum += (Float)data.get(label).get(i);
+        }
+        return sum / data.get(label).size() ;
     }
 
     @Override
-    public Integer meanColumn(String label) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Comparable minColumn(String label) {
+        column(label) ;
+        checkingComparable(label);
+        Comparable min = (Comparable)data.get(label).get(0) ;
+        for (int i = 1; i < data.get(label).size(); i++) {
+            Comparable currentElt = (Comparable)data.get(label).get(i);
+            min = currentElt.compareTo(min) == -1 ? currentElt : min ; 
+        }
+        return min ;
     }
 
     @Override
-    public Integer minColumn(String label) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Comparable maxColumn(String label) {
+        column(label) ;
+        checkingComparable(label);
+        Comparable max = (Comparable)data.get(label).get(0) ;
+        for (int i = 1; i < data.get(label).size(); i++) {
+            Comparable currentElt = (Comparable)data.get(label).get(i);
+            max = currentElt.compareTo(max) == 1 ? currentElt : max ; 
+        }
+        return max ;
     }
 
     @Override
-    public Integer maxColumn(String label) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void orderBy(String label) {
+        column(label) ;
+        checkingComparable(label);
+        
     }
+    
 
     @Override
     public void addToColumn(String label, List values) {

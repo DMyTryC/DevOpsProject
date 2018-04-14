@@ -65,15 +65,25 @@ public class TestsDataframe {
         df.show();
         System.out.println("");
         df.tail(2);
+        System.out.println("");
+        df.head("b", 2);
+        System.out.println("");
+        df.tail("b", 2);
+        System.out.println("");
     }
 
     @Test
     public void dataframeCreationFile() throws IOException {
-        df = new DataFrame("tests/testsPackage/resources/file1.csv", ",");
+        df = new DataFrame("tests/testsPackage/resources/test1.csv", ",");
+        System.out.println("");
         df.head(2);
         System.out.println("");
         df.show();
         System.out.println("");
         df.tail(2);
+        df.head("Age", 5);
+        System.out.println("");
+        df.tail("Age", 5);
+        System.out.println("");
     }
 }

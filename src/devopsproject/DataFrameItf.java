@@ -100,21 +100,23 @@ public interface DataFrameItf {
      * @param label the label of the column to calculate the mean on
      * @return the mean on the column
      */
-    public Integer meanColumn(String label);
+    public Float meanColumn(String label);
 
     /**
      *
      * @param label the label of the column to calculate the min on
      * @return the minimum of the column
      */
-    public Integer minColumn(String label);
+    public Comparable minColumn(String label);
 
     /**
      *
      * @param label the label of the column to calculate the max on
      * @return the maximum of the column
      */
-    public Integer maxColumn(String label);
+    public Comparable maxColumn(String label);
+    
+    public void orderBy (String label);
 
     public void showLabels();
 
