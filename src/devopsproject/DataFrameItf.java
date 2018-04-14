@@ -102,12 +102,14 @@ public interface DataFrameItf {
      */
     public Float meanColumn(String label);
 
+
     /**
      *
      * @param label the label of the column to calculate the min on
      * @return the minimum of the column
      */
     public Comparable minColumn(String label);
+
 
     /**
      *

@@ -44,7 +44,7 @@ public class DataFrame implements DataFrameItf {
         }
     }
 
-    public DataFrame(String nameFile, String separator) {
+public DataFrame(String nameFile, String separator) {
         this();
         FileReader fr;
         BufferedReader br;
@@ -79,7 +79,6 @@ public class DataFrame implements DataFrameItf {
                         int op1 = Integer.parseInt(firstElement[j]);
                         donnees = this.data.get(labels[j]);
                         donnees.add(op1);
-
                     } catch (NumberFormatException e1) {
                         try {
                             float op2 = Float.parseFloat(firstElement[j]);
@@ -96,7 +95,6 @@ public class DataFrame implements DataFrameItf {
                 // Stockage des lignes restantes, inférence des classes de chaun de leus éléments et comparaison des classes avec la classe du premier élément
                 while ((linea = br.readLine()) != null) {
                     values = linea.split(separator);
-                    System.out.println(Arrays.toString(values));
                     for (int i = 0; i < labels.length; i++) {
                         donnees = this.data.get(labels[i]);
                         try {
@@ -130,7 +128,7 @@ public class DataFrame implements DataFrameItf {
 
         }
     }
-
+        
     private void print(int deb, int n) {
         int l = deb;
         showLabels();
@@ -143,6 +141,16 @@ public class DataFrame implements DataFrameItf {
             System.out.println(values);
             l++;
         }
+    }
+
+    @Override
+    public void head(int n) {
+        print(0, checkingLinesNumber(n, PrintingType.HEAD));
+    }
+
+    @Override
+    public void tail(int n) {
+        print(checkingLinesNumber(n, PrintingType.TAIL), linesNumber);
     }
     
     private enum PrintingType {HEAD, TAIL};
@@ -167,16 +175,6 @@ public class DataFrame implements DataFrameItf {
     public void tail(String label, int n) {
         column(label);
         System.out.println(label + " : " + data.get(label).subList(checkingLinesNumber(n, PrintingType.TAIL), data.get(label).size()));
-    }
-
-    @Override
-    public void head(int n) {
-        print(0, checkingLinesNumber(n, PrintingType.HEAD));
-    }
-
-    @Override
-    public void tail(int n) {
-        print(checkingLinesNumber(n, PrintingType.TAIL), linesNumber);
     }
 
     @Override
@@ -378,10 +376,8 @@ public class DataFrame implements DataFrameItf {
     public void orderBy(String label) {
         column(label) ;
         checkingComparable(label);
-        
     }
     
-
     @Override
     public void addToColumn(String label, List values) {
         // check if label exists
