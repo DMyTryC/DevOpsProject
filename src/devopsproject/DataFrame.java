@@ -10,11 +10,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
 public class DataFrame implements DataFrameItf {
@@ -283,7 +288,7 @@ public class DataFrame implements DataFrameItf {
         checkingIndex(index);
         DataFrame df = initDataFrameBeforeSelectingLines(1);
         for (String label : orderedLabels) {
-            df.data.get(label).add(data.get(label).get(index));
+            df.data.replace(label, new ArrayList(Arrays.asList(data.get(label).get(index))));
         }
         return df;
     }
@@ -294,10 +299,10 @@ public class DataFrame implements DataFrameItf {
             checkingIndex(index);
         }
         DataFrame df = initDataFrameBeforeSelectingLines(indexes.size());
-        for (Integer index : indexes) {
-            for (String label : orderedLabels) {
-                df.data.get(label).add(data.get(label).get(index));
-            }
+        for (String label : orderedLabels) {
+            df.data.replace(label, indexes.stream().map((index) -> {
+                return data.get(label).get(index);
+            }).collect(Collectors.toList())) ;
         }
         return df;
     }
@@ -308,10 +313,10 @@ public class DataFrame implements DataFrameItf {
             checkingIndex(index);
         }
         DataFrame df = initDataFrameBeforeSelectingLines(indexes.length);
-        for (Integer index : indexes) {
-            for (String label : orderedLabels) {
-                df.data.get(label).add(data.get(label).get(index));
-            }
+        for (String label : orderedLabels) {
+            df.data.replace(label, new ArrayList<>(Arrays.asList(indexes)).stream().map((index) -> {
+                return data.get(label).get(index);
+            }).collect(Collectors.toList())) ;
         }
         return df;
     }
@@ -329,10 +334,12 @@ public class DataFrame implements DataFrameItf {
             throw new IllegalArgumentException("Lower Bound < 0 ! ");
         }
         DataFrame df = initDataFrameBeforeSelectingLines(sup - inf + 1);
-        for (int i = inf; i <= sup; i++) {
-            for (String label : orderedLabels) {
-                df.data.get(label).add(data.get(label).get(i));
-            }
+        System.out.println("INF : " + inf);
+        System.out.println("RANGE : " + IntStream.range(inf, sup).boxed().collect(Collectors.toList()));
+        for (String label : orderedLabels) {
+            df.data.replace(label, IntStream.range(inf, sup).boxed().map((index) -> {
+                return data.get(label).get(index);
+            }).collect(Collectors.toList())) ;
         }
         return df;
     }
