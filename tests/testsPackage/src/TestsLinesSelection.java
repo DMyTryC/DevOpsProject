@@ -79,7 +79,7 @@ public class TestsLinesSelection {
     public void ilocV42 () {
         System.out.println("ILOCV42 :");
         System.out.println("-----------------------------");
-        df.iloc(7,0).show();
+        df.iloc(6,0).show();
         System.out.println("-----------------------------");
     }
     

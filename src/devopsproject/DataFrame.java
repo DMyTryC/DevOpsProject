@@ -169,6 +169,7 @@ public class DataFrame implements DataFrameItf {
     };
 
     private int checkingLinesNumber(int n, PrintingType type) {
+        System.out.println("LINENUMBER : " + linesNumber);
         if (linesNumber - n < 0) {
             throw new IllegalArgumentException("Number of lines > Number of lines of Dataframe !");
         }
@@ -337,7 +338,7 @@ public class DataFrame implements DataFrameItf {
         System.out.println("INF : " + inf);
         System.out.println("RANGE : " + IntStream.range(inf, sup).boxed().collect(Collectors.toList()));
         for (String label : orderedLabels) {
-            df.data.replace(label, IntStream.range(inf, sup).boxed().map((index) -> {
+            df.data.replace(label, IntStream.range(inf, sup+1).boxed().map((index) -> {
                 return data.get(label).get(index);
             }).collect(Collectors.toList())) ;
         }
