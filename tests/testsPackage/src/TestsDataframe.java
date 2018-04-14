@@ -84,4 +84,12 @@ public class TestsDataframe {
         df.tail("Age", 5);
         System.out.println("");
     }
+    
+    @Test
+    public void dataframeStats() {
+        df = new DataFrame("tests/testsPackage/resources/test.csv", ",");
+        System.out.println(df.meanColumn("Age"));
+        System.out.println(df.minColumn("Age"));
+        System.out.println(df.maxColumn("Age"));
+    }
 }

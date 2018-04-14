@@ -338,12 +338,12 @@ public DataFrame(String nameFile, String separator) {
     }
     
     @Override
-    public Float meanColumn(String label) {
+    public Double meanColumn(String label) {
         column(label) ;
         checkingNumberFormat(label);
-        Float sum = (Float)data.get(label).get(0) ;
+        Double sum = ((Number)data.get(label).get(0)).doubleValue() ;
         for (int i = 1; i < data.get(label).size(); i++) {
-            sum += (Float)data.get(label).get(i);
+            sum += ((Number)data.get(label).get(i)).doubleValue();
         }
         return sum / data.get(label).size() ;
     }
@@ -376,6 +376,7 @@ public DataFrame(String nameFile, String separator) {
     public void orderBy(String label) {
         column(label) ;
         checkingComparable(label);
+        
     }
     
     @Override

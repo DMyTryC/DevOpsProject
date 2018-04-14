@@ -100,7 +100,7 @@ public interface DataFrameItf {
      * @param label the label of the column to calculate the mean on
      * @return the mean on the column
      */
-    public Float meanColumn(String label);
+    public Double meanColumn(String label);
 
 
     /**
