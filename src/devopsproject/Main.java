@@ -16,8 +16,8 @@ import java.util.Map;
 public class Main {
     
     public static void main(String [] args) throws IOException {
-        DataFrame d = new DataFrame("tests/resources/test.csv",",");
-        d.show();
+        DataFrame d = new DataFrame("tests/resources/test1.csv",",");
+        d.head(5);
 /*
     for (Map.Entry<String, Integer> entrySet : hash.entrySet()) {
 	String key = entrySet.getKey();

@@ -43,10 +43,11 @@ public class TestDataframe {
         dfArray = new DataFrame(labels, elements);
 
         /* Test file constructor dataframe creation */
+        dfFileList = new ArrayList<>();
         dfFileList.add(new DataFrame("test.csv", ","));
-        /*dfFileList.add(new DataFrame("test1.csv", ","));
-        dfFileList.add(new DataFrame("test2.csv", ","));*/
-        //dfFileList.add(new DataFrame("tests/resources/test1.csv", ","));
+        dfFileList.add(new DataFrame("test1.csv", ","));
+        dfFileList.add(new DataFrame("test2.csv", ","));
+        dfFileList.add(new DataFrame("file1.csv", ","));
     }
     
     @Test
@@ -66,14 +67,14 @@ public class TestDataframe {
     @Test
     public void headTestGoodValues(){
         dfBase.head(0);
-        dfBase.head(dfBase.size()/2);
+        dfBase.head(dfBase.getMaxColumnSize()/2);
 
         dfArray.head(0);
-        dfArray.head(dfArray.size()/2);
+        dfArray.head(dfBase.getMaxColumnSize()/2);
         
         for (DataFrame dfObject : dfFileList){
             dfObject.head(0);
-            dfObject.head(dfObject.size()/2);
+            dfObject.head(dfBase.getMaxColumnSize()/2);
         }
         
     }
@@ -84,10 +85,19 @@ public class TestDataframe {
         
         dfArray.head(-1);
         
-        
+        for (DataFrame dfObject : dfFileList){
+            dfObject.head(-1);
+        }
     }
     
     @Test(expected = IllegalArgumentException.class)
     public void headTestBiggerThanSize(){
+        dfBase.head(Integer.MAX_VALUE);
+        
+        dfArray.head(Integer.MAX_VALUE);
+        
+        for (DataFrame dfObject : dfFileList){
+            dfObject.head(Integer.MAX_VALUE);
+        }
     }
 }

@@ -44,7 +44,7 @@ public class DataFrame implements DataFrameItf {
         }
     }
 
-public DataFrame(String nameFile, String separator) {
+    public DataFrame(String nameFile, String separator) {
         this();
         FileReader fr;
         BufferedReader br;
@@ -79,7 +79,6 @@ public DataFrame(String nameFile, String separator) {
                         int op1 = Integer.parseInt(firstElement[j]);
                         donnees = this.data.get(labels[j]);
                         donnees.add(op1);
-
                     } catch (NumberFormatException e1) {
                         try {
                             float op2 = Float.parseFloat(firstElement[j]);
@@ -129,7 +128,7 @@ public DataFrame(String nameFile, String separator) {
 
         }
     }
-        
+
     private void print(int deb, int n) {
         int l = deb;
         showLabels();
@@ -153,21 +152,23 @@ public DataFrame(String nameFile, String separator) {
     public void tail(int n) {
         print(checkingLinesNumber(n, PrintingType.TAIL), linesNumber);
     }
-    
-    private enum PrintingType {HEAD, TAIL};
-    
+
+    private enum PrintingType {
+        HEAD, TAIL
+    };
+
     private int checkingLinesNumber(int n, PrintingType type) {
         if (linesNumber - n < 0) {
             throw new IllegalArgumentException("Number of lines > Number of lines of Dataframe !");
         }
-        return type == PrintingType.HEAD ? n : linesNumber - n ;
+        return type == PrintingType.HEAD ? n : linesNumber - n;
     }
 
     @Override
     public void show() {
         print(0, linesNumber);
     }
-    
+
     public void head(String label, int n) {
         column(label);
         System.out.println(label + " : " + data.get(label).subList(0, checkingLinesNumber(n, PrintingType.HEAD)));
@@ -201,7 +202,7 @@ public DataFrame(String nameFile, String separator) {
         if (!data.containsKey(label)) {
             throw new IllegalArgumentException("Label " + label + " does not exist !");
         }
-        return data.get(label) ;
+        return data.get(label);
     }
 
     @Override
@@ -327,58 +328,65 @@ public DataFrame(String nameFile, String separator) {
         }
         return df;
     }
-    
+
     private void checkingNumberFormat(String label) {
-        if (!(data.get(label).get(0) instanceof Number))
+        if (!(data.get(label).get(0) instanceof Number)) {
             throw new IllegalArgumentException("Column at Label " + label + " is not Numeric !");
+        }
     }
-    
+
     private void checkingComparable(String label) {
-        if (!(data.get(label).get(0) instanceof Comparable))
+        if (!(data.get(label).get(0) instanceof Comparable)) {
             throw new IllegalArgumentException("Column at Label " + label + " is not Comparable !");
+        }
     }
-    
+
     @Override
     public Float meanColumn(String label) {
-        column(label) ;
+        column(label);
         checkingNumberFormat(label);
-        Float sum = (Float)data.get(label).get(0) ;
+        Float sum = (Float) data.get(label).get(0);
         for (int i = 1; i < data.get(label).size(); i++) {
-            sum += (Float)data.get(label).get(i);
+            sum += (Float) data.get(label).get(i);
         }
-        return sum / data.get(label).size() ;
+        return sum / data.get(label).size();
     }
 
     @Override
     public Comparable minColumn(String label) {
-        column(label) ;
+        column(label);
         checkingComparable(label);
-        Comparable min = (Comparable)data.get(label).get(0) ;
+        Comparable min = (Comparable) data.get(label).get(0);
         for (int i = 1; i < data.get(label).size(); i++) {
-            Comparable currentElt = (Comparable)data.get(label).get(i);
-            min = currentElt.compareTo(min) == -1 ? currentElt : min ; 
+            Comparable currentElt = (Comparable) data.get(label).get(i);
+            min = currentElt.compareTo(min) == -1 ? currentElt : min;
         }
-        return min ;
+        return min;
     }
 
     @Override
     public Comparable maxColumn(String label) {
-        column(label) ;
+        column(label);
         checkingComparable(label);
-        Comparable max = (Comparable)data.get(label).get(0) ;
+        Comparable max = (Comparable) data.get(label).get(0);
         for (int i = 1; i < data.get(label).size(); i++) {
-            Comparable currentElt = (Comparable)data.get(label).get(i);
-            max = currentElt.compareTo(max) == 1 ? currentElt : max ; 
+            Comparable currentElt = (Comparable) data.get(label).get(i);
+            max = currentElt.compareTo(max) == 1 ? currentElt : max;
         }
-        return max ;
+        return max;
     }
 
     @Override
     public void orderBy(String label) {
-        column(label) ;
+        column(label);
         checkingComparable(label);
     }
-    
+
+    @Override
+    public Integer getMaxColumnSize() {
+        return linesNumber;
+    }
+
     @Override
     public void addToColumn(String label, List values) {
         // check if label exists
