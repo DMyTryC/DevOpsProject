@@ -83,6 +83,7 @@ public class TestsDataframe {
         System.out.println("");
         df.tail("Age", 5);
         System.out.println("");
+        System.out.println(df.meanColumn("Lola"));
     }
     
     @Test

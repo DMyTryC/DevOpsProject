@@ -332,28 +332,35 @@ public DataFrame(String nameFile, String separator) {
             throw new IllegalArgumentException("Column at Label " + label + " is not Numeric !");
     }
     
-    private void checkingComparable(String label) {
+    private Class<?> checkingComparable(String label) {
         if (!(data.get(label).get(0) instanceof Comparable))
             throw new IllegalArgumentException("Column at Label " + label + " is not Comparable !");
+        return data.get(label).get(0).getClass() ;
     }
     
     @Override
     public Double meanColumn(String label) {
         column(label) ;
         checkingNumberFormat(label);
+        int n = 1 ;
         Double sum = ((Number)data.get(label).get(0)).doubleValue() ;
         for (int i = 1; i < data.get(label).size(); i++) {
-            sum += ((Number)data.get(label).get(i)).doubleValue();
+            if (!(data.get(label).get(i) instanceof String)) {
+                sum += ((Number)data.get(label).get(i)).doubleValue();
+                n++ ;
+            }
         }
-        return sum / data.get(label).size() ;
+        return sum / n ;
     }
 
     @Override
     public Comparable minColumn(String label) {
         column(label) ;
-        checkingComparable(label);
+        Class<?> classe = checkingComparable(label);
         Comparable min = (Comparable)data.get(label).get(0) ;
         for (int i = 1; i < data.get(label).size(); i++) {
+            if(!(data.get(label).get(i).getClass().equals(classe)))
+                throw new IllegalArgumentException(data.get(label).get(i) + "is not Comparable !");
             Comparable currentElt = (Comparable)data.get(label).get(i);
             min = currentElt.compareTo(min) == -1 ? currentElt : min ; 
         }
@@ -363,9 +370,11 @@ public DataFrame(String nameFile, String separator) {
     @Override
     public Comparable maxColumn(String label) {
         column(label) ;
-        checkingComparable(label);
+        Class<?> classe = checkingComparable(label);
         Comparable max = (Comparable)data.get(label).get(0) ;
         for (int i = 1; i < data.get(label).size(); i++) {
+            if(!(data.get(label).get(i).getClass().equals(classe)))
+                throw new IllegalArgumentException(data.get(label).get(i) + "is not Comparable !");
             Comparable currentElt = (Comparable)data.get(label).get(i);
             max = currentElt.compareTo(max) == 1 ? currentElt : max ; 
         }
