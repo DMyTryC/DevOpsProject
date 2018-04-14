@@ -44,7 +44,7 @@ public class DataFrame implements DataFrameItf {
         }
     }
 
-    public DataFrame(String nameFile, String separator) {
+public DataFrame(String nameFile, String separator) {
         this();
         FileReader fr;
         BufferedReader br;
@@ -136,6 +136,7 @@ public class DataFrame implements DataFrameItf {
         }
     }
 
+
     private void print(int deb, int n) {
         int l = deb;
         showLabels();
@@ -197,6 +198,7 @@ public class DataFrame implements DataFrameItf {
         }
         print(l, linesNumber);
     }
+
 
     @Override
     public void showLabels() {
