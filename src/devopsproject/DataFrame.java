@@ -10,6 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,9 +29,12 @@ public class DataFrame implements DataFrameItf {
         this.orderedLabels = new ArrayList<>();
         this.indexLabels = new HashMap<>();
         // Comparator pour ordonner les labels selon leur position donnée à la construction
-        this.data = new TreeMap<>((String o1, String o2) -> {
-            return indexLabels.get(o1) < indexLabels.get(o2) ? -1
-                    : indexLabels.get(o1) > indexLabels.get(o2) ? 1 : 0;
+        this.data = new TreeMap<>(new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return indexLabels.get(o1) < indexLabels.get(o2) ? -1
+                        : indexLabels.get(o1) > indexLabels.get(o2) ? 1 : 0;
+            }
         });
     }
 
@@ -198,8 +202,9 @@ public class DataFrame implements DataFrameItf {
     }
 
     private List column(String label) {
-        List column;
-        if (!data.containsKey(label)) {
+        try {
+            data.containsKey(label) ;
+        } catch (NullPointerException ex) {
             throw new IllegalArgumentException("Label " + label + " does not exist !");
         }
         return data.get(label);

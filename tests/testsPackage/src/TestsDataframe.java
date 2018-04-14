@@ -5,6 +5,7 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Assert;
 
 @SuppressWarnings("rawtypes")
 public class TestsDataframe {
@@ -69,15 +70,51 @@ public class TestsDataframe {
         System.out.println("");
     }
     
+    @Test(expected = IllegalArgumentException.class)
+    public void headLinesNumberException() {
+        df = new DataFrame("tests/resources/test1.csv", ",");
+        df.head(10);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void tailLinesNumberException() {
+        df = new DataFrame("tests/resources/test1.csv", ",");
+        df.tail(10);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void headColumnLinesNumberException() {
+        df = new DataFrame("tests/resources/test1.csv", ",");
+        df.head("Nom",10);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void tailColumnLinesNumberException() {
+        df = new DataFrame("tests/resources/test1.csv", ",");
+        df.tail("Nom",10);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void headColumnNoSuchLabelException() {
+        df = new DataFrame("tests/resources/test1.csv", ",");
+        df.head("NoSuchLabel",5);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void tailColumnNoSuchLabelException() {
+        df = new DataFrame("tests/resources/test1.csv", ",");
+        df.tail("NoSuchLabel",5);
+    }
+    
     @Test
     public void dataframeCreationFile() throws IOException{
-        df = new DataFrame("tests/testsPackage/resources/test1.csv", ",");
+        df = new DataFrame("tests/resources/test1.csv", ",");
         System.out.println("");
-        df.head(3);
+        df.head(5);
         System.out.println("");
         df.show();
         System.out.println("");
-        df.tail(3);
+        df.tail(5);
         System.out.println("");
         df.head("Age", 5);
         System.out.println("");
@@ -88,9 +125,15 @@ public class TestsDataframe {
     
     @Test
     public void dataframeStats() {
-        df = new DataFrame("tests/testsPackage/resources/test.csv", ",");
+        df = new DataFrame("tests/resources/test.csv", ",");
         System.out.println(df.meanColumn("Age"));
         System.out.println(df.minColumn("Age"));
         System.out.println(df.maxColumn("Age"));
+    }
+    
+    @Test
+    public void dataframeSize() {
+        Assert.assertEquals(8, new DataFrame("tests/resources/test.csv", ",").size());
+        Assert.assertEquals(21, new DataFrame("tests/resources/test1.csv", ",").size());
     }
 }
