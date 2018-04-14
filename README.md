@@ -42,19 +42,22 @@ How to push to a repository :
 		git branch : list current branches
 		git branch "nameBranchLocal" : create a branch with "nameBranchLocal"
 		git checkout "nameBranchLocal" : move to the "nameBranchLocal"
+
+2. Commit changes of your local repository
 		
-2. Fetch and merge the changes to the current branch
+3. Fetch and merge the changes to the current branch
 		git remote -v : list the remote repositories
 		git fetch "nameRemoteRepo" : fetches the files made to the remote repository "name"
-		git merge "nameRemoteRepo"/"nameBranchRemote" "nameBranchLocal" : Merges the files on the "nameRemoteRepo"/"nameBranchRemote" with the "nameBranchLocal" branch
+		git merge "nameRemoteRepo"/"nameBranchRemote" "nameBranchLocal" : Merges the files on the "nameRemoteRepo"/"nameBranchRemote" with the "nameBranchLocal" branchs
 		
-3. Execute maven and clean generated files from pushing
-		mvn test : lets you execute the test life cycle which will test your files for errors
+4. Execute maven and clean generated files from pushing
+		mvn install : lets you execute the test life cycle which will test your files for errors
 		bash scriptCleanUp.sh or ./scriptCleanUp.sh : clears the local repository cache from the files that were generated
 		Note : This will not delete them from your local repository, it will just enforce the .gitignore rules
 				Explanation : The files that are written into the .gitignore will still be commited if they are present in the cache of the git repository
-3. Push the changes to the remote branch
-	Commit your changes
+				
+5. Push the changes to the remote branch
+	Recommit if needed
 	Push them to the remote branch : 
 		git push "nameRemoteRepo" "nameBranchLocal" : This creates a remote repository branch with the same name as the local branch (if it doesn't exist), if it does exist, will push to the remote branch otherwise
 		

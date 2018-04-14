@@ -1,4 +1,4 @@
-package testsPackage;
+package src;
 
 import devopsproject.DataFrame;
 import java.io.File;
@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.After;
+import org.junit.Assert;
 import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +36,7 @@ public class TestsDataframe {
         df = new DataFrame();
     }
     
-    @Test
+    /*@Test
     public void dataframeCreationLists(){
         String [] labels = new String[3];
         labels[0] = String.valueOf('a');
@@ -61,10 +62,11 @@ public class TestsDataframe {
         elements.add(element3);
         
         df = new DataFrame(labels, elements);
-    }
+    }*/
     
     @Test
     public void dataframeCreationFile() throws IOException{
         df = new DataFrame("resources/file1.csv", ",");
+        
     }
 }

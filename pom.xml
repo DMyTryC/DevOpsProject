@@ -12,7 +12,7 @@
 		<finalName>${project.artifactId}-${project.version}</finalName>
 		<testOutputDirectory>${project.build.directory}/test-classes</testOutputDirectory>
 		<sourceDirectory>${project.basedir}/src</sourceDirectory>
-		<testSourceDirectory>${project.basedir}/tests/testsPackage</testSourceDirectory>
+		<testSourceDirectory>${project.basedir}/tests/testsPackage/src</testSourceDirectory>
 		<resources>
 			<resource>
 				<directory>${project.basedir}/src/resources</directory>
@@ -44,6 +44,11 @@
 			<artifactId>junit</artifactId>
 			<version>4.12</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>4.0</version>
 		</dependency>
 	</dependencies>
 	
