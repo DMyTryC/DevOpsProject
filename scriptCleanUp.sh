@@ -48,8 +48,8 @@ git ls-files > scriptCleanUp.txt
 
 while IFS='' read -r line || [[ -n "$line" ]]; do
 	if [[ $skipconf != 't' ]]; then
-		grep -Fq "$line*" scriptCleanUp.txt
-		if [ $? -eq 0 ] ; then		
+		grep "$line" scriptCleanUp.txt
+		if [ $? -eq 0 ] ; then
 			echo "Cleaning up "$line
 			git rm -r --cached "$line"
 		fi
