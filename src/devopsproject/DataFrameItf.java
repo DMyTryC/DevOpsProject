@@ -111,4 +111,9 @@ public interface DataFrameItf {
      */
     public Integer maxColumn(String label);
     
+    
+    public void showLabels();
+    
+    public void size();
+    
 }
