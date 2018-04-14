@@ -1,14 +1,14 @@
 # DevOpsProject
 
 ## Utilisation de maven
-Pour cette commande on peut specifier un parametre -Tx
+Pour cette commande on peut specifier un parametre -Tx (x etant le nombre de threads a executer avec)
 
 mvn [cycle de vie]
 
 
 Les cycle de vie : 
 ------------------
-L'execution d'une de ces etapes va executer toute etape d'avant`
+L'execution d'une de ces etapes va executer toute etape d'avant
 
 validate :  valide que le projet est correct et que toutes les infos necessaires sont disponibles
 
