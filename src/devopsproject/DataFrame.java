@@ -321,4 +321,25 @@ public class DataFrame implements DataFrameItf {
         //columns.remove(label);
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    public TreeMap<String, List> groupby(String[] labels){
+        TreeMap<String, List> dataReturnd = new TreeMap<String, List>();
+        List listReturnd;
+        for(int i=0;i<labels.length;i++){
+            listReturnd = groupby(labels[i]);
+            dataReturnd.put(labels[i], listReturnd);
+        }
+        return dataReturnd;
+    }
+    
+    public List<String> groupby(String label){
+        List dataReturnd = new ArrayList();
+        List data = this.data.get(label);
+        for(int i=0;i<data.size();i++){
+               if(!dataReturnd.contains(data.get(i))){
+                   dataReturnd.add(data.get(i));
+               }
+        }
+        return dataReturnd;
+    }
 }
