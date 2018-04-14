@@ -2,7 +2,6 @@ package devopsproject;
 
 import java.util.List;
 
-@SuppressWarnings("rawtypes")
 public interface DataFrameItf {
 
     /**

@@ -44,10 +44,10 @@ public class TestDataframe {
 
         /* Test file constructor dataframe creation */
         dfFileList = new ArrayList<>();
-        dfFileList.add(new DataFrame("test.csv", ","));
-        dfFileList.add(new DataFrame("test1.csv", ","));
-        dfFileList.add(new DataFrame("test2.csv", ","));
-        dfFileList.add(new DataFrame("file1.csv", ","));
+        dfFileList.add(new DataFrame("tests/resources/test.csv", ","));
+        dfFileList.add(new DataFrame("tests/resources/test1.csv", ","));
+        dfFileList.add(new DataFrame("tests/resources/test2.csv", ","));
+        dfFileList.add(new DataFrame("tests/resources/file1.csv", ","));
     }
     
     @Test
@@ -80,24 +80,46 @@ public class TestDataframe {
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void headTestNegativeValues(){
+    public void headTestWrongValues(){
         dfBase.head(-1);
-        
-        dfArray.head(-1);
-        
-        for (DataFrame dfObject : dfFileList){
-            dfObject.head(-1);
-        }
-    }
-    
-    @Test(expected = IllegalArgumentException.class)
-    public void headTestBiggerThanSize(){
         dfBase.head(Integer.MAX_VALUE);
         
+        dfArray.head(-1);
         dfArray.head(Integer.MAX_VALUE);
         
         for (DataFrame dfObject : dfFileList){
+            dfObject.head(-1);
             dfObject.head(Integer.MAX_VALUE);
         }
     }
+    
+    @Test
+    public void tailTestGoodValues(){
+        dfBase.tail(0);
+        dfBase.tail(dfBase.getMaxColumnSize()/2);
+
+        dfArray.tail(0);
+        dfArray.tail(dfBase.getMaxColumnSize()/2);
+        
+        for (DataFrame dfObject : dfFileList){
+            dfObject.tail(0);
+            dfObject.tail(dfBase.getMaxColumnSize()/2);
+        }
+        
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void tailTestWrongValues(){
+        dfBase.tail(-1);
+        dfBase.tail(Integer.MAX_VALUE);
+        
+        dfArray.tail(-1);
+        dfBase.tail(Integer.MAX_VALUE);
+        
+        for (DataFrame dfObject : dfFileList){
+            dfObject.tail(-1);
+            dfObject.tail(Integer.MAX_VALUE);
+        }
+    }
+    
 }
