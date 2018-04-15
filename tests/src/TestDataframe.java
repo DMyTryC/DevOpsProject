@@ -300,6 +300,20 @@ public class TestDataframe {
     public void showStatisticNotNumeric(){
         dfFileList.get(0).showStatitic("Nom");
     }
-
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void typeErrorInt() throws IOException{
+        dfFileList.add(new DataFrame("tests/resources/type_error_2.csv", ","));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void typeErrorFloat() throws IOException{
+        dfFileList.add(new DataFrame("tests/resources/type_error_3.csv", ","));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void typeErrorString() throws IOException{
+        dfFileList.add(new DataFrame("tests/resources/type_error_4.csv", ","));
+    }
 }
 
