@@ -11,23 +11,25 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 public class TestDataframe {
-    
+
     DataFrame dfArray;
     List<DataFrame> dfFileList;
     DataFrame dfBase;
-    
+
     public TestDataframe() throws IOException{
         /* Test base constructor dataframe creation */
         dfBase = new DataFrame();
-       
+
         /* Test array constructor dataframe creation */
-        String [] labels = new String[3];
+        String[] labels = new String[3];
         labels[0] = String.valueOf('a');
         labels[1] = String.valueOf('b');
         labels[2] = String.valueOf('c');
-        
+
         List<String> element1 = new ArrayList<>();
-        element1.add("s1");element1.add("s2");element1.add("s3");
+        element1.add("s1");
+        element1.add("s2");
+        element1.add("s3");
 
         List<Integer> element2 = new ArrayList<>();
         element2.add(1);
@@ -38,12 +40,12 @@ public class TestDataframe {
         element3.add((float) 1.4);
         element3.add((float) 2.4);
         element3.add((float) 3.5);
-        
-        List <List> elements = new ArrayList<>();
+
+        List<List> elements = new ArrayList<>();
         elements.add(element1);
         elements.add(element2);
         elements.add(element3);
-        
+
         dfArray = new DataFrame(labels, elements);
 
         /* Test file constructor dataframe creation */
@@ -55,36 +57,36 @@ public class TestDataframe {
         dfFileList.add(new DataFrame("tests/resources/estate_data.csv", ","));
         dfFileList.add(new DataFrame("tests/resources/sales.csv", ","));
     }
-    
+
     @Test
     public void showTest() {
         /* Test show of base dataframe */
         dfBase.show();
-        
+
         /* Test show of dataframe created from array */
         dfArray.show();
-        
+
         /* Test show of dataframe created from file */
-        for(DataFrame dfObject : dfFileList){
+        for (DataFrame dfObject : dfFileList) {
             dfObject.show();
         }
     }
-    
+
     @Test
-    public void headTestGoodValues(){
+    public void headTestGoodValues() {
         dfBase.head(0);
-        dfBase.head(dfBase.getMaxColumnSize()/2);
+        dfBase.head(dfBase.getMaxColumnSize() / 2);
 
         dfArray.head(0);
-        dfArray.head(dfBase.getMaxColumnSize()/2);
-        
-        for (DataFrame dfObject : dfFileList){
+        dfArray.head(dfBase.getMaxColumnSize() / 2);
+
+        for (DataFrame dfObject : dfFileList) {
             dfObject.head(0);
-            dfObject.head(dfBase.getMaxColumnSize()/2);
+            dfObject.head(dfBase.getMaxColumnSize() / 2);
         }
-        
+
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void headTestValuesTooBig(){
         dfBase.head(Integer.MAX_VALUE);
@@ -108,20 +110,20 @@ public class TestDataframe {
     }
     
     @Test
-    public void tailTestGoodValues(){
+    public void tailTestGoodValues() {
         dfBase.tail(0);
-        dfBase.tail(dfBase.getMaxColumnSize()/2);
+        dfBase.tail(dfBase.getMaxColumnSize() / 2);
 
         dfArray.tail(0);
-        dfArray.tail(dfBase.getMaxColumnSize()/2);
-        
-        for (DataFrame dfObject : dfFileList){
+        dfArray.tail(dfBase.getMaxColumnSize() / 2);
+
+        for (DataFrame dfObject : dfFileList) {
             dfObject.tail(0);
-            dfObject.tail(dfBase.getMaxColumnSize()/2);
+            dfObject.tail(dfBase.getMaxColumnSize() / 2);
         }
-        
+
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void tailTestValuesTooBig(){
         dfBase.tail(Integer.MAX_VALUE);
@@ -147,11 +149,6 @@ public class TestDataframe {
     @Test(expected = IOException.class)
     public void wrongFileExtension() throws IOException{
         dfFileList.add(new DataFrame("tests/resources/Prueba.txt", ","));
-    }
-    
-    @Test(expected = FileNotFoundException.class)
-    public void fileDoesntExist() throws IOException{
-        dfFileList.add(new DataFrame("tests/resources/notavailable.csv", ","));
     }
     
     @Test(expected = IllegalArgumentException.class)

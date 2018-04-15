@@ -95,7 +95,7 @@ public class TestsDataframe {
     @Test
     public void dataframeSize() throws IOException{
         Assert.assertEquals(10, new DataFrame("tests/resources/test.csv", ",").size());
-        Assert.assertEquals(31, new DataFrame("tests/resources/test1.csv", ",").size());
+        Assert.assertEquals(32, new DataFrame("tests/resources/test1.csv", ",").size());
     }
 
     @Test(expected = IllegalArgumentException.class)
