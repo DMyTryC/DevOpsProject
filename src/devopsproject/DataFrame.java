@@ -6,6 +6,7 @@
 package devopsproject;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,6 +16,8 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DataFrame {
 
@@ -48,22 +51,21 @@ public class DataFrame {
 
     public DataFrame(String nameFile, String separator) {
         this();
-        FileReader fr;
+        FileReader fr=null;
         BufferedReader br;
         String extension;
         List donnees;
         String[] values;
-        //verificar extension y si el archivo exist
+        Pattern pattern= Pattern.compile("[a-zA-Z0-9]" );
+         Matcher matcher; 
         extension = nameFile.substring(nameFile.lastIndexOf(".") + 1);
         if (extension.equalsIgnoreCase("csv")) {
             try {
-
-                // Stockage des labels
                 fr = new FileReader(nameFile);
                 br = new BufferedReader(fr);
                 String linea;
                 linea = br.readLine();
-                String[] labels = linea.split(separator);
+                String[] labels = linea.split(separator,-1);
                 for (int j = 0; j < labels.length; j++) {
                     donnees = new ArrayList<>();
                     this.orderedLabels.add(labels[j]);
@@ -73,10 +75,16 @@ public class DataFrame {
 
                 // Stockage de la première ligne et inférence de classe (ou du type) de chacun de ses éléments
                 String lineaType = br.readLine();
-                String[] firstElement = lineaType.split(separator);
+                String[] firstElement = lineaType.split(separator,-1);
                 String elementString;
+                
 
                 for (int j = 0; j < firstElement.length; j++) {
+                    matcher = pattern.matcher(firstElement[j]);
+                    if(!matcher.find()){
+                            throw new NumberFormatException("La premiere ligne ne peut pas avoir des valeurs nuls");
+                        }
+                    
                     try {
                         int op1 = Integer.parseInt(firstElement[j]);
                         donnees = this.data.get(labels[j]);
@@ -94,16 +102,18 @@ public class DataFrame {
                         }
                     }
                 }
-
                 // Stockage des lignes restantes, inférence des classes de chaun de leus éléments et comparaison des classes avec la classe du premier élément
                 while ((linea = br.readLine()) != null) {
-                    values = linea.split(separator);
+                    values = linea.split(separator,-1);
                     for (int i = 0; i < labels.length; i++) {
                         donnees = this.data.get(labels[i]);
-                        try {
+                        
+                        try {                            
                             Integer op1 = Integer.parseInt(values[i]);
                             if (op1.getClass().equals((donnees.get(0).getClass()))) {
                                 donnees.add(op1);
+                            }else {
+                               throw new IllegalArgumentException("Les donnees dans le label "+"'"+labels[i]+"'"+" ne sont pas bien type. Linea : "+linea+" Donnee : "+op1);
                             }
 
                         } catch (NumberFormatException e1) {
@@ -111,10 +121,26 @@ public class DataFrame {
                                 Float op2 = Float.parseFloat(values[i]);
                                 if (op2.getClass().equals((donnees.get(0)).getClass())) {
                                     donnees.add(op2);
+                                }else{
+                                throw new IllegalArgumentException("Les donnees dans le label "+"'"+labels[i]+"'"+" ne sont pas bien type. Linea : "+linea+" Donnee : "+op2);
                                 }
                             } catch (NumberFormatException e2) {
-                                elementString = values[i];
-                                donnees.add(elementString);
+                               String op3=values[i];
+                               
+                                matcher = pattern.matcher(values[i]);
+                                
+                                if (matcher.find()){
+                                if (op3.getClass().equals((donnees.get(0).getClass()))){
+                                donnees.add(op3);
+                                }else{
+                                   throw new IllegalArgumentException("Les donnees dans le label "+"'"+labels[i]+"'"+" ne sont pas bien type. Linea : "+linea+" Donnee : "+op3);
+                                }
+                                    
+                               }else{
+                                   
+                                    donnees.add(op3);
+                                }
+                                
                             }
                         }
                     }
@@ -125,12 +151,16 @@ public class DataFrame {
 
                     linesNumber = Math.max(linesNumber, entry.getValue().size());
                 }
+                
+                fr.close();
 
+            }catch (FileNotFoundException e) {
+            System.out.println("Error: Fichier pas trouve");
+            System.out.println(e.getMessage());
             } catch (IOException type) {
                 System.err.print(type);
-            }
-
-        }
+            } 
+    }
     }
 
     private void print(int deb, int n) {
@@ -353,16 +383,29 @@ public class DataFrame {
         System.out.println("Maximum : "+maxColumn(label));
     }
 
-    public Float meanColumn(String label) {
+   
+        public Float meanColumn(String label) {
         column(label);
         checkingNumberFormat(label);
-        Float sum = (Float) data.get(label).get(0);
-        for (int i = 1; i < data.get(label).size(); i++) {
-            sum += (Float) data.get(label).get(i);
+        List donnee;
+        float mean = 0;
+        Float num;
+        for (Map.Entry<String, List> entry : this.data.entrySet()) {
+            if (label.equals(entry.getKey())) {
+                donnee = entry.getValue();
+                for (int i = 0; i < donnee.size(); i++) {
+                    if (!donnee.get(i).toString().equals("")){
+                        num= new Float(donnee.get(i).toString());
+                        mean = mean +  num;
+                }
+                }
+                mean = mean / donnee.size();
+            }
         }
-        return sum / data.get(label).size();
+        return mean;
     }
-
+    
+    
     
     public Comparable minColumn(String label) {
         column(label);
