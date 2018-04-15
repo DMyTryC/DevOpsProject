@@ -199,7 +199,6 @@ public class DataFrame implements DataFrameItf {
     }
 
     private List column(String label) {
-        List column;
         if (!data.containsKey(label)) {
             throw new IllegalArgumentException("Label " + label + " does not exist !");
         }
@@ -257,6 +256,7 @@ public class DataFrame implements DataFrameItf {
         return loc(labelsList);
     }
 
+    
     private DataFrame initDataFrameBeforeSelectingLines(int linesNumber) {
         DataFrame df = new DataFrame();
         df.linesNumber = linesNumber;
@@ -312,7 +312,7 @@ public class DataFrame implements DataFrameItf {
     @Override
     public DataFrameItf iloc(int indexInf, int indexSup) {
         int inf = indexInf, sup = indexSup;
-        if (inf > sup) {
+        if (inf > sup){
             int tmp = inf;
             sup = inf;
             inf = tmp;

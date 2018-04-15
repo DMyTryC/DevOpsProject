@@ -225,6 +225,11 @@ public class TestDataframe {
         dfFileList.get(5).iloc(indexes);
     }
     
+    @Test
+    public void ilocInfSupDifferentOrder(){
+        dfFileList.get(5).iloc(5, 2);
+    }
+    
     @Test(expected = IllegalArgumentException.class)
     public void ilocIndexNegative(){
         dfFileList.get(5).iloc(-1);
@@ -235,10 +240,6 @@ public class TestDataframe {
         dfFileList.get(5).iloc(Integer.MAX_VALUE);
     }
     
-    @Test(expected = IllegalArgumentException.class)
-    public void ilocInfSupIncorrectOrder(){
-        dfFileList.get(5).iloc(5, 2);
-    }
     
     @Test(expected = IllegalArgumentException.class)
     public void ilocIndexesInfSupValueTooHigh(){
