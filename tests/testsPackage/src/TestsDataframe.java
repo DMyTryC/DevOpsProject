@@ -1,3 +1,4 @@
+
 import devopsproject.DataFrame;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,37 +10,39 @@ import org.junit.Assert;
 
 @SuppressWarnings("rawtypes")
 public class TestsDataframe {
-    
+
     private DataFrame df;
-    
+
     public TestsDataframe() {
-        
+
     }
-    
+
     @Before
     public void setUp() {
-        
+
     }
-    
+
     @After
     public void tearDown() {
-        
+
     }
-    
+
     @Test
-    public void dataframeCreationEmptyConstructor(){
+    public void dataframeCreationEmptyConstructor() {
         df = new DataFrame();
     }
-    
+
     @Test
-    public void dataframeCreationLists(){
-        String [] labels = new String[3];
+    public void dataframeCreationLists() {
+        String[] labels = new String[3];
         labels[0] = String.valueOf('a');
         labels[1] = String.valueOf('b');
         labels[2] = String.valueOf('c');
-        
+
         List<String> element1 = new ArrayList<>();
-        element1.add("s1");element1.add("s2");element1.add("s3");
+        element1.add("s1");
+        element1.add("s2");
+        element1.add("s3");
 
         List<Integer> element2 = new ArrayList<>();
         element2.add(1);
@@ -50,12 +53,12 @@ public class TestsDataframe {
         element3.add((float) 1.4);
         element3.add((float) 2.4);
         element3.add((float) 3.5);
-        
-        List <List> elements = new ArrayList<>();
+
+        List<List> elements = new ArrayList<>();
         elements.add(element1);
         elements.add(element2);
         elements.add(element3);
-        
+
         df = new DataFrame(labels, elements);
         System.out.println("");
         df.head(2);
@@ -69,9 +72,9 @@ public class TestsDataframe {
         df.tail("b", 2);
         System.out.println("");
     }
-    
+
     @Test
-    public void dataframeCreationFile() throws IOException{
+    public void dataframeCreationFile() throws IOException {
         df = new DataFrame("tests/resources/test1.csv", ",");
         System.out.println("");
         df.head(5);
@@ -86,41 +89,61 @@ public class TestsDataframe {
         System.out.println("");
         System.out.println(df.meanColumn("Lola"));
     }
-    
+
     @Test
     public void dataframeSize() {
         Assert.assertEquals(8, new DataFrame("tests/resources/test.csv", ",").size());
         Assert.assertEquals(21, new DataFrame("tests/resources/test1.csv", ",").size());
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void headLinesNumberException() {
+    public void headLinesNumberExceptionV1() {
         new DataFrame("tests/resources/test1.csv", ",").head(10);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void tailLinesNumberException() {
+    public void headLinesNumberExceptionV2() {
+        new DataFrame("tests/resources/test1.csv", ",").head(-1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void tailLinesNumberExceptionV1() {
         new DataFrame("tests/resources/test1.csv", ",").tail(10);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void headColumnLinesNumberException() {
+    public void tailLinesNumberExceptionV2() {
+        new DataFrame("tests/resources/test1.csv", ",").tail(-1);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void headColumnLinesNumberExceptionV1() {
         new DataFrame("tests/resources/test1.csv", ",").head("Nom", 10);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void tailColumnLinesNumberException() {
-        new DataFrame("tests/resources/test1.csv", ",").tail("Nom",10);
+    public void headColumnLinesNumberExceptionV2() {
+        new DataFrame("tests/resources/test1.csv", ",").head("Nom", -1);
     }
-    
+
+    @Test(expected = IllegalArgumentException.class)
+    public void tailColumnLinesNumberExceptionV1() {
+        new DataFrame("tests/resources/test1.csv", ",").tail("Nom", 10);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void tailColumnLinesNumberExceptionV2() {
+        new DataFrame("tests/resources/test1.csv", ",").tail("Nom", -1);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void headColumnNoSuchLabelException() {
-        new DataFrame("tests/resources/test1.csv", ",").head("NoSuchLabel",5);
+        new DataFrame("tests/resources/test1.csv", ",").head("NoSuchLabel", 5);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void tailColumnNoSuchLabelException() {
-        new DataFrame("tests/resources/test1.csv", ",").tail("NoSuchLabel",5);
+        new DataFrame("tests/resources/test1.csv", ",").tail("NoSuchLabel", 5);
     }
-    
+
 }

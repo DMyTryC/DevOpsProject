@@ -14,7 +14,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 
 @SuppressWarnings("rawtypes")
@@ -47,6 +46,15 @@ public class TestsStats {
         System.out.println("MEAN COLUMN");
         System.out.println("-----------------------------");
         System.out.println(df.meanColumn("Age"));
+        System.out.println("-----------------------------");
+    }
+    
+    @Test
+    public void meanColumnFloat() {
+        System.out.println("MEAN COLUMN FLOAT");
+        df = new DataFrame("tests/resources/test1.csv", ",");
+        System.out.println("-----------------------------");
+        System.out.println(df.meanColumn("Float"));
         System.out.println("-----------------------------");
     }
     

@@ -25,9 +25,10 @@ public class DataFrame implements DataFrameItf {
     private List<String> orderedLabels; // Stocke l'ordre des labels pour afficher les colonnes du Dataframe dans le même ordre que celui donné lors de la construction
     private HashMap<String, Integer> indexLabels; // Permet de retrouver la position d'un label/d'une colonne
     private TreeMap<String, List> data; // Table d'association Label -> données
-    
+
     // Comparator pour ordonner les labels selon leur position donnée à la construction
     private class DataComparator implements Comparator<String> {
+
         @Override
         public int compare(String o1, String o2) {
             return indexLabels.get(o1) < indexLabels.get(o2) ? -1
@@ -39,7 +40,7 @@ public class DataFrame implements DataFrameItf {
         this.linesNumber = 0;
         this.orderedLabels = new ArrayList<>();
         this.indexLabels = new HashMap<>();
-        this.data = new TreeMap<>(new DataComparator()) ;
+        this.data = new TreeMap<>(new DataComparator());
     }
 
     public DataFrame(String[] labels, List<List> elements) {
@@ -169,6 +170,9 @@ public class DataFrame implements DataFrameItf {
         if (linesNumber - n < 0) {
             throw new IllegalArgumentException("Number of lines > Number of lines of Dataframe !");
         }
+        if (n < 0) {
+            throw new IllegalArgumentException("Number of lines < 0 !");
+        }
         return type == PrintingType.HEAD ? n : linesNumber - n;
     }
 
@@ -292,11 +296,11 @@ public class DataFrame implements DataFrameItf {
         }
         return df;
     }
-    
-    private List indexToElement (List<Integer> indexes, List elements) {
+
+    private List indexToElement(List<Integer> indexes, List elements) {
         return indexes.stream().map((index) -> {
-                return elements.get(index);
-            }).collect(Collectors.toList()) ;
+            return elements.get(index);
+        }).collect(Collectors.toList());
     }
 
     @Override
@@ -335,9 +339,9 @@ public class DataFrame implements DataFrameItf {
         checkingIndex(sup);
         DataFrame df = initDataFrameBeforeSelectingLines(sup - inf + 1);
         for (String label : orderedLabels) {
-            df.data.replace(label, IntStream.range(inf, sup+1).boxed().map((index) -> {
+            df.data.replace(label, IntStream.range(inf, sup + 1).boxed().map((index) -> {
                 return data.get(label).get(index);
-            }).collect(Collectors.toList())) ;
+            }).collect(Collectors.toList()));
         }
         return df;
     }
