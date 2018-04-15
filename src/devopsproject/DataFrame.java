@@ -110,6 +110,8 @@ public class DataFrame implements DataFrameItf {
                             Integer op1 = Integer.parseInt(values[i]);
                             if (op1.getClass().equals((donnees.get(0).getClass()))) {
                                 donnees.add(op1);
+                            } else {
+                                throw new IllegalArgumentException("Uncorrect data format for file " + nameFile + " !");
                             }
 
                         } catch (NumberFormatException e1) {
@@ -135,6 +137,8 @@ public class DataFrame implements DataFrameItf {
                 System.err.print(type);
             }
 
+        } else {
+            throw new IllegalArgumentException("File " + nameFile + " is not at format .csv");
         }
     }
 

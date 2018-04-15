@@ -1,3 +1,4 @@
+package testsPackage.src;
 
 import devopsproject.DataFrame;
 import java.io.IOException;
@@ -88,6 +89,16 @@ public class TestsDataframe {
         df.tail("Age", 5);
         System.out.println("");
         System.out.println(df.meanColumn("Lola"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void dataframeNotCSVFileException() throws IOException {
+        df = new DataFrame("tests/src/TestDataFrame.java", ",");
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void dataframeUncorrectFormatData() throws IOException {
+        df = new DataFrame("tests/resources/uncorrectFormat.csv", ",");
     }
 
     @Test
