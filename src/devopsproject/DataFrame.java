@@ -112,19 +112,29 @@ public class DataFrame implements DataFrameItf {
                         donnees = this.data.get(labels[i]);
                         try {
                             Integer op1 = Integer.parseInt(values[i]);
-                            if (op1.getClass().equals((donnees.get(0).getClass()))) {
+                            if (op1.getClass().equals(donnees.get(0).getClass())) {
                                 donnees.add(op1);
+                            } else {
+                                throw new IllegalArgumentException("Uncorrect data format for file " + nameFile + " !");
                             }
 
                         } catch (NumberFormatException e1) {
                             try {
                                 Float op2 = Float.parseFloat(values[i]);
-                                if (op2.getClass().equals((donnees.get(0)).getClass())) {
+                                if (op2.getClass().equals(donnees.get(0).getClass())) {
                                     donnees.add(op2);
+                                } else {
+                                    throw new IllegalArgumentException("Uncorrect data format for file " + nameFile + " !");
                                 }
                             } catch (NumberFormatException e2) {
                                 elementString = values[i];
-                                donnees.add(elementString);
+                                if (elementString.matches("\\s+")) {
+                                    donnees.add(null);
+                                } else if (elementString.getClass().equals(donnees.get(0).getClass())) {
+                                    donnees.add(elementString);
+                                } else {
+                                    throw new IllegalArgumentException("Uncorrect data format for file " + nameFile + " !");
+                                }
                             }
                         }
                     }
@@ -147,7 +157,9 @@ public class DataFrame implements DataFrameItf {
         while (l < n) {
             String values = "";
             for (Map.Entry<String, List> entry : data.entrySet()) {
-                values = values + " | " + (l < entry.getValue().size() ? entry.getValue().get(l).toString() : " ");
+                values = values + " | "
+                        + (l < entry.getValue().size() && entry.getValue().get(l) != null
+                        ? entry.getValue().get(l).toString() : " ");
             }
             values = l + " " + values;
             System.out.println(values);
@@ -207,7 +219,11 @@ public class DataFrame implements DataFrameItf {
     public int size() {
         int size = 0;
         for (Map.Entry<String, List> entry : this.data.entrySet()) {
-            size += entry.getValue().size();
+            for (Object object : entry.getValue()) {
+                if (object != null) {
+                    size++;
+                }
+            }
         }
         return size;
     }
@@ -301,6 +317,7 @@ public class DataFrame implements DataFrameItf {
         return df;
     }
 
+    // Pour chaque index de indexes est associé l'élement de elements correspondant
     private List indexToElement(List<Integer> indexes, List elements) {
         return indexes.stream().map(new Function<Integer, Object>() {
             @Override
@@ -329,7 +346,7 @@ public class DataFrame implements DataFrameItf {
         }
         DataFrame df = initDataFrameBeforeSelectingLines(indexes.length);
         for (String label : orderedLabels) {
-            df.data.replace(label, indexToElement(new ArrayList<>(Arrays.asList(indexes)), data.get(label)));
+            df.data.replace(label, indexToElement(Arrays.asList(indexes), data.get(label)));
         }
         return df;
     }
@@ -377,7 +394,7 @@ public class DataFrame implements DataFrameItf {
         int n = 1;
         Double sum = ((Number) data.get(label).get(0)).doubleValue();
         for (int i = 1; i < data.get(label).size(); i++) {
-            if (!(data.get(label).get(i) instanceof String)) {
+            if (data.get(label).get(i) != null) {
                 sum += ((Number) data.get(label).get(i)).doubleValue();
                 n++;
             }
@@ -416,13 +433,8 @@ public class DataFrame implements DataFrameItf {
     }
 
     @Override
-    public void orderBy(String label) {
-        column(label);
-        checkingComparable(label);
-    }
-
-    @Override
     public Integer getMaxColumnSize() {
         return linesNumber;
     }
+
 }
