@@ -5,8 +5,7 @@
  */
 package devopsproject;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class DevOpsProject {
 
@@ -15,6 +14,13 @@ public class DevOpsProject {
      */
     public static void main(String[] args) {
         
+        String line = "5,2,,6,,7," ;
+        String [] split = line.split(",") ;
+        System.out.println(Arrays.toString(split));
+        for (String string : split) {
+            System.out.println(string);
+        }
+        System.out.println(split[2].equals(""));
     }
     
 }

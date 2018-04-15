@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 
 import devopsproject.DataFrame;
 import java.util.ArrayList;
@@ -13,123 +8,118 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- *
- * @author bap
- */
 public class TestsLinesSelection {
-    
-    private DataFrame df ;
-    
+
+    private final DataFrame df;
+
     public TestsLinesSelection() {
-        df = new DataFrame("tests/resources/test1.csv", ",") ;
+        df = new DataFrame("tests/resources/test1.csv", ",");
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
 
     // Test Columns Selection
-    
     @Test
-    public void ilocV1 () {
+    public void ilocV1() {
         System.out.println("ILOCV1 :");
         System.out.println("-----------------------------");
         df.iloc(5).show();
         System.out.println("-----------------------------");
     }
-    
+
     @Test
-    public void ilocV2 () {
+    public void ilocV2() {
         System.out.println("ILOCV2 :");
         System.out.println("-----------------------------");
-        df.iloc(new ArrayList<>(Arrays.asList(5,2,3))).show();
+        df.iloc(new ArrayList<>(Arrays.asList(5, 2, 3))).show();
         System.out.println("-----------------------------");
     }
-    
+
     @Test
-    public void ilocV3 () {
+    public void ilocV3() {
         System.out.println("ILOCV3 :");
         System.out.println("-----------------------------");
-        df.iloc(5,2,3).show();
+        df.iloc(5, 2, 3).show();
         System.out.println("-----------------------------");
     }
-    
+
     @Test
-    public void ilocV41 () {
+    public void ilocV41() {
         System.out.println("ILOCV41 :");
         System.out.println("-----------------------------");
-        df.iloc(2,5).show();
+        df.iloc(2, 5).show();
         System.out.println("-----------------------------");
     }
-    
+
     @Test
-    public void ilocV42 () {
+    public void ilocV42() {
         System.out.println("ILOCV42 :");
         System.out.println("-----------------------------");
-        df.iloc(6,0).show();
+        df.iloc(6, 0).show();
         System.out.println("-----------------------------");
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void ilocIndexOutOfBoundExceptionV11 () {
+    public void ilocIndexOutOfBoundExceptionV11() {
         df.iloc(10);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void ilocIndexOutOfBoundExceptionV12 () {
+    public void ilocIndexOutOfBoundExceptionV12() {
         df.iloc(-1);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void ilocIndexOutOfBoundExceptionV21 () {
-        df.iloc(new ArrayList<>(Arrays.asList(5,2,10)));
+    public void ilocIndexOutOfBoundExceptionV21() {
+        df.iloc(new ArrayList<>(Arrays.asList(5, 2, 10)));
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void ilocIndexOutOfBoundExceptionV22 () {
-        df.iloc(new ArrayList<>(Arrays.asList(5,2,-1)));
+    public void ilocIndexOutOfBoundExceptionV22() {
+        df.iloc(new ArrayList<>(Arrays.asList(5, 2, -1)));
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void ilocIndexOutOfBoundExceptionV31 () {
-        df.iloc(5,2,-1);
+    public void ilocIndexOutOfBoundExceptionV31() {
+        df.iloc(5, 2, -1);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void ilocIndexOutOfBoundExceptionV32 () {
-        df.iloc(5,2,-1);
+    public void ilocIndexOutOfBoundExceptionV32() {
+        df.iloc(5, 2, -1);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void ilocIndexOutOfBoundExceptionV41 () {
-        df.iloc(0,10);
+    public void ilocIndexOutOfBoundExceptionV41() {
+        df.iloc(0, 10);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void ilocIndexOutOfBoundExceptionV411 () {
-        df.iloc(0,-1);
+    public void ilocIndexOutOfBoundExceptionV411() {
+        df.iloc(0, -1);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void ilocIndexOutOfBoundExceptionV42 () {
-        df.iloc(10,0);
+    public void ilocIndexOutOfBoundExceptionV42() {
+        df.iloc(10, 0);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void ilocIndexOutOfBoundExceptionV421 () {
-        df.iloc(-1,0);
+    public void ilocIndexOutOfBoundExceptionV421() {
+        df.iloc(-1, 0);
     }
 }
