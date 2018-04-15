@@ -7,10 +7,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.regex.Matcher;
@@ -462,4 +465,105 @@ public class DataFrame {
     public Integer getMaxColumnSize() {
         return linesNumber;
     }
+    
+    public TreeMap<String, List> groupby(String[] labels){
+        TreeMap<String, List> dataReturnd = new TreeMap<String, List>();
+        List listReturnd;
+        for(int i=0;i<labels.length;i++){
+            listReturnd = groupby(labels[i]);
+            dataReturnd.put(labels[i], listReturnd);
+        }
+        return dataReturnd;
+    }
+ 
+    /*
+       groupby one column, it takes the label as param then it returns the list 
+    */
+    public List groupby(String label){
+        List dataReturnd = new ArrayList();
+        List data = this.data.get(label);
+        for(int i=0;i<data.size();i++){
+               if(!dataReturnd.contains(data.get(i))){
+                   dataReturnd.add(data.get(i));
+               }
+        }
+        return dataReturnd;
+    }
+    /*
+          it takes the label and the aggreagate as an optional param "{max, sum} of column"
+    */
+    public TreeMap<String, Object> groupby(String label, Optional<String> aggregate){
+        TreeMap<String, Object> dataReturnd = new TreeMap<String, Object>();
+        List data = this.data.get(label);
+        if(aggregate.isPresent()){
+            switch(aggregate.get()){
+                case "sum":
+                    dataReturnd.put(aggregate.get()+"("+label+")",sum(data));
+                    break;
+                case "max":
+                     dataReturnd.put(aggregate.get()+"("+label+")",Collections.max(data));
+                    break;
+            }
+        }
+        return dataReturnd;
+    }
+    
+    /*
+        it takes a list of labels and aggreagate as optional (just count)
+    */
+    
+    public TreeMap<String, List> groupby(String[] labels, String aggregate){
+        TreeMap<String, List> dataReturned = new TreeMap<String, List>();
+        List listReturnd;
+        List labelListData;
+        List aggregateList;
+            if(aggregate.equals("count")){
+                for(int i=0;i<labels.length;i++){
+                    labelListData = this.data.get(labels[i]);
+                    aggregateList = new ArrayList<Integer>();
+                    listReturnd = new ArrayList();
+                    for(int j=0;j<labelListData.size();j++){
+                       if(!listReturnd.contains(labelListData.get(i))){
+                           listReturnd.add(labelListData.get(i));
+                           aggregateList.add(count(labelListData,labelListData.get(i)));
+                       }
+                    }
+                    dataReturned.put(labels[i], listReturnd);
+                    dataReturned.put(aggregate+"("+labels[i]+")", aggregateList);
+                }
+            }
+        return dataReturned;
+    }
+    
+    
+        
+    public int count(List list, Object element){
+        int cpt = 0;
+        for(int i=0;i<list.size();i++){
+            if(list.get(i).equals(element)) cpt++;
+        }
+        return cpt;
+    }
+    
+    public Object sum(List list){
+        if(list.get(0) instanceof Integer){
+                int somme = 0;
+                for(int i=0;i<list.size();i++){
+                    somme = somme + (Integer)list.get(i);
+                }
+                return somme;
+        }
+        else{
+             if(list.get(0) instanceof Double){
+                float somme = 0;
+                for(int i=0;i<list.size();i++){
+                    somme = somme + (Float)list.get(i);
+                }
+                return somme;
+            } else {
+                 throw new EmptyStackException();
+             }
+        }
+    }
+    
 }
