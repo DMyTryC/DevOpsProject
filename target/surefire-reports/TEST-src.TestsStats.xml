@@ -1,83 +1,73 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="12" failures="0" name="src.TestsStats" time="0" errors="0" skipped="0">
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="src.TestsStats" time="0.003" tests="12" errors="0" skipped="0" failures="0">
   <properties>
-    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
-    <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_161\jre\bin"/>
-    <property name="java.vm.version" value="25.161-b12"/>
-    <property name="user.country.format" value="FR"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="sun.boot.library.path" value="/usr/lib/jvm/java-8-openjdk-i386/jre/lib/i386"/>
+    <property name="java.vm.version" value="25.162-b12"/>
     <property name="java.vm.vendor" value="Oracle Corporation"/>
-    <property name="maven.multiModuleProjectDirectory" value="C:/Users/DMyTryC/Desktop/Workspace/Sem 2/DevOpsProject"/>
+    <property name="maven.multiModuleProjectDirectory" value="/home/bap/INFO/DEVOPS/DevOpsProject2/DevOpsProject"/>
     <property name="java.vendor.url" value="http://java.oracle.com/"/>
-    <property name="path.separator" value=";"/>
+    <property name="path.separator" value=":"/>
     <property name="guice.disable.misplaced.annotation.check" value="true"/>
-    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="java.vm.name" value="OpenJDK Server VM"/>
     <property name="file.encoding.pkg" value="sun.io"/>
-    <property name="user.script" value=""/>
-    <property name="user.country" value="US"/>
+    <property name="user.country" value="FR"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
-    <property name="sun.os.patch.level" value=""/>
+    <property name="sun.os.patch.level" value="unknown"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="user.dir" value="C:\Users\DMyTryC\Desktop\Workspace\Sem 2\DevOpsProject"/>
-    <property name="java.runtime.version" value="1.8.0_161-b12"/>
-    <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
-    <property name="java.endorsed.dirs" value="C:\Program Files\Java\jdk1.8.0_161\jre\lib\endorsed"/>
-    <property name="os.arch" value="amd64"/>
-    <property name="java.io.tmpdir" value="C:\Users\DMyTryC\AppData\Local\Temp\"/>
-    <property name="line.separator" value="
-"/>
+    <property name="user.dir" value="/media/bap/WINDOWS/cygwin64/home/Bap/INFO/DEVOPS/DevOpsProject2/DevOpsProject"/>
+    <property name="java.runtime.version" value="1.8.0_162-8u162-b12-0ubuntu0.16.04.2-b12"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
+    <property name="java.endorsed.dirs" value="/usr/lib/jvm/java-8-openjdk-i386/jre/lib/endorsed"/>
+    <property name="os.arch" value="i386"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
-    <property name="user.variant" value=""/>
-    <property name="os.name" value="Windows 10"/>
-    <property name="net.sourceforge.cobertura.datafile" value="C:\Users\DMyTryC\Desktop\Workspace\Sem 2\DevOpsProject\target\cobertura\cobertura.ser"/>
-    <property name="classworlds.conf" value="C:/Program Files/apache-maven-3.5.2/bin/m2.conf"/>
-    <property name="sun.jnu.encoding" value="Cp1252"/>
-    <property name="java.library.path" value="C:\Program Files\Java\jdk1.8.0_161\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Users\DMyTryC\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\DMyTryC\bin;C:\OCaml\bin;C:\mingw\bin;C:\mingw\libexec\gcc\x86_64-pc-mingw32\7.1.0;C:\ProgramData\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0;C:\Program Files (x86)\Skype\Phone;C:\Program Files\leJOS EV3\bin;C:\Program Files\MiKTeX 2.9\miktex\bin\x64;C:\Program Files\nodejs;C:\Program Files (x86)\Windows Live\Shared;C:\Users\DMyTryC\AppData\Local\Microsoft\WindowsApps;C:\Program Files\apache-maven-3.5.2\bin;C:\Users\DMyTryC\AppData\Roaming\npm;C:\Users\DMyTryC\AppData\Local\GitHubDesktop\bin;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl;."/>
-    <property name="jansi.passthrough" value="true"/>
-    <property name="maven.conf" value="C:/Program Files/apache-maven-3.5.2/conf"/>
+    <property name="os.name" value="Linux"/>
+    <property name="classworlds.conf" value="/usr/share/maven/bin/m2.conf"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/usr/java/packages/lib/i386:/usr/lib/i386-linux-gnu/jni:/lib/i386-linux-gnu:/usr/lib/i386-linux-gnu:/usr/lib/jni:/lib:/usr/lib"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.class.version" value="52.0"/>
-    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
-    <property name="os.version" value="10.0"/>
-    <property name="library.jansi.path" value="C:/Program Files/apache-maven-3.5.2/lib/jansi-native"/>
-    <property name="user.home" value="C:\Users\DMyTryC"/>
+    <property name="sun.management.compiler" value="HotSpot Tiered Compilers"/>
+    <property name="os.version" value="4.4.0-112-generic"/>
+    <property name="user.home" value="/home/bap"/>
     <property name="user.timezone" value="Europe/Paris"/>
-    <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob"/>
+    <property name="java.awt.printerjob" value="sun.print.PSPrinterJob"/>
+    <property name="file.encoding" value="UTF-8"/>
     <property name="java.specification.version" value="1.8"/>
-    <property name="file.encoding" value="Cp1252"/>
-    <property name="user.name" value="DMyTryC"/>
-    <property name="java.class.path" value="C:/Program Files/apache-maven-3.5.2/boot/plexus-classworlds-2.5.2.jar"/>
+    <property name="user.name" value="bap"/>
+    <property name="java.class.path" value="/usr/share/maven/boot/plexus-classworlds-2.x.jar"/>
     <property name="java.vm.specification.version" value="1.8"/>
-    <property name="sun.arch.data.model" value="64"/>
-    <property name="java.home" value="C:\Program Files\Java\jdk1.8.0_161\jre"/>
-    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher site"/>
+    <property name="sun.arch.data.model" value="32"/>
+    <property name="java.home" value="/usr/lib/jvm/java-8-openjdk-i386/jre"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher clean install"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
-    <property name="user.language" value="en"/>
-    <property name="user.language.format" value="fr"/>
-    <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
+    <property name="user.language" value="fr"/>
+    <property name="awt.toolkit" value="sun.awt.X11.XToolkit"/>
     <property name="java.vm.info" value="mixed mode"/>
-    <property name="java.version" value="1.8.0_161"/>
-    <property name="java.ext.dirs" value="C:\Program Files\Java\jdk1.8.0_161\jre\lib\ext;C:\WINDOWS\Sun\Java\lib\ext"/>
-    <property name="sun.boot.class.path" value="C:\Program Files\Java\jdk1.8.0_161\jre\lib\resources.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\rt.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\sunrsasign.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\jce.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.8.0_161\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.8.0_161\jre\classes"/>
+    <property name="java.version" value="1.8.0_162"/>
+    <property name="java.ext.dirs" value="/usr/lib/jvm/java-8-openjdk-i386/jre/lib/ext:/usr/java/packages/lib/ext"/>
+    <property name="securerandom.source" value="file:/dev/./urandom"/>
+    <property name="sun.boot.class.path" value="/usr/lib/jvm/java-8-openjdk-i386/jre/lib/resources.jar:/usr/lib/jvm/java-8-openjdk-i386/jre/lib/rt.jar:/usr/lib/jvm/java-8-openjdk-i386/jre/lib/sunrsasign.jar:/usr/lib/jvm/java-8-openjdk-i386/jre/lib/jsse.jar:/usr/lib/jvm/java-8-openjdk-i386/jre/lib/jce.jar:/usr/lib/jvm/java-8-openjdk-i386/jre/lib/charsets.jar:/usr/lib/jvm/java-8-openjdk-i386/jre/lib/jfr.jar:/usr/lib/jvm/java-8-openjdk-i386/jre/classes"/>
     <property name="java.vendor" value="Oracle Corporation"/>
-    <property name="maven.home" value="C:\Program Files\apache-maven-3.5.2"/>
-    <property name="file.separator" value="\"/>
+    <property name="maven.home" value="/usr/share/maven"/>
+    <property name="file.separator" value="/"/>
     <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/"/>
     <property name="sun.cpu.endian" value="little"/>
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
-    <property name="project.build.outputDirectory" value="C:\Users\DMyTryC\Desktop\Workspace\Sem 2\DevOpsProject\target\generated-classes\cobertura"/>
-    <property name="sun.desktop" value="windows"/>
-    <property name="sun.cpu.isalist" value="amd64"/>
+    <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase classname="src.TestsStats" name="minColumnNotComparableException" time="0"/>
-  <testcase classname="src.TestsStats" name="maxColumnNotComparableExceptionV2" time="0"/>
-  <testcase classname="src.TestsStats" name="maxColumn" time="0"/>
-  <testcase classname="src.TestsStats" name="minColumnNoSuchLabelException" time="0"/>
-  <testcase classname="src.TestsStats" name="minColumn" time="0"/>
-  <testcase classname="src.TestsStats" name="meanColumnNotNumericException" time="0"/>
-  <testcase classname="src.TestsStats" name="meanColumn" time="0"/>
-  <testcase classname="src.TestsStats" name="minColumnNotComparableExceptionV2" time="0"/>
-  <testcase classname="src.TestsStats" name="maxColumnNotComparableException" time="0"/>
-  <testcase classname="src.TestsStats" name="meanColumnFloat" time="0"/>
-  <testcase classname="src.TestsStats" name="meanColumnNoSuchLabelException" time="0"/>
-  <testcase classname="src.TestsStats" name="maxColumnNoSuchLabelException" time="0"/>
+  <testcase name="minColumnNotComparableException" classname="src.TestsStats" time="0"/>
+  <testcase name="maxColumnNotComparableExceptionV2" classname="src.TestsStats" time="0"/>
+  <testcase name="maxColumn" classname="src.TestsStats" time="0.001"/>
+  <testcase name="minColumnNoSuchLabelException" classname="src.TestsStats" time="0.001"/>
+  <testcase name="minColumn" classname="src.TestsStats" time="0"/>
+  <testcase name="meanColumnNotNumericException" classname="src.TestsStats" time="0"/>
+  <testcase name="meanColumn" classname="src.TestsStats" time="0"/>
+  <testcase name="minColumnNotComparableExceptionV2" classname="src.TestsStats" time="0"/>
+  <testcase name="maxColumnNotComparableException" classname="src.TestsStats" time="0"/>
+  <testcase name="meanColumnFloat" classname="src.TestsStats" time="0.001"/>
+  <testcase name="meanColumnNoSuchLabelException" classname="src.TestsStats" time="0"/>
+  <testcase name="maxColumnNoSuchLabelException" classname="src.TestsStats" time="0"/>
 </testsuite>

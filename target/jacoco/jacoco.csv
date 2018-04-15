@@ -1,7 +1,7 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-DevOpsProject,devopsproject,DataFrame.PrintingType,81,63,1,1,0,2,6,3,5,3
-DevOpsProject,devopsproject,DataFrame.DataComparator,68,124,1,5,0,3,4,6,3,4
-DevOpsProject,devopsproject,DataFrame,87,1420,7,89,13,244,8,72,1,31
-DevOpsProject,devopsproject,DataFrame.new Function() {...},40,43,1,1,0,2,4,4,3,4
-DevOpsProject,devopsproject,DataFrameMain,67,0,2,0,2,0,8,0,7,0
-DevOpsProject,devopsproject,DataFrame.new Function() {...},40,48,1,1,0,2,4,4,3,4
+DevOpsProject,devopsproject,DataFrame.PrintingType,9,29,0,0,0,2,2,2,2,2
+DevOpsProject,devopsproject,DataFrame.DataComparator,0,42,0,4,0,3,0,4,0,2
+DevOpsProject,devopsproject,DataFrame,43,1464,5,91,11,246,6,74,1,31
+DevOpsProject,devopsproject,DataFrame.new Function() {...},0,15,0,0,0,2,0,2,0,2
+DevOpsProject,devopsproject,DataFrameMain,4,0,0,0,2,0,2,0,2,0
+DevOpsProject,devopsproject,DataFrame.new Function() {...},0,20,0,0,0,2,0,2,0,2
