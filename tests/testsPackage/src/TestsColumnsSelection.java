@@ -19,7 +19,7 @@ import org.junit.Test;
  */
 public class TestsColumnsSelection {
     
-    DataFrame df ;
+    private DataFrame df ;
     
     public TestsColumnsSelection() {
         df = new DataFrame("tests/resources/test1.csv", ",") ;

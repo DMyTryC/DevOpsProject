@@ -10,14 +10,11 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -169,7 +166,6 @@ public class DataFrame implements DataFrameItf {
     };
 
     private int checkingLinesNumber(int n, PrintingType type) {
-        System.out.println("LINENUMBER : " + linesNumber);
         if (linesNumber - n < 0) {
             throw new IllegalArgumentException("Number of lines > Number of lines of Dataframe !");
         }
@@ -282,6 +278,9 @@ public class DataFrame implements DataFrameItf {
         if (index > linesNumber) {
             throw new IllegalArgumentException("index > Number of lines of DataFrame !");
         }
+        if (index < 0) {
+            throw new IllegalArgumentException("index < 0 !");
+        }
     }
 
     @Override
@@ -293,6 +292,12 @@ public class DataFrame implements DataFrameItf {
         }
         return df;
     }
+    
+    private List indexToElement (List<Integer> indexes, List elements) {
+        return indexes.stream().map((index) -> {
+                return elements.get(index);
+            }).collect(Collectors.toList()) ;
+    }
 
     @Override
     public DataFrameItf iloc(List<Integer> indexes) {
@@ -301,9 +306,7 @@ public class DataFrame implements DataFrameItf {
         }
         DataFrame df = initDataFrameBeforeSelectingLines(indexes.size());
         for (String label : orderedLabels) {
-            df.data.replace(label, indexes.stream().map((index) -> {
-                return data.get(label).get(index);
-            }).collect(Collectors.toList())) ;
+            df.data.replace(label, indexToElement(indexes, data.get(label)));
         }
         return df;
     }
@@ -315,9 +318,7 @@ public class DataFrame implements DataFrameItf {
         }
         DataFrame df = initDataFrameBeforeSelectingLines(indexes.length);
         for (String label : orderedLabels) {
-            df.data.replace(label, new ArrayList<>(Arrays.asList(indexes)).stream().map((index) -> {
-                return data.get(label).get(index);
-            }).collect(Collectors.toList())) ;
+            df.data.replace(label, indexToElement(new ArrayList<>(Arrays.asList(indexes)), data.get(label)));
         }
         return df;
     }
@@ -330,13 +331,9 @@ public class DataFrame implements DataFrameItf {
             inf = sup;
             sup = tmp;
         }
+        checkingIndex(inf);
         checkingIndex(sup);
-        if (inf < 0) {
-            throw new IllegalArgumentException("Lower Bound < 0 ! ");
-        }
         DataFrame df = initDataFrameBeforeSelectingLines(sup - inf + 1);
-        System.out.println("INF : " + inf);
-        System.out.println("RANGE : " + IntStream.range(inf, sup).boxed().collect(Collectors.toList()));
         for (String label : orderedLabels) {
             df.data.replace(label, IntStream.range(inf, sup+1).boxed().map((index) -> {
                 return data.get(label).get(index);

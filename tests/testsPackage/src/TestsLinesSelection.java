@@ -19,7 +19,7 @@ import org.junit.Test;
  */
 public class TestsLinesSelection {
     
-    DataFrame df ;
+    private DataFrame df ;
     
     public TestsLinesSelection() {
         df = new DataFrame("tests/resources/test1.csv", ",") ;
@@ -84,18 +84,33 @@ public class TestsLinesSelection {
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void ilocIndexOutOfBoundExceptionV1 () {
+    public void ilocIndexOutOfBoundExceptionV11 () {
         df.iloc(10);
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void ilocIndexOutOfBoundExceptionV2 () {
+    public void ilocIndexOutOfBoundExceptionV12 () {
+        df.iloc(-1);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void ilocIndexOutOfBoundExceptionV21 () {
         df.iloc(new ArrayList<>(Arrays.asList(5,2,10)));
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void ilocIndexOutOfBoundExceptionV3 () {
-        df.iloc(5,2,10);
+    public void ilocIndexOutOfBoundExceptionV22 () {
+        df.iloc(new ArrayList<>(Arrays.asList(5,2,-1)));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void ilocIndexOutOfBoundExceptionV31 () {
+        df.iloc(5,2,-1);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void ilocIndexOutOfBoundExceptionV32 () {
+        df.iloc(5,2,-1);
     }
     
     @Test(expected = IllegalArgumentException.class)
@@ -104,7 +119,17 @@ public class TestsLinesSelection {
     }
     
     @Test(expected = IllegalArgumentException.class)
+    public void ilocIndexOutOfBoundExceptionV411 () {
+        df.iloc(0,-1);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
     public void ilocIndexOutOfBoundExceptionV42 () {
         df.iloc(10,0);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void ilocIndexOutOfBoundExceptionV421 () {
+        df.iloc(-1,0);
     }
 }

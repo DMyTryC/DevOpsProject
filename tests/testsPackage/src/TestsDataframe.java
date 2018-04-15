@@ -1,7 +1,6 @@
 import devopsproject.DataFrame;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.junit.After;
 import org.junit.Before;
@@ -11,7 +10,7 @@ import org.junit.Assert;
 @SuppressWarnings("rawtypes")
 public class TestsDataframe {
     
-    DataFrame df;
+    private DataFrame df;
     
     public TestsDataframe() {
         
@@ -86,14 +85,6 @@ public class TestsDataframe {
         df.tail("Age", 5);
         System.out.println("");
         System.out.println(df.meanColumn("Lola"));
-    }
-    
-    @Test
-    public void dataframeStats() {
-        df = new DataFrame("tests/resources/test.csv", ",");
-        System.out.println(df.meanColumn("Age"));
-        System.out.println(df.minColumn("Age"));
-        System.out.println(df.maxColumn("Age"));
     }
     
     @Test
