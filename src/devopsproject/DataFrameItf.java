@@ -2,6 +2,7 @@ package devopsproject;
 
 import java.util.List;
 
+@SuppressWarnings("rawtypes")
 public interface DataFrameItf {
 
     /**
@@ -10,15 +11,13 @@ public interface DataFrameItf {
      * @param label the label for the column to add
      * @param values the values for the column
      */
-    public void addToColumn(String label, List values);
-
+    // public void addToColumn(String label, List values);
     /**
      * Deletes a column from the dataframe
      *
      * @param label the label of the column to delete
      */
-    public void deleteFromColumn(String label);
-
+    // public void deleteFromColumn(String label);
     /**
      * @return Prints the dataframe
      */
@@ -101,7 +100,6 @@ public interface DataFrameItf {
      */
     public Double meanColumn(String label);
 
-
     /**
      *
      * @param label the label of the column to calculate the min on
@@ -109,20 +107,17 @@ public interface DataFrameItf {
      */
     public Comparable minColumn(String label);
 
-
     /**
      *
      * @param label the label of the column to calculate the max on
      * @return the maximum of the column
      */
     public Comparable maxColumn(String label);
-    
-    public void orderBy (String label);
 
     public void showLabels();
 
     public int size();
-    
+
     public Integer getMaxColumnSize();
 
 }

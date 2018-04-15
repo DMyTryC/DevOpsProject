@@ -95,16 +95,26 @@ public class TestsDataframe {
     public void dataframeNotCSVFileException() throws IOException {
         df = new DataFrame("tests/src/TestDataFrame.java", ",");
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void dataframeUncorrectFormatDataV1() throws IOException {
+        df = new DataFrame("tests/resources/uncorrectFormat.csv", ",");
+    }
     
     @Test(expected = IllegalArgumentException.class)
-    public void dataframeUncorrectFormatData() throws IOException {
-        df = new DataFrame("tests/resources/uncorrectFormat.csv", ",");
+    public void dataframeUncorrectFormatDataV2() throws IOException {
+        df = new DataFrame("tests/resources/uncorrectFormat2.csv", ",");
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void dataframeUncorrectFormatDataV3() throws IOException {
+        df = new DataFrame("tests/resources/uncorrectFormat3.csv", ",");
     }
 
     @Test
     public void dataframeSize() {
         Assert.assertEquals(10, new DataFrame("tests/resources/test.csv", ",").size());
-        Assert.assertEquals(31, new DataFrame("tests/resources/test1.csv", ",").size());
+        Assert.assertEquals(22, new DataFrame("tests/resources/test1.csv", ",").size());
     }
 
     @Test(expected = IllegalArgumentException.class)
