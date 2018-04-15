@@ -1,25 +1,25 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package devopsproject;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
-public class DataFrame implements DataFrameItf {
+public class DataFrame {
 
     private int linesNumber; // Stocke la taille de la plus grande colonne pour l'affichage du Dataframe
     private List<String> orderedLabels; // Stocke l'ordre des labels pour afficher les colonnes du Dataframe dans le même ordre que celui donné lors de la construction
@@ -53,24 +53,25 @@ public class DataFrame implements DataFrameItf {
         }
     }
 
-    public DataFrame(String nameFile, String separator) {
+    public DataFrame(String nameFile, String separator) throws IOException {
         this();
-        FileReader fr;
+        FileReader fr = null;
         BufferedReader br;
         String extension;
         List donnees;
         String[] values;
-        //verificar extension y si el archivo exist
+        Pattern pattern = Pattern.compile("[a-zA-Z0-9]");
+        Matcher matcher;
         extension = nameFile.substring(nameFile.lastIndexOf(".") + 1);
-        if (extension.equalsIgnoreCase("csv")) {
+        if (!extension.equals("csv")) {
+            throw new IOException("L'extension du fichier est incorrecte");
+        } else {
             try {
-
-                // Stockage des labels
                 fr = new FileReader(nameFile);
                 br = new BufferedReader(fr);
                 String linea;
                 linea = br.readLine();
-                String[] labels = linea.split(separator);
+                String[] labels = linea.split(separator, -1);
                 for (int j = 0; j < labels.length; j++) {
                     donnees = new ArrayList<>();
                     this.orderedLabels.add(labels[j]);
@@ -80,14 +81,20 @@ public class DataFrame implements DataFrameItf {
 
                 // Stockage de la première ligne et inférence de classe (ou du type) de chacun de ses éléments
                 String lineaType = br.readLine();
-                String[] firstElement = lineaType.split(separator);
+                String[] firstElement = lineaType.split(separator, -1);
                 String elementString;
 
                 for (int j = 0; j < firstElement.length; j++) {
+                    matcher = pattern.matcher(firstElement[j]);
+                    if (!matcher.find()) {
+                        throw new NumberFormatException("La premiere ligne ne peut pas avoir des valeurs nuls");
+                    }
+
                     try {
                         int op1 = Integer.parseInt(firstElement[j]);
                         donnees = this.data.get(labels[j]);
                         donnees.add(op1);
+
                     } catch (NumberFormatException e1) {
                         try {
                             float op2 = Float.parseFloat(firstElement[j]);
@@ -100,18 +107,18 @@ public class DataFrame implements DataFrameItf {
                         }
                     }
                 }
-
                 // Stockage des lignes restantes, inférence des classes de chaun de leus éléments et comparaison des classes avec la classe du premier élément
                 while ((linea = br.readLine()) != null) {
-                    values = linea.split(separator);
+                    values = linea.split(separator, -1);
                     for (int i = 0; i < labels.length; i++) {
                         donnees = this.data.get(labels[i]);
+
                         try {
                             Integer op1 = Integer.parseInt(values[i]);
                             if (op1.getClass().equals(donnees.get(0).getClass())) {
                                 donnees.add(op1);
                             } else {
-                                throw new IllegalArgumentException("Uncorrect data format for file " + nameFile + " !");
+                                throw new IllegalArgumentException("Les donnees dans le label " + "'" + labels[i] + "'" + " ne sont pas bien type. Linea : " + linea + " Donnee : " + op1);
                             }
 
                         } catch (NumberFormatException e1) {
@@ -120,17 +127,25 @@ public class DataFrame implements DataFrameItf {
                                 if (op2.getClass().equals(donnees.get(0).getClass())) {
                                     donnees.add(op2);
                                 } else {
-                                    throw new IllegalArgumentException("Uncorrect data format for file " + nameFile + " !");
+                                    throw new IllegalArgumentException("Les donnees dans le label " + "'" + labels[i] + "'" + " ne sont pas bien type. Linea : " + linea + " Donnee : " + op2);
                                 }
                             } catch (NumberFormatException e2) {
-                                elementString = values[i];
-                                if (elementString.matches("\\s+")) {
-                                    donnees.add(null);
-                                } else if (elementString.getClass().equals(donnees.get(0).getClass())) {
-                                    donnees.add(elementString);
+                                String op3 = values[i];
+
+                                matcher = pattern.matcher(values[i]);
+
+                                if (matcher.find()) {
+                                    if (op3.getClass().equals((donnees.get(0).getClass()))) {
+                                        donnees.add(op3);
+                                    } else {
+                                        throw new IllegalArgumentException("Les donnees dans le label " + "'" + labels[i] + "'" + " ne sont pas bien type. Linea : " + linea + " Donnee : " + op3);
+                                    }
+
                                 } else {
-                                    throw new IllegalArgumentException("Uncorrect data format for file " + nameFile + " !");
+
+                                    donnees.add(op3);
                                 }
+
                             }
                         }
                     }
@@ -138,15 +153,18 @@ public class DataFrame implements DataFrameItf {
 
                 // Stockage de la taille de la plus grande colonne
                 for (Map.Entry<String, List> entry : data.entrySet()) {
+
                     linesNumber = Math.max(linesNumber, entry.getValue().size());
                 }
 
+                fr.close();
+
+            } catch (FileNotFoundException e) {
+                System.out.println("Error: Fichier pas trouve");
+                System.out.println(e.getMessage());
             } catch (IOException type) {
                 System.err.print(type);
             }
-
-        } else {
-            throw new IllegalArgumentException("File " + nameFile + " is not at format .csv");
         }
     }
 
@@ -166,12 +184,10 @@ public class DataFrame implements DataFrameItf {
         }
     }
 
-    @Override
     public void head(int n) {
         print(0, checkingLinesNumber(n, PrintingType.HEAD));
     }
 
-    @Override
     public void tail(int n) {
         print(checkingLinesNumber(n, PrintingType.TAIL), linesNumber);
     }
@@ -190,7 +206,6 @@ public class DataFrame implements DataFrameItf {
         return type == PrintingType.HEAD ? n : linesNumber - n;
     }
 
-    @Override
     public void show() {
         print(0, linesNumber);
     }
@@ -205,7 +220,6 @@ public class DataFrame implements DataFrameItf {
         System.out.println(label + " : " + data.get(label).subList(checkingLinesNumber(n, PrintingType.TAIL), data.get(label).size()));
     }
 
-    @Override
     public void showLabels() {
         String lab = " ";
         for (String orderedLabel : orderedLabels) {
@@ -214,7 +228,6 @@ public class DataFrame implements DataFrameItf {
         System.out.println(lab);
     }
 
-    @Override
     public int size() {
         int size = 0;
         for (Map.Entry<String, List> entry : this.data.entrySet()) {
@@ -236,16 +249,14 @@ public class DataFrame implements DataFrameItf {
         return data.get(label);
     }
 
-    @Override
-    public DataFrameItf loc(String label) {
+    public DataFrame loc(String label) {
         List<List> elements = new ArrayList<>();
         elements.add(new ArrayList<>(column(label)));
         String[] labels = {label};
         return new DataFrame(labels, elements);
     }
 
-    @Override
-    public DataFrameItf loc(List<String> labels) {
+    public DataFrame loc(List<String> labels) {
         List<List> elements = new ArrayList<>(labels.size());
         for (String label : labels) {
             elements.add(new ArrayList<>(column(label)));
@@ -254,8 +265,7 @@ public class DataFrame implements DataFrameItf {
         return new DataFrame(labels.toArray(labelsArray), elements);
     }
 
-    @Override
-    public DataFrameItf loc(String labelInf, String labelSup) {
+    public DataFrame loc(String labelInf, String labelSup) {
 
         column(labelInf);
         column(labelSup);
@@ -280,8 +290,7 @@ public class DataFrame implements DataFrameItf {
 
     }
 
-    @Override
-    public DataFrameItf loc(String... labels) {
+    public DataFrame loc(String... labels) {
         List<String> labelsList = new ArrayList<>(labels.length);
         labelsList.addAll(Arrays.asList(labels));
         return loc(labelsList);
@@ -305,8 +314,7 @@ public class DataFrame implements DataFrameItf {
         }
     }
 
-    @Override
-    public DataFrameItf iloc(int index) {
+    public DataFrame iloc(int index) {
         checkingIndex(index);
         DataFrame df = initDataFrameBeforeSelectingLines(1);
         for (String label : orderedLabels) {
@@ -317,13 +325,15 @@ public class DataFrame implements DataFrameItf {
 
     // Pour chaque index de indexes est associé l'élement de elements correspondant
     private List indexToElement(List<Integer> indexes, List elements) {
-        return indexes.stream().map((index) -> {
-            return elements.get(index);
+        return indexes.stream().map(new Function<Integer, Object>() {
+            @Override
+            public Object apply(Integer index) {
+                return elements.get(index);
+            }
         }).collect(Collectors.toList());
     }
 
-    @Override
-    public DataFrameItf iloc(List<Integer> indexes) {
+    public DataFrame iloc(List<Integer> indexes) {
         for (Integer index : indexes) {
             checkingIndex(index);
         }
@@ -334,8 +344,7 @@ public class DataFrame implements DataFrameItf {
         return df;
     }
 
-    @Override
-    public DataFrameItf iloc(Integer... indexes) {
+    public DataFrame iloc(Integer... indexes) {
         for (Integer index : indexes) {
             checkingIndex(index);
         }
@@ -346,8 +355,7 @@ public class DataFrame implements DataFrameItf {
         return df;
     }
 
-    @Override
-    public DataFrameItf iloc(int indexInf, int indexSup) {
+    public DataFrame iloc(int indexInf, int indexSup) {
         int inf = indexInf, sup = indexSup;
         if (inf > sup) {
             int tmp = inf;
@@ -358,42 +366,66 @@ public class DataFrame implements DataFrameItf {
         checkingIndex(sup);
         DataFrame df = initDataFrameBeforeSelectingLines(sup - inf + 1);
         for (String label : orderedLabels) {
-            df.data.replace(label, IntStream.range(inf, sup + 1).boxed().map((index) -> {
-                return data.get(label).get(index);
+            df.data.replace(label, IntStream.range(inf, sup + 1).boxed().map(new Function<Integer, Object>() {
+
+                @Override
+                public Object apply(Integer index) {
+                    return data.get(label).get(index);
+                }
             }).collect(Collectors.toList()));
         }
         return df;
     }
 
     private void checkingNumberFormat(String label) {
-        if (!(data.get(label).get(0) instanceof Number)) {
-            throw new IllegalArgumentException("Column at Label " + label + " is not Numeric !");
+        try {
+            if (!(data.get(label).get(0) instanceof Number)) {
+                throw new IllegalArgumentException("Column at Label " + label + " is not Numeric !");
+            }
+        } catch (NullPointerException ex) {
+            throw new IllegalArgumentException("Label " + label + " does not exist !");
         }
     }
 
     private Class<?> checkingComparable(String label) {
-        if (!(data.get(label).get(0) instanceof Comparable)) {
-            throw new IllegalArgumentException("Column at Label " + label + " is not Comparable !");
+        try {
+            if (!(data.get(label).get(0) instanceof Comparable)) {
+                throw new IllegalArgumentException("Column at Label " + label + " is not Comparable !");
+            }
+        } catch (NullPointerException ex) {
+            throw new IllegalArgumentException("Label " + label + " does not exist !");
         }
         return data.get(label).get(0).getClass();
     }
 
-    @Override
-    public Double meanColumn(String label) {
-        column(label);
-        checkingNumberFormat(label);
-        int n = 1;
-        Double sum = ((Number) data.get(label).get(0)).doubleValue();
-        for (int i = 1; i < data.get(label).size(); i++) {
-            if (data.get(label).get(i) != null) {
-                sum += ((Number) data.get(label).get(i)).doubleValue();
-                n++;
-            }
-        }
-        return sum / n;
+    public void showStatitic(String label) {
+        System.out.println("Label : " + label);
+        System.out.println("Mean : " + meanColumn(label));
+        System.out.println("Minimum : " + minColumn(label));
+        System.out.println("Maximum : " + maxColumn(label));
     }
 
-    @Override
+    public Float meanColumn(String label) {
+        column(label);
+        checkingNumberFormat(label);
+        List donnee;
+        float mean = 0;
+        Float num;
+        for (Map.Entry<String, List> entry : this.data.entrySet()) {
+            if (label.equals(entry.getKey())) {
+                donnee = entry.getValue();
+                for (int i = 0; i < donnee.size(); i++) {
+                    if (!donnee.get(i).toString().equals("") && !donnee.get(i).toString().equals(" ")) {
+                        num = new Float(donnee.get(i).toString());
+                        mean = mean + num;
+                    }
+                }
+                mean = mean / donnee.size();
+            }
+        }
+        return mean;
+    }
+
     public Comparable minColumn(String label) {
         column(label);
         Class<?> classe = checkingComparable(label);
@@ -408,7 +440,6 @@ public class DataFrame implements DataFrameItf {
         return min;
     }
 
-    @Override
     public Comparable maxColumn(String label) {
         column(label);
         Class<?> classe = checkingComparable(label);
@@ -423,32 +454,12 @@ public class DataFrame implements DataFrameItf {
         return max;
     }
 
-    @Override
+    public void orderBy(String label) {
+        column(label);
+        checkingComparable(label);
+    }
+
     public Integer getMaxColumnSize() {
         return linesNumber;
     }
-
-    /*@Override
-    public void addToColumn(String label, List values) {
-        // check if label exists
-        // check if the values have the same type
-        if (!values.isEmpty()) {
-            if (!data.containsKey(label)) {
-                data.put(label, values);
-            } else if (!data.get(label).isEmpty()) {
-                if (data.get(label).getClass().getTypeName().equals(values.get(0).getClass().getTypeName())) {
-                    data.put(label, values);
-                } else {
-                    throw new IllegalArgumentException("The type of the values is incompatible with the type of the column at label : " + label);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void deleteFromColumn(String label) {
-        // check if label exists
-        //columns.remove(label);
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }*/
 }
