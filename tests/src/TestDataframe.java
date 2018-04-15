@@ -282,4 +282,28 @@ public class TestDataframe {
         dfFileList.get(5).iloc(indexes);
     }
     
+    @Test
+    public void showStatisticsCorrect() {
+        dfArray.showStatitic("c");
+        
+        dfFileList.get(0).showStatitic("Age");
+        dfFileList.get(5).showStatitic("Price");
+        
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void showStatisticNullTable(){
+        dfBase.showStatitic("Nom");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void showStatisticNotNumeric(){
+        dfFileList.get(0).showStatitic("Nom");
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void typeErrorFloat() throws IOException{
+        dfFileList.add(new DataFrame("tests/src/type_error_2.csv",","));
+    }
 }
+

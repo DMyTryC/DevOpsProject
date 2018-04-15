@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package devopsproject;
 
 import java.io.BufferedReader;
@@ -384,14 +379,22 @@ public class DataFrame {
     }
 
     private void checkingNumberFormat(String label) {
-        if (!(data.get(label).get(0) instanceof Number)) {
-            throw new IllegalArgumentException("Column at Label " + label + " is not Numeric !");
+        try {
+            if (!(data.get(label).get(0) instanceof Number)) {
+                throw new IllegalArgumentException("Column at Label " + label + " is not Numeric !");
+            }
+        } catch (NullPointerException ex) {
+            throw new IllegalArgumentException("Label " + label + " does not exist !");
         }
     }
 
     private Class<?> checkingComparable(String label) {
-        if (!(data.get(label).get(0) instanceof Comparable)) {
-            throw new IllegalArgumentException("Column at Label " + label + " is not Comparable !");
+        try {
+            if (!(data.get(label).get(0) instanceof Comparable)) {
+                throw new IllegalArgumentException("Column at Label " + label + " is not Comparable !");
+            }
+        } catch (NullPointerException ex) {
+            throw new IllegalArgumentException("Label " + label + " does not exist !");
         }
         return data.get(label).get(0).getClass();
     }
@@ -423,20 +426,6 @@ public class DataFrame {
         }
         return mean;
     }
-    
-    /*public Double meanColumn(String label) {
-        column(label);
-        checkingNumberFormat(label);
-        int n = 1;
-        Double sum = ((Number) data.get(label).get(0)).doubleValue();
-        for (int i = 1; i < data.get(label).size(); i++) {
-            if (data.get(label).get(i) != null) {
-                sum += ((Number) data.get(label).get(i)).doubleValue();
-                n++;
-            }
-        }
-        return sum / n;
-}*/
 
     public Comparable minColumn(String label) {
         column(label);
