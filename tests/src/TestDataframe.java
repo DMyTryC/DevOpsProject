@@ -300,10 +300,5 @@ public class TestDataframe {
     public void showStatisticNotNumeric(){
         dfFileList.get(0).showStatitic("Nom");
     }
-    
-    @Test(expected = IllegalArgumentException.class)
-    public void typeErrorFloat() throws IOException{
-        dfFileList.add(new DataFrame("tests/src/type_error_2.csv",","));
-    }
 }
 
