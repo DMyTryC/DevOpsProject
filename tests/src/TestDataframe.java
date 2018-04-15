@@ -1,11 +1,11 @@
 package src;
 
 import devopsproject.DataFrame;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
 
+@SuppressWarnings("rawtypes")
 public class TestDataframe {
     
     DataFrame dfArray;
