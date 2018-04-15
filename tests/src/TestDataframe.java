@@ -300,5 +300,6 @@ public class TestDataframe {
     public void showStatisticNotNumeric(){
         dfFileList.get(0).showStatitic("Nom");
     }
+
 }
 

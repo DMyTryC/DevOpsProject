@@ -164,7 +164,6 @@ public class DataFrame {
                 System.out.println(e.getMessage());
             } catch (IOException type) {
                 System.err.print(type);
-
             }
         }
     }

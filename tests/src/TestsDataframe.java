@@ -1,6 +1,5 @@
 package src;
 
-
 import devopsproject.DataFrame;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.Assert;
 
-@SuppressWarnings("rawtypes")
 public class TestsDataframe {
 
     private DataFrame df;
