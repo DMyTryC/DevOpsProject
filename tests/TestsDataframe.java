@@ -1,4 +1,3 @@
-package testsPackage.src;
 
 import devopsproject.DataFrame;
 import java.io.IOException;
@@ -100,12 +99,12 @@ public class TestsDataframe {
     public void dataframeUncorrectFormatDataV1() throws IOException {
         df = new DataFrame("tests/resources/uncorrectFormat.csv", ",");
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void dataframeUncorrectFormatDataV2() throws IOException {
         df = new DataFrame("tests/resources/uncorrectFormat2.csv", ",");
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
     public void dataframeUncorrectFormatDataV3() throws IOException {
         df = new DataFrame("tests/resources/uncorrectFormat3.csv", ",");

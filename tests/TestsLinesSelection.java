@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class TestsLinesSelection {
 
-    private DataFrame df;
+    private final DataFrame df;
 
     public TestsLinesSelection() {
         df = new DataFrame("tests/resources/test1.csv", ",");
