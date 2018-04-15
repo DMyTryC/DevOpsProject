@@ -10,13 +10,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class DataFrame implements DataFrameItf {
 
@@ -52,7 +55,7 @@ public class DataFrame implements DataFrameItf {
         }
     }
 
-    public DataFrame(String nameFile, String separator) {
+    public DataFrame(String nameFile, String separator) throws IOException {
         this();
         FileReader fr;
         BufferedReader br;
@@ -61,7 +64,9 @@ public class DataFrame implements DataFrameItf {
         String[] values;
         //verificar extension y si el archivo exist
         extension = nameFile.substring(nameFile.lastIndexOf(".") + 1);
-        if (extension.equalsIgnoreCase("csv")) {
+        if (!extension.equals("csv")){
+            throw new IOException("L'extension du fichier est incorrecte");
+        } else {
             try {
 
                 // Stockage des labels
@@ -297,8 +302,11 @@ public class DataFrame implements DataFrameItf {
     }
 
     private List indexToElement(List<Integer> indexes, List elements) {
-        return indexes.stream().map((index) -> {
-            return elements.get(index);
+        return indexes.stream().map(new Function<Integer, Object>() {
+            @Override
+            public Object apply(Integer index) {
+                return elements.get(index);
+            }
         }).collect(Collectors.toList());
     }
 
@@ -338,8 +346,12 @@ public class DataFrame implements DataFrameItf {
         checkingIndex(sup);
         DataFrame df = initDataFrameBeforeSelectingLines(sup - inf + 1);
         for (String label : orderedLabels) {
-            df.data.replace(label, IntStream.range(inf, sup + 1).boxed().map((index) -> {
-                return data.get(label).get(index);
+            df.data.replace(label, IntStream.range(inf, sup + 1).boxed().map(new Function<Integer, Object>(){
+           
+                @Override
+                public Object apply(Integer index) {
+                    return data.get(label).get(index);
+                }
             }).collect(Collectors.toList()));
         }
         return df;
@@ -412,29 +424,5 @@ public class DataFrame implements DataFrameItf {
     @Override
     public Integer getMaxColumnSize() {
         return linesNumber;
-    }
-
-    @Override
-    public void addToColumn(String label, List values) {
-        // check if label exists
-        // check if the values have the same type
-        if (!values.isEmpty()) {
-            if (!data.containsKey(label)) {
-                data.put(label, values);
-            } else if (!data.get(label).isEmpty()) {
-                if (data.get(label).getClass().getTypeName().equals(values.get(0).getClass().getTypeName())) {
-                    data.put(label, values);
-                } else {
-                    throw new IllegalArgumentException("The type of the values is incompatible with the type of the column at label : " + label);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void deleteFromColumn(String label) {
-        // check if label exists
-        //columns.remove(label);
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
