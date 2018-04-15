@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 public class TestDataframe {
     
@@ -13,7 +16,7 @@ public class TestDataframe {
     List<DataFrame> dfFileList;
     DataFrame dfBase;
     
-    public TestDataframe() {
+    public TestDataframe() throws IOException{
         /* Test base constructor dataframe creation */
         dfBase = new DataFrame();
        
@@ -142,17 +145,17 @@ public class TestDataframe {
     }
     
     @Test(expected = IOException.class)
-    public void wrongFileExtension(){
+    public void wrongFileExtension() throws IOException{
         dfFileList.add(new DataFrame("tests/resources/Prueba.txt", ","));
     }
     
     @Test(expected = FileNotFoundException.class)
-    public void fileDoesntExist(){
+    public void fileDoesntExist() throws IOException{
         dfFileList.add(new DataFrame("tests/resources/notavailable.csv", ","));
     }
     
     @Test(expected = IllegalArgumentException.class)
-    public void typeError(){
+    public void typeError() throws IOException{
         dfFileList.add(new DataFrame("tests/resources/type_error.csv", ","));
     }
     
@@ -209,17 +212,17 @@ public class TestDataframe {
         dfFileList.get(5).loc(labels);
     }
     
-    @Test(expected = IllegalArgumentException.class)
-    public void locLabelInfSupIncorrect(){
+    @Test
+    public void locLabelInfSupSwitched(){
         dfFileList.get(5).loc("City","Product");
     }
     
     @Test
     public void ilocTestCorrect(){
+        dfFileList.get(5).iloc(3);
         dfFileList.get(5).iloc(1,3);
         dfFileList.get(5).iloc(2,2);
         dfFileList.get(5).iloc(2,4,5);
-        dfFileList.get(5).iloc(3);
         List<Integer> indexes = new ArrayList<>();
         indexes.add(4);
         dfFileList.get(5).iloc(indexes);
@@ -261,7 +264,7 @@ public class TestDataframe {
         dfFileList.get(5).iloc(2,5,Integer.MAX_VALUE);
     }
     
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void ilocMultipleIndexes(){
         dfFileList.get(5).iloc(5, 2);
     }

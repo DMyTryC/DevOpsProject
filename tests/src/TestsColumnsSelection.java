@@ -1,3 +1,5 @@
+package src;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -5,6 +7,7 @@
  */
 
 import devopsproject.DataFrame;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.junit.After;
@@ -21,7 +24,7 @@ public class TestsColumnsSelection {
     
     private DataFrame df ;
     
-    public TestsColumnsSelection() {
+    public TestsColumnsSelection() throws IOException{
         df = new DataFrame("tests/resources/test1.csv", ",") ;
     }
     

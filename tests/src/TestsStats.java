@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package testsPackage.src;
+package src;
 
 import devopsproject.DataFrame;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +22,7 @@ public class TestsStats {
     
     private DataFrame df ;
     
-    public TestsStats() {
+    public TestsStats() throws IOException{
         df = new DataFrame("tests/resources/test.csv", ","); 
     }
     
@@ -50,7 +51,7 @@ public class TestsStats {
     }
     
     @Test
-    public void meanColumnFloat() {
+    public void meanColumnFloat() throws IOException{
         System.out.println("MEAN COLUMN FLOAT");
         df = new DataFrame("tests/resources/test1.csv", ",");
         System.out.println("-----------------------------");
