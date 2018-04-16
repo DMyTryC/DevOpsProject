@@ -522,6 +522,11 @@ public class DataFrame implements DataFrameItf{
     }
 
     @Override
+    public void orderBy(String label) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
     public TreeMap<String, List> groupby(String[] labels) {
         TreeMap<String, List> dataReturnd = new TreeMap<>();
         List listReturnd;

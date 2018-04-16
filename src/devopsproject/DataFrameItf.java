@@ -166,6 +166,12 @@ public interface DataFrameItf {
     public TreeMap<String, Object> groupby(String label, Optional<String> aggregate);
     
     /**
+     * Orders the dataframe by the label
+     * @param label The label to order by
+     */
+    public void orderBy(String label);
+    
+    /**
      * Shows all the statistics (mean, min, max) for the label
      * @param label The label to show the statistics for
      */
