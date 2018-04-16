@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="10" failures="0" name="src.TestsColumnsSelection" time="0.004" errors="0" skipped="0">
+<testsuite tests="10" failures="0" name="src.TestsColumnsSelection" time="0.003" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_161\jre\bin"/>
@@ -67,12 +67,12 @@
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
   <testcase classname="src.TestsColumnsSelection" name="locV41" time="0"/>
-  <testcase classname="src.TestsColumnsSelection" name="locV42" time="0.002"/>
+  <testcase classname="src.TestsColumnsSelection" name="locV42" time="0.001"/>
   <testcase classname="src.TestsColumnsSelection" name="locNoSuchLabelExceptionV1" time="0"/>
   <testcase classname="src.TestsColumnsSelection" name="locNoSuchLabelExceptionV2" time="0"/>
   <testcase classname="src.TestsColumnsSelection" name="locNoSuchLabelExceptionV3" time="0"/>
-  <testcase classname="src.TestsColumnsSelection" name="locV1" time="0.001"/>
-  <testcase classname="src.TestsColumnsSelection" name="locV2" time="0.001"/>
+  <testcase classname="src.TestsColumnsSelection" name="locV1" time="0.002"/>
+  <testcase classname="src.TestsColumnsSelection" name="locV2" time="0"/>
   <testcase classname="src.TestsColumnsSelection" name="locV3" time="0"/>
   <testcase classname="src.TestsColumnsSelection" name="locNoSuchLabelExceptionV41" time="0"/>
   <testcase classname="src.TestsColumnsSelection" name="locNoSuchLabelExceptionV42" time="0"/>

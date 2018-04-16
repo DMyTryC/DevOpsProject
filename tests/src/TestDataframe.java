@@ -1,15 +1,11 @@
 package src;
 
 import devopsproject.DataFrame;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 public class TestDataframe {
 
@@ -17,7 +13,7 @@ public class TestDataframe {
     List<DataFrame> dfFileList;
     DataFrame dfBase;
 
-    public TestDataframe() throws IOException{
+    public TestDataframe() throws IOException {
         /* Test base constructor dataframe creation */
         dfBase = new DataFrame();
 
@@ -89,27 +85,27 @@ public class TestDataframe {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void headTestValuesTooBig(){
+    public void headTestValuesTooBig() {
         dfBase.head(Integer.MAX_VALUE);
-        
+
         dfArray.head(Integer.MAX_VALUE);
-        
-        for (DataFrame dfObject : dfFileList){
+
+        for (DataFrame dfObject : dfFileList) {
             dfObject.head(Integer.MAX_VALUE);
         }
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void headTestNegativeValues(){
+    public void headTestNegativeValues() {
         dfBase.head(-1);
-        
+
         dfArray.head(-1);
-        
-        for (DataFrame dfObject : dfFileList){
+
+        for (DataFrame dfObject : dfFileList) {
             dfObject.head(-1);
         }
     }
-    
+
     @Test
     public void tailTestGoodValues() {
         dfBase.tail(0);
@@ -126,246 +122,244 @@ public class TestDataframe {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void tailTestValuesTooBig(){
+    public void tailTestValuesTooBig() {
         dfBase.tail(Integer.MAX_VALUE);
-        
+
         dfBase.tail(Integer.MAX_VALUE);
-        
-        for (DataFrame dfObject : dfFileList){
+
+        for (DataFrame dfObject : dfFileList) {
             dfObject.tail(Integer.MAX_VALUE);
         }
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void tailTestNegativeValues(){
+    public void tailTestNegativeValues() {
         dfBase.tail(-1);
-        
+
         dfArray.tail(-1);
-        
-        for (DataFrame dfObject : dfFileList){
+
+        for (DataFrame dfObject : dfFileList) {
             dfObject.tail(-1);
         }
     }
-    
+
     @Test(expected = IOException.class)
-    public void wrongFileExtension() throws IOException{
+    public void wrongFileExtension() throws IOException {
         dfFileList.add(new DataFrame("tests/resources/Prueba.txt", ","));
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void typeError() throws IOException{
+    public void typeError() throws IOException {
         dfFileList.add(new DataFrame("tests/resources/type_error.csv", ","));
     }
-    
+
     @Test
-    public void headLabelExistsTest(){
+    public void headLabelExistsTest() {
         dfFileList.get(0).head("Nom", 2);
         dfFileList.get(1).head("Nom", 3);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void headLabelNotAvailable(){
-        dfFileList.get(0).head("Hello",2);
-        dfFileList.get(1).head("Hello",3);
+    public void headLabelNotAvailable() {
+        dfFileList.get(0).head("Hello", 2);
+        dfFileList.get(1).head("Hello", 3);
     }
-    
+
     @Test
-    public void tailLabelExistsTest(){
+    public void tailLabelExistsTest() {
         dfFileList.get(0).tail("Nom", 2);
         dfFileList.get(1).tail("Nom", 3);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void tailLabelNotAvailable(){
-        dfFileList.get(0).tail("Hello",2);
-        dfFileList.get(1).tail("Hello",3);
+    public void tailLabelNotAvailable() {
+        dfFileList.get(0).tail("Hello", 2);
+        dfFileList.get(1).tail("Hello", 3);
     }
-    
+
     @Test
-    public void locTestCorrect(){
+    public void locTestCorrect() {
         dfFileList.get(0).loc("Nom");
-        dfFileList.get(0).loc("Nom","Age");
-        dfFileList.get(5).loc("Product","Name","City");
+        dfFileList.get(0).loc("Nom", "Age");
+        dfFileList.get(5).loc("Product", "Name", "City");
         List<String> labels = new ArrayList<>();
         labels.add("Name");
         labels.add("Price");
         dfFileList.get(5).loc(labels);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void locLabelTestIncorrect(){
+    public void locLabelTestIncorrect() {
         dfFileList.get(0).loc("Hello");
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void locMultipleLabelsTestIncorrect(){
-        dfFileList.get(0).loc("Hello","Nom","City");
+    public void locMultipleLabelsTestIncorrect() {
+        dfFileList.get(0).loc("Hello", "Nom", "City");
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void locLabelListTestIncorrect(){
+    public void locLabelListTestIncorrect() {
         List<String> labels = new ArrayList<>();
         labels.add("Hello");
         labels.add("Price");
         dfFileList.get(5).loc(labels);
     }
-    
+
     @Test
-    public void locLabelInfSupSwitched(){
-        dfFileList.get(5).loc("City","Product");
+    public void locLabelInfSupSwitched() {
+        dfFileList.get(5).loc("City", "Product");
     }
-    
+
     @Test
-    public void ilocTestCorrect(){
+    public void ilocTestCorrect() {
         dfFileList.get(5).iloc(3);
-        dfFileList.get(5).iloc(1,3);
-        dfFileList.get(5).iloc(2,2);
-        dfFileList.get(5).iloc(2,4,5);
+        dfFileList.get(5).iloc(1, 3);
+        dfFileList.get(5).iloc(2, 2);
+        dfFileList.get(5).iloc(2, 4, 5);
         List<Integer> indexes = new ArrayList<>();
         indexes.add(4);
         dfFileList.get(5).iloc(indexes);
     }
-    
+
     @Test
-    public void ilocInfSupDifferentOrder(){
+    public void ilocInfSupDifferentOrder() {
         dfFileList.get(5).iloc(5, 2);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void ilocIndexNegative(){
+    public void ilocIndexNegative() {
         dfFileList.get(5).iloc(-1);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void ilocIndexTooBig(){
+    public void ilocIndexTooBig() {
         dfFileList.get(5).iloc(Integer.MAX_VALUE);
     }
-    
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void ilocIndexesInfSupValueTooHigh(){
+    public void ilocIndexesInfSupValueTooHigh() {
         dfFileList.get(5).iloc(2, Integer.MAX_VALUE);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void ilocIndexesInfSupNegative(){
-        dfFileList.get(5).iloc(-1,2);
+    public void ilocIndexesInfSupNegative() {
+        dfFileList.get(5).iloc(-1, 2);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void ilocMultipleIndexesNegative(){
-        dfFileList.get(5).iloc(-1,5,3);
+    public void ilocMultipleIndexesNegative() {
+        dfFileList.get(5).iloc(-1, 5, 3);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void ilocMultipleIndexesTooBig(){
-        dfFileList.get(5).iloc(2,5,Integer.MAX_VALUE);
+    public void ilocMultipleIndexesTooBig() {
+        dfFileList.get(5).iloc(2, 5, Integer.MAX_VALUE);
     }
-    
+
     @Test
-    public void ilocMultipleIndexes(){
+    public void ilocMultipleIndexes() {
         dfFileList.get(5).iloc(5, 2);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void ilocListIndexesTooBig(){
+    public void ilocListIndexesTooBig() {
         List<Integer> indexes = new ArrayList<>();
         indexes.add(Integer.MAX_VALUE);
         indexes.add(1);
         dfFileList.get(5).iloc(indexes);
     }
-    
-        @Test(expected = IllegalArgumentException.class)
-    public void ilocListIndexesNegative(){
+
+    @Test(expected = IllegalArgumentException.class)
+    public void ilocListIndexesNegative() {
         List<Integer> indexes = new ArrayList<>();
         indexes.add(-1);
         indexes.add(1);
         dfFileList.get(5).iloc(indexes);
     }
-    
+
     @Test
     public void showStatisticsCorrect() {
         dfArray.showStatitic("c");
-        
+
         dfFileList.get(0).showStatitic("Age");
         dfFileList.get(5).showStatitic("Price");
-        
+
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void showStatisticNullTable(){
+    public void showStatisticNullTable() {
         dfBase.showStatitic("Nom");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void showStatisticNotNumeric(){
+    public void showStatisticNotNumeric() {
         dfFileList.get(0).showStatitic("Nom");
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void typeErrorInt() throws IOException{
+    public void typeErrorInt() throws IOException {
         dfFileList.add(new DataFrame("tests/resources/type_error_2.csv", ","));
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void typeErrorFloat() throws IOException{
+    public void typeErrorFloat() throws IOException {
         dfFileList.add(new DataFrame("tests/resources/type_error_3.csv", ","));
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void typeErrorString() throws IOException{
+    public void typeErrorString() throws IOException {
         dfFileList.add(new DataFrame("tests/resources/type_error_4.csv", ","));
     }
-    
+
     @Test
     public void groupByLabelListTest() {
         dfFileList.get(5).groupby(new String[]{"Price", "City", "Country"});
     }
-    
+
     @Test
-    public void groupByLabelTest(){
+    public void groupByLabelTest() {
         dfFileList.get(5).groupby("Country");
     }
-    
+
     @Test
-    public void groupByLabelListAggregate(){
-        dfFileList.get(5).groupby(new String[]{"Price"},"count");
+    public void groupByLabelListAggregate() {
+        dfFileList.get(5).groupby(new String[]{"Price"}, "count");
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void groupByLabelListAggregateError(){
-        dfFileList.get(5).groupby(new String[]{"Price"},"incorrectAggregate");
+    public void groupByLabelListAggregateError() {
+        dfFileList.get(5).groupby(new String[]{"Price"}, "incorrectAggregate");
     }
-    
+
     @Test
-    public void orderByTest(){
+    public void orderByTest() {
         dfFileList.get(5).orderBy("City");
     }
-    
+
     @Test
-    public void groupByLabelAggregateCorrect(){
+    public void groupByLabelAggregateCorrect() {
         Optional<String> optSum = Optional.of("sum");
-        dfFileList.get(5).groupby("Price",optSum);
+        dfFileList.get(5).groupby("Price", optSum);
 
         Optional<String> optMax = Optional.of("max");
-        dfFileList.get(5).groupby("Price",optMax);
+        dfFileList.get(5).groupby("Price", optMax);
 
-        dfFileList.get(2).groupby("Height",optSum);
+        dfFileList.get(2).groupby("Height", optSum);
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void groupByLabelNoSuchAggregate(){
-        dfFileList.get(5).groupby("City",Optional.of("notavailable"));
+    public void groupByLabelNoSuchAggregate() {
+        dfFileList.get(5).groupby("City", Optional.of("notavailable"));
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void groupByLabelAggregateString(){
-        dfFileList.get(5).groupby("City",Optional.of("sum"));
+    public void groupByLabelAggregateString() {
+        dfFileList.get(5).groupby("City", Optional.of("sum"));
     }
-    
+
     @Test(expected = NumberFormatException.class)
-    public void formatError() throws IOException{
-        dfFileList.add(new DataFrame("tests/resources/format_error.csv",","));
+    public void formatError() throws IOException {
+        dfFileList.add(new DataFrame("tests/resources/format_error.csv", ","));
     }
 }
-

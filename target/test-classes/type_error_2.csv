@@ -1,4 +1,8 @@
 Nom,Address,Tel
 "z",1.25,200
+<<<<<<< HEAD
 "k",1,1000
+=======
+"k","aa",1000
+>>>>>>> origin/master
 "a","gjaoj",1
