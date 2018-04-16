@@ -520,6 +520,9 @@ public class DataFrame implements DataFrameItf{
         return dataReturnd;
     }
 
+    /*
+       groupby one column, it takes the label as param then it returns the list 
+     */
     @Override
     public List groupby(String label) {
         List dataReturnd = new ArrayList();
@@ -532,6 +535,10 @@ public class DataFrame implements DataFrameItf{
         return dataReturnd;
     }
 
+
+    /*
+          it takes the label and the aggreagate as an optional param "{max, sum} of column"
+     */
     @Override
     public TreeMap<String, Object> groupby(String label, Optional<String> aggregate) {
         TreeMap<String, Object> dataReturnd = new TreeMap<String, Object>();
@@ -551,7 +558,9 @@ public class DataFrame implements DataFrameItf{
         return dataReturnd;
     }
 
-
+    /*
+        it takes a list of labels and aggreagate as optional (just count)
+     */
     @Override
     public TreeMap<String, List> groupby(String[] labels, String aggregate) {
         TreeMap<String, List> dataReturned = new TreeMap<String, List>();
@@ -577,7 +586,7 @@ public class DataFrame implements DataFrameItf{
         }
         return dataReturned;
     }
-
+    
     @Override
     public int count(List list, Object element) {
         int cpt = 0;
