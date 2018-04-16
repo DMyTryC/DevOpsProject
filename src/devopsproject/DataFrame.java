@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@SuppressWarnings({"rawtypes","unchecked"})
 public class DataFrame implements DataFrameItf{
 
     private int linesNumber; // Stores size of the greatest column
@@ -470,6 +469,7 @@ public class DataFrame implements DataFrameItf{
         checkingNumberFormat(label);
         List donnee;
         float mean = 0;
+        int noNonNull = 0;
         Float num;
         for (Map.Entry<String, List> entry : this.data.entrySet()) {
             if (label.equals(entry.getKey())) {
@@ -478,13 +478,30 @@ public class DataFrame implements DataFrameItf{
                     if (!donnee.get(i).toString().equals("") && !donnee.get(i).toString().equals(" ")) {
                         num = new Float(donnee.get(i).toString());
                         mean = mean + num;
+                        noNonNull ++;
                     }
                 }
-                mean = mean / donnee.size();
+                mean = mean / noNonNull;
             }
         }
         return mean;
     }
+    
+    /*@Override
+    public Double meanColumn(String label) {
+        column(label);
+        checkingNumberFormat(label);
+        int n = 1;
+        Double sum = ((Number) data.get(label).get(0)).doubleValue();
+        for (int i = 1; i < data.get(label).size(); i++) {
+            if (data.get(label).get(i) != null) {
+                sum += ((Number) data.get(label).get(i)).doubleValue();
+                n++;
+            }
+        }
+        return sum / n;
+    } */ 
+    
 
     @Override
     public Comparable minColumn(String label) {
