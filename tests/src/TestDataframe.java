@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -16,7 +17,7 @@ public class TestDataframe {
     List<DataFrame> dfFileList;
     DataFrame dfBase;
 
-    public TestDataframe() throws IOException{
+    public TestDataframe() throws IOException {
         /* Test base constructor dataframe creation */
         dfBase = new DataFrame();
 
@@ -88,27 +89,27 @@ public class TestDataframe {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void headTestValuesTooBig(){
+    public void headTestValuesTooBig() {
         dfBase.head(Integer.MAX_VALUE);
-        
+
         dfArray.head(Integer.MAX_VALUE);
-        
-        for (DataFrame dfObject : dfFileList){
+
+        for (DataFrame dfObject : dfFileList) {
             dfObject.head(Integer.MAX_VALUE);
         }
     }
-    
+
     @Test(expected = IllegalArgumentException.class)
-    public void headTestNegativeValues(){
+    public void headTestNegativeValues() {
         dfBase.head(-1);
-        
+
         dfArray.head(-1);
-        
-        for (DataFrame dfObject : dfFileList){
+
+        for (DataFrame dfObject : dfFileList) {
             dfObject.head(-1);
         }
     }
-    
+
     @Test
     public void tailTestGoodValues() {
         dfBase.tail(0);
@@ -125,12 +126,12 @@ public class TestDataframe {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void tailTestValuesTooBig(){
+    public void tailTestValuesTooBig() {
         dfBase.tail(Integer.MAX_VALUE);
-        
+
         dfBase.tail(Integer.MAX_VALUE);
-        
-        for (DataFrame dfObject : dfFileList){
+
+        for (DataFrame dfObject : dfFileList) {
             dfObject.tail(Integer.MAX_VALUE);
         }
     }
@@ -300,6 +301,71 @@ public class TestDataframe {
     public void showStatisticNotNumeric(){
         dfFileList.get(0).showStatitic("Nom");
     }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void typeErrorInt() throws IOException {
+        dfFileList.add(new DataFrame("tests/resources/type_error_2.csv", ","));
+    }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void typeErrorFloat() throws IOException {
+        dfFileList.add(new DataFrame("tests/resources/type_error_3.csv", ","));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void typeErrorString() throws IOException {
+        dfFileList.add(new DataFrame("tests/resources/type_error_4.csv", ","));
+    }
+
+    @Test
+    public void groupByLabelListTest() {
+        dfFileList.get(5).groupby(new String[]{"Price", "City", "Country"});
+    }
+
+    @Test
+    public void groupByLabelTest() {
+        dfFileList.get(5).groupby("Country");
+    }
+
+    @Test
+    public void groupByLabelListAggregate() {
+        dfFileList.get(5).groupby(new String[]{"Price"}, "count");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void groupByLabelListAggregateError() {
+        dfFileList.get(5).groupby(new String[]{"Price"}, "incorrectAggregate");
+    }
+
+    @Test
+    public void orderByTest() {
+        dfFileList.get(5).orderBy("City");
+    }
+
+    @Test
+    public void groupByLabelAggregateCorrect() {
+        Optional<String> optSum = Optional.of("sum");
+        dfFileList.get(5).groupby("Price", optSum);
+
+        Optional<String> optMax = Optional.of("max");
+        dfFileList.get(5).groupby("Price", optMax);
+
+        dfFileList.get(2).groupby("Height", optSum);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void groupByLabelNoSuchAggregate() {
+        dfFileList.get(5).groupby("City", Optional.of("notavailable"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void groupByLabelAggregateString() {
+        dfFileList.get(5).groupby("City", Optional.of("sum"));
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void formatError() throws IOException {
+        dfFileList.add(new DataFrame("tests/resources/format_error.csv", ","));
+    }
 }
 
