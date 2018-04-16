@@ -91,58 +91,58 @@ public class TestsDataframe {
     }
 
     @Test
-    public void dataframeSize() throws IOException{
+    public void dataframeSize() throws IOException {
         Assert.assertEquals(10, new DataFrame("tests/resources/test.csv", ",").size());
         Assert.assertEquals(32, new DataFrame("tests/resources/test1.csv", ",").size());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void headLinesNumberExceptionV1() throws IOException{
+    public void headLinesNumberExceptionV1() throws IOException {
         new DataFrame("tests/resources/test1.csv", ",").head(10);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void headLinesNumberExceptionV2() throws IOException{
+    public void headLinesNumberExceptionV2() throws IOException {
         new DataFrame("tests/resources/test1.csv", ",").head(-1);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void tailLinesNumberExceptionV1() throws IOException{
+    public void tailLinesNumberExceptionV1() throws IOException {
         new DataFrame("tests/resources/test1.csv", ",").tail(10);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void tailLinesNumberExceptionV2() throws IOException{
+    public void tailLinesNumberExceptionV2() throws IOException {
         new DataFrame("tests/resources/test1.csv", ",").tail(-1);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void headColumnLinesNumberExceptionV1() throws IOException{
+    public void headColumnLinesNumberExceptionV1() throws IOException {
         new DataFrame("tests/resources/test1.csv", ",").head("Nom", 10);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void headColumnLinesNumberExceptionV2() throws IOException{
+    public void headColumnLinesNumberExceptionV2() throws IOException {
         new DataFrame("tests/resources/test1.csv", ",").head("Nom", -1);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void tailColumnLinesNumberExceptionV1() throws IOException{
+    public void tailColumnLinesNumberExceptionV1() throws IOException {
         new DataFrame("tests/resources/test1.csv", ",").tail("Nom", 10);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void tailColumnLinesNumberExceptionV2() throws IOException{
+    public void tailColumnLinesNumberExceptionV2() throws IOException {
         new DataFrame("tests/resources/test1.csv", ",").tail("Nom", -1);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void headColumnNoSuchLabelException() throws IOException{
+    public void headColumnNoSuchLabelException() throws IOException {
         new DataFrame("tests/resources/test1.csv", ",").head("NoSuchLabel", 5);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void tailColumnNoSuchLabelException() throws IOException{
+    public void tailColumnNoSuchLabelException() throws IOException {
         new DataFrame("tests/resources/test1.csv", ",").tail("NoSuchLabel", 5);
     }
 

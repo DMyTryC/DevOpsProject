@@ -11,11 +11,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestsLinesSelection {
-    
-    private DataFrame df ;
-    
-    public TestsLinesSelection() throws IOException{
-        df = new DataFrame("tests/resources/test1.csv", ",") ;
+    private DataFrame df;
+
+    public TestsLinesSelection() throws IOException {
+        df = new DataFrame("tests/resources/test1.csv", ",");
     }
     
     @BeforeClass

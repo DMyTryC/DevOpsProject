@@ -6,20 +6,20 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
-public class DataFrame {
+public class DataFrame implements DataFrameItf{
 
     private int linesNumber; // Stocke la taille de la plus grande colonne pour l'affichage du Dataframe
     private List<String> orderedLabels; // Stocke l'ordre des labels pour afficher les colonnes du Dataframe dans le même ordre que celui donné lors de la construction
@@ -29,7 +29,6 @@ public class DataFrame {
     // Comparator pour ordonner les labels selon leur position donnée à la construction
     private class DataComparator implements Comparator<String> {
 
-        @Override
         public int compare(String o1, String o2) {
             return indexLabels.get(o1) < indexLabels.get(o2) ? -1
                     : indexLabels.get(o1) > indexLabels.get(o2) ? 1 : 0;
@@ -64,7 +63,7 @@ public class DataFrame {
         Matcher matcher;
         extension = nameFile.substring(nameFile.lastIndexOf(".") + 1);
         if (!extension.equals("csv")) {
-            throw new IOException("L'extension du fichier est incorrecte");
+            throw new IOException("The file extension is incorrect, please give a .csv file");
         } else {
             try {
                 fr = new FileReader(nameFile);
@@ -87,7 +86,7 @@ public class DataFrame {
                 for (int j = 0; j < firstElement.length; j++) {
                     matcher = pattern.matcher(firstElement[j]);
                     if (!matcher.find()) {
-                        throw new NumberFormatException("La premiere ligne ne peut pas avoir des valeurs nuls");
+                        throw new NumberFormatException("The first line cannot have null values");
                     }
 
                     try {
@@ -118,7 +117,7 @@ public class DataFrame {
                             if (op1.getClass().equals(donnees.get(0).getClass())) {
                                 donnees.add(op1);
                             } else {
-                                throw new IllegalArgumentException("Les donnees dans le label " + "'" + labels[i] + "'" + " ne sont pas bien type. Linea : " + linea + " Donnee : " + op1);
+                                throw new IllegalArgumentException("The data at the label " + "'" + labels[i] + "'" + " don't have a good type. Line : " + linea + " Data : " + op1);
                             }
 
                         } catch (NumberFormatException e1) {
@@ -127,7 +126,7 @@ public class DataFrame {
                                 if (op2.getClass().equals(donnees.get(0).getClass())) {
                                     donnees.add(op2);
                                 } else {
-                                    throw new IllegalArgumentException("Les donnees dans le label " + "'" + labels[i] + "'" + " ne sont pas bien type. Linea : " + linea + " Donnee : " + op2);
+                                    throw new IllegalArgumentException("The data at the label " + "'" + labels[i] + "'" + " don't have a good type. Line : " + linea + " Data : " + op2);
                                 }
                             } catch (NumberFormatException e2) {
                                 String op3 = values[i];
@@ -138,7 +137,7 @@ public class DataFrame {
                                     if (op3.getClass().equals((donnees.get(0).getClass()))) {
                                         donnees.add(op3);
                                     } else {
-                                        throw new IllegalArgumentException("Les donnees dans le label " + "'" + labels[i] + "'" + " ne sont pas bien type. Linea : " + linea + " Donnee : " + op3);
+                                        throw new IllegalArgumentException("The data at the label " + "'" + labels[i] + "'" + " don't have a good type. Line : " + linea + " Data : " + op3);
                                     }
 
                                 } else {
@@ -160,7 +159,7 @@ public class DataFrame {
                 fr.close();
 
             } catch (FileNotFoundException e) {
-                System.out.println("Error: Fichier pas trouve");
+                System.out.println("Error: The file wasn't found");
                 System.out.println(e.getMessage());
             } catch (IOException type) {
                 System.err.print(type);
@@ -168,6 +167,11 @@ public class DataFrame {
         }
     }
 
+    /**
+     * Prints the elements from the dataframe from the "deb" index to the "n" index
+     * @param deb The beginning index
+     * @param n The ending index
+     */
     private void print(int deb, int n) {
         int l = deb;
         showLabels();
@@ -192,10 +196,19 @@ public class DataFrame {
         print(checkingLinesNumber(n, PrintingType.TAIL), linesNumber);
     }
 
+    /**
+     * An enumeration of the printing type
+     */
     private enum PrintingType {
         HEAD, TAIL
     };
 
+    /**
+     * Checks if the line number is correct and gives the lines to print in the dataframe
+     * @param n The line number to check
+     * @param type The printing type
+     * @return The lines to print
+     */
     private int checkingLinesNumber(int n, PrintingType type) {
         if (linesNumber - n < 0) {
             throw new IllegalArgumentException("Number of lines > Number of lines of Dataframe !");
@@ -206,20 +219,24 @@ public class DataFrame {
         return type == PrintingType.HEAD ? n : linesNumber - n;
     }
 
+    @Override
     public void show() {
         print(0, linesNumber);
     }
 
+    @Override
     public void head(String label, int n) {
         column(label);
         System.out.println(label + " : " + data.get(label).subList(0, checkingLinesNumber(n, PrintingType.HEAD)));
     }
 
+    @Override
     public void tail(String label, int n) {
         column(label);
         System.out.println(label + " : " + data.get(label).subList(checkingLinesNumber(n, PrintingType.TAIL), data.get(label).size()));
     }
 
+    @Override
     public void showLabels() {
         String lab = " ";
         for (String orderedLabel : orderedLabels) {
@@ -228,6 +245,7 @@ public class DataFrame {
         System.out.println(lab);
     }
 
+    @Override
     public int size() {
         int size = 0;
         for (Map.Entry<String, List> entry : this.data.entrySet()) {
@@ -240,6 +258,11 @@ public class DataFrame {
         return size;
     }
 
+    /**
+     * Gives the column that is associated with the label
+     * @param label the label for which to get the column  
+     * @return The column associated with the label
+     */
     private List column(String label) {
         try {
             data.containsKey(label);
@@ -249,6 +272,7 @@ public class DataFrame {
         return data.get(label);
     }
 
+    @Override
     public DataFrame loc(String label) {
         List<List> elements = new ArrayList<>();
         elements.add(new ArrayList<>(column(label)));
@@ -256,6 +280,7 @@ public class DataFrame {
         return new DataFrame(labels, elements);
     }
 
+    @Override
     public DataFrame loc(List<String> labels) {
         List<List> elements = new ArrayList<>(labels.size());
         for (String label : labels) {
@@ -265,6 +290,7 @@ public class DataFrame {
         return new DataFrame(labels.toArray(labelsArray), elements);
     }
 
+    @Override
     public DataFrame loc(String labelInf, String labelSup) {
 
         column(labelInf);
@@ -290,6 +316,7 @@ public class DataFrame {
 
     }
 
+    @Override
     public DataFrame loc(String... labels) {
         List<String> labelsList = new ArrayList<>(labels.length);
         labelsList.addAll(Arrays.asList(labels));
@@ -314,6 +341,7 @@ public class DataFrame {
         }
     }
 
+    @Override
     public DataFrame iloc(int index) {
         checkingIndex(index);
         DataFrame df = initDataFrameBeforeSelectingLines(1);
@@ -333,6 +361,7 @@ public class DataFrame {
         }).collect(Collectors.toList());
     }
 
+    @Override
     public DataFrame iloc(List<Integer> indexes) {
         for (Integer index : indexes) {
             checkingIndex(index);
@@ -344,6 +373,7 @@ public class DataFrame {
         return df;
     }
 
+    @Override
     public DataFrame iloc(Integer... indexes) {
         for (Integer index : indexes) {
             checkingIndex(index);
@@ -355,6 +385,7 @@ public class DataFrame {
         return df;
     }
 
+    @Override
     public DataFrame iloc(int indexInf, int indexSup) {
         int inf = indexInf, sup = indexSup;
         if (inf > sup) {
@@ -377,6 +408,10 @@ public class DataFrame {
         return df;
     }
 
+    /**
+     * Checks if the first element is a number
+     * @param label The label for which to check the number format
+     */
     private void checkingNumberFormat(String label) {
         try {
             if (!(data.get(label).get(0) instanceof Number)) {
@@ -387,6 +422,11 @@ public class DataFrame {
         }
     }
 
+    /**
+     * Checks if the label is comparable
+     * @param label The label to check for
+     * @return The class of the first element of the column
+     */
     private Class<?> checkingComparable(String label) {
         try {
             if (!(data.get(label).get(0) instanceof Comparable)) {
@@ -398,6 +438,7 @@ public class DataFrame {
         return data.get(label).get(0).getClass();
     }
 
+    @Override
     public void showStatitic(String label) {
         System.out.println("Label : " + label);
         System.out.println("Mean : " + meanColumn(label));
@@ -405,6 +446,7 @@ public class DataFrame {
         System.out.println("Maximum : " + maxColumn(label));
     }
 
+    @Override
     public Float meanColumn(String label) {
         column(label);
         checkingNumberFormat(label);
@@ -426,6 +468,7 @@ public class DataFrame {
         return mean;
     }
 
+    @Override
     public Comparable minColumn(String label) {
         column(label);
         Class<?> classe = checkingComparable(label);
@@ -440,6 +483,7 @@ public class DataFrame {
         return min;
     }
 
+    @Override
     public Comparable maxColumn(String label) {
         column(label);
         Class<?> classe = checkingComparable(label);
@@ -454,12 +498,123 @@ public class DataFrame {
         return max;
     }
 
+    @Override
     public void orderBy(String label) {
         column(label);
         checkingComparable(label);
     }
 
+    @Override
     public Integer getMaxColumnSize() {
         return linesNumber;
+    }
+
+    @Override
+    public TreeMap<String, List> groupby(String[] labels) {
+        TreeMap<String, List> dataReturnd = new TreeMap<String, List>();
+        List listReturnd;
+        for (int i = 0; i < labels.length; i++) {
+            listReturnd = groupby(labels[i]);
+            dataReturnd.put(labels[i], listReturnd);
+        }
+        return dataReturnd;
+    }
+
+    /*
+       groupby one column, it takes the label as param then it returns the list 
+     */
+    @Override
+    public List groupby(String label) {
+        List dataReturnd = new ArrayList();
+        List data = this.data.get(label);
+        for (int i = 0; i < data.size(); i++) {
+            if (!dataReturnd.contains(data.get(i))) {
+                dataReturnd.add(data.get(i));
+            }
+        }
+        return dataReturnd;
+    }
+
+
+    /*
+          it takes the label and the aggreagate as an optional param "{max, sum} of column"
+     */
+    @Override
+    public TreeMap<String, Object> groupby(String label, Optional<String> aggregate) {
+        TreeMap<String, Object> dataReturnd = new TreeMap<String, Object>();
+        List data = this.data.get(label);
+        if (aggregate.isPresent()) {
+            switch (aggregate.get()) {
+                case "sum":
+                    dataReturnd.put(aggregate.get() + "(" + label + ")", sum(data));
+                    break;
+                case "max":
+                    dataReturnd.put(aggregate.get() + "(" + label + ")", Collections.max(data));
+                    break;
+                default:
+                    throw new IllegalArgumentException("The aggregate : " + aggregate + " doesn't exist");
+            }
+        }
+        return dataReturnd;
+    }
+
+    /*
+        it takes a list of labels and aggreagate as optional (just count)
+     */
+    @Override
+    public TreeMap<String, List> groupby(String[] labels, String aggregate) {
+        TreeMap<String, List> dataReturned = new TreeMap<String, List>();
+        List listReturnd;
+        List labelListData;
+        List aggregateList;
+        if (aggregate.equals("count")) {
+            for (int i = 0; i < labels.length; i++) {
+                labelListData = this.data.get(labels[i]);
+                aggregateList = new ArrayList<Integer>();
+                listReturnd = new ArrayList();
+                for (int j = 0; j < labelListData.size(); j++) {
+                    if (!listReturnd.contains(labelListData.get(i))) {
+                        listReturnd.add(labelListData.get(i));
+                        aggregateList.add(count(labelListData, labelListData.get(i)));
+                    }
+                }
+                dataReturned.put(labels[i], listReturnd);
+                dataReturned.put(aggregate + "(" + labels[i] + ")", aggregateList);
+            }
+        } else {
+            throw new IllegalArgumentException("The aggregate : " + aggregate + " doesn't exist");
+        }
+        return dataReturned;
+    }
+    
+    @Override
+    public int count(List list, Object element) {
+        int cpt = 0;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).equals(element)) {
+                cpt++;
+            }
+        }
+        return cpt;
+    }
+
+    private Object sum(List list) {
+        if (list.get(0) instanceof Integer) {
+            int somme = 0;
+            for (int i = 0; i < list.size(); i++) {
+                somme = somme + (Integer) list.get(i);
+            }
+            return somme;
+        } else {
+            if (list.get(0) instanceof Float) {
+                float somme = 0;
+                for (int i = 0; i < list.size(); i++) {
+                    somme = somme + (Float) list.get(i);
+                }
+                return somme;
+            } else {
+                throw new IllegalArgumentException("Cannot aggregate a string");
+            }
+        }
     }
 }
