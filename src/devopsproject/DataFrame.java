@@ -32,7 +32,6 @@ public class DataFrame {
     // Comparator pour ordonner les labels selon leur position donnée à la construction
     private class DataComparator implements Comparator<String> {
 
-        @Override
         public int compare(String o1, String o2) {
             return indexLabels.get(o1) < indexLabels.get(o2) ? -1
                     : indexLabels.get(o1) > indexLabels.get(o2) ? 1 : 0;
@@ -67,7 +66,7 @@ public class DataFrame {
         Matcher matcher;
         extension = nameFile.substring(nameFile.lastIndexOf(".") + 1);
         if (!extension.equals("csv")) {
-            throw new IOException("L'extension du fichier est incorrecte");
+            throw new IOException("The file extension is incorrect, please give a .csv file");
         } else {
             try {
                 fr = new FileReader(nameFile);
@@ -90,7 +89,7 @@ public class DataFrame {
                 for (int j = 0; j < firstElement.length; j++) {
                     matcher = pattern.matcher(firstElement[j]);
                     if (!matcher.find()) {
-                        throw new NumberFormatException("La premiere ligne ne peut pas avoir des valeurs nuls");
+                        throw new NumberFormatException("The first line cannot have null values");
                     }
 
                     try {
@@ -121,7 +120,7 @@ public class DataFrame {
                             if (op1.getClass().equals(donnees.get(0).getClass())) {
                                 donnees.add(op1);
                             } else {
-                                throw new IllegalArgumentException("Les donnees dans le label " + "'" + labels[i] + "'" + " ne sont pas bien type. Linea : " + linea + " Donnee : " + op1);
+                                throw new IllegalArgumentException("The data at the label " + "'" + labels[i] + "'" + " don't have a good type. Line : " + linea + " Data : " + op1);
                             }
 
                         } catch (NumberFormatException e1) {
@@ -130,7 +129,7 @@ public class DataFrame {
                                 if (op2.getClass().equals(donnees.get(0).getClass())) {
                                     donnees.add(op2);
                                 } else {
-                                    throw new IllegalArgumentException("Les donnees dans le label " + "'" + labels[i] + "'" + " ne sont pas bien type. Linea : " + linea + " Donnee : " + op2);
+                                    throw new IllegalArgumentException("The data at the label " + "'" + labels[i] + "'" + " don't have a good type. Line : " + linea + " Data : " + op2);
                                 }
                             } catch (NumberFormatException e2) {
                                 String op3 = values[i];
@@ -141,7 +140,7 @@ public class DataFrame {
                                     if (op3.getClass().equals((donnees.get(0).getClass()))) {
                                         donnees.add(op3);
                                     } else {
-                                        throw new IllegalArgumentException("Les donnees dans le label " + "'" + labels[i] + "'" + " ne sont pas bien type. Linea : " + linea + " Donnee : " + op3);
+                                        throw new IllegalArgumentException("The data at the label " + "'" + labels[i] + "'" + " don't have a good type. Line : " + linea + " Data : " + op3);
                                     }
 
                                 } else {
@@ -163,7 +162,7 @@ public class DataFrame {
                 fr.close();
 
             } catch (FileNotFoundException e) {
-                System.out.println("Error: Fichier pas trouve");
+                System.out.println("Error: The file wasn't found");
                 System.out.println(e.getMessage());
             } catch (IOException type) {
                 System.err.print(type);
@@ -465,105 +464,108 @@ public class DataFrame {
     public Integer getMaxColumnSize() {
         return linesNumber;
     }
-    
-    public TreeMap<String, List> groupby(String[] labels){
+
+    public TreeMap<String, List> groupby(String[] labels) {
         TreeMap<String, List> dataReturnd = new TreeMap<String, List>();
         List listReturnd;
-        for(int i=0;i<labels.length;i++){
+        for (int i = 0; i < labels.length; i++) {
             listReturnd = groupby(labels[i]);
             dataReturnd.put(labels[i], listReturnd);
         }
         return dataReturnd;
     }
- 
+
     /*
        groupby one column, it takes the label as param then it returns the list 
-    */
-    public List groupby(String label){
+     */
+    public List groupby(String label) {
         List dataReturnd = new ArrayList();
         List data = this.data.get(label);
-        for(int i=0;i<data.size();i++){
-               if(!dataReturnd.contains(data.get(i))){
-                   dataReturnd.add(data.get(i));
-               }
-        }
-        return dataReturnd;
-    }
-    /*
-          it takes the label and the aggreagate as an optional param "{max, sum} of column"
-    */
-    public TreeMap<String, Object> groupby(String label, Optional<String> aggregate){
-        TreeMap<String, Object> dataReturnd = new TreeMap<String, Object>();
-        List data = this.data.get(label);
-        if(aggregate.isPresent()){
-            switch(aggregate.get()){
-                case "sum":
-                    dataReturnd.put(aggregate.get()+"("+label+")",sum(data));
-                    break;
-                case "max":
-                     dataReturnd.put(aggregate.get()+"("+label+")",Collections.max(data));
-                    break;
+        for (int i = 0; i < data.size(); i++) {
+            if (!dataReturnd.contains(data.get(i))) {
+                dataReturnd.add(data.get(i));
             }
         }
         return dataReturnd;
     }
-    
+
+    /*
+          it takes the label and the aggreagate as an optional param "{max, sum} of column"
+     */
+    public TreeMap<String, Object> groupby(String label, Optional<String> aggregate) {
+        TreeMap<String, Object> dataReturnd = new TreeMap<String, Object>();
+        List data = this.data.get(label);
+        if (aggregate.isPresent()) {
+            switch (aggregate.get()) {
+                case "sum":
+                    dataReturnd.put(aggregate.get() + "(" + label + ")", sum(data));
+                    break;
+                case "max":
+                    dataReturnd.put(aggregate.get() + "(" + label + ")", Collections.max(data));
+                    break;
+                default:
+                    throw new IllegalArgumentException("The aggregate : " + aggregate + " doesn't exist");
+            }
+        }
+        return dataReturnd;
+    }
+
     /*
         it takes a list of labels and aggreagate as optional (just count)
-    */
-    
-    public TreeMap<String, List> groupby(String[] labels, String aggregate){
+     */
+    public TreeMap<String, List> groupby(String[] labels, String aggregate) {
         TreeMap<String, List> dataReturned = new TreeMap<String, List>();
         List listReturnd;
         List labelListData;
         List aggregateList;
-            if(aggregate.equals("count")){
-                for(int i=0;i<labels.length;i++){
-                    labelListData = this.data.get(labels[i]);
-                    aggregateList = new ArrayList<Integer>();
-                    listReturnd = new ArrayList();
-                    for(int j=0;j<labelListData.size();j++){
-                       if(!listReturnd.contains(labelListData.get(i))){
-                           listReturnd.add(labelListData.get(i));
-                           aggregateList.add(count(labelListData,labelListData.get(i)));
-                       }
+        if (aggregate.equals("count")) {
+            for (int i = 0; i < labels.length; i++) {
+                labelListData = this.data.get(labels[i]);
+                aggregateList = new ArrayList<Integer>();
+                listReturnd = new ArrayList();
+                for (int j = 0; j < labelListData.size(); j++) {
+                    if (!listReturnd.contains(labelListData.get(i))) {
+                        listReturnd.add(labelListData.get(i));
+                        aggregateList.add(count(labelListData, labelListData.get(i)));
                     }
-                    dataReturned.put(labels[i], listReturnd);
-                    dataReturned.put(aggregate+"("+labels[i]+")", aggregateList);
                 }
+                dataReturned.put(labels[i], listReturnd);
+                dataReturned.put(aggregate + "(" + labels[i] + ")", aggregateList);
             }
+        } else {
+            throw new IllegalArgumentException("The aggregate : " + aggregate + " doesn't exist");
+        }
         return dataReturned;
     }
-    
-    
-        
-    public int count(List list, Object element){
+
+    public int count(List list, Object element) {
         int cpt = 0;
-        for(int i=0;i<list.size();i++){
-            if(list.get(i).equals(element)) cpt++;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).equals(element)) {
+                cpt++;
+            }
         }
         return cpt;
     }
-    
-    public Object sum(List list){
-        if(list.get(0) instanceof Integer){
-                int somme = 0;
-                for(int i=0;i<list.size();i++){
-                    somme = somme + (Integer)list.get(i);
-                }
-                return somme;
-        }
-        else{
-             if(list.get(0) instanceof Double){
+
+    private Object sum(List list) {
+        if (list.get(0) instanceof Integer) {
+            int somme = 0;
+            for (int i = 0; i < list.size(); i++) {
+                somme = somme + (Integer) list.get(i);
+            }
+            return somme;
+        } else {
+            if (list.get(0) instanceof Float) {
                 float somme = 0;
-                for(int i=0;i<list.size();i++){
-                    somme = somme + (Float)list.get(i);
+                for (int i = 0; i < list.size(); i++) {
+                    somme = somme + (Float) list.get(i);
                 }
                 return somme;
             } else {
-                 throw new EmptyStackException();
-             }
+                throw new IllegalArgumentException("Cannot aggregate a string");
+            }
         }
     }
-    
+
 }

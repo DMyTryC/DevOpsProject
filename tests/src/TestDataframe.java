@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -314,6 +315,57 @@ public class TestDataframe {
     @Test(expected = IllegalArgumentException.class)
     public void typeErrorString() throws IOException{
         dfFileList.add(new DataFrame("tests/resources/type_error_4.csv", ","));
+    }
+    
+    @Test
+    public void groupByLabelListTest() {
+        dfFileList.get(5).groupby(new String[]{"Price", "City", "Country"});
+    }
+    
+    @Test
+    public void groupByLabelTest(){
+        dfFileList.get(5).groupby("Country");
+    }
+    
+    @Test
+    public void groupByLabelListAggregate(){
+        dfFileList.get(5).groupby(new String[]{"Price"},"count");
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void groupByLabelListAggregateError(){
+        dfFileList.get(5).groupby(new String[]{"Price"},"incorrectAggregate");
+    }
+    
+    @Test
+    public void orderByTest(){
+        dfFileList.get(5).orderBy("City");
+    }
+    
+    @Test
+    public void groupByLabelAggregateCorrect(){
+        Optional<String> optSum = Optional.of("sum");
+        dfFileList.get(5).groupby("Price",optSum);
+
+        Optional<String> optMax = Optional.of("max");
+        dfFileList.get(5).groupby("Price",optMax);
+
+        dfFileList.get(2).groupby("Height",optSum);
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void groupByLabelNoSuchAggregate(){
+        dfFileList.get(5).groupby("City",Optional.of("notavailable"));
+    }
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void groupByLabelAggregateString(){
+        dfFileList.get(5).groupby("City",Optional.of("sum"));
+    }
+    
+    @Test(expected = NumberFormatException.class)
+    public void formatError() throws IOException{
+        dfFileList.add(new DataFrame("tests/resources/format_error.csv",","));
     }
 }
 
