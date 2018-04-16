@@ -16,9 +16,9 @@ The linesNumber defines the highest column which is needed when trying to show a
 
 For the dataframe creation:
 The user can create a dataframe :
-	* with no data.
-	* from a list of labels and a list of elements, each list being associated with a label.
-	* from a file, by also specifying the data separator.
+* with no data.
+* from a list of labels and a list of elements, each list being associated with a label.
+* from a file, by also specifying the data separator.
 
 ## Type decisions
 We decided that only three types of data can be read from a file : Integer, Float and String.
@@ -49,12 +49,12 @@ Blank data and spaces are permitted except for the first element of each row bec
 * showStatistic(String label)					: shows mean, minimum and maximum for the column label
 * size()										: finds the number of cells in the dataframe
 * getMaxColumnSize()							: gives the size of the biggest column
-* count(List list, Object el)					: calculates the occurence of the el in the list
+* count(List list, Object element)				: calculates the occurence of the element in the list
 ### Data analysis
 * groupby(label)								: groups the data depending on the label
-* groupby(String[] labels)						: groups the data depending on the labels
-* groupby(String[] labels, String aggregate)	: groups the data depending on the labels then applies a function on the data
-* groupby(String label, String[] aggregate)		: groups the data depending on the label then applies functions on the data
+* groupby(String[ ] labels)						: groups the data depending on the labels
+* groupby(String[ ] labels, String aggregate)	: groups the data depending on the labels then applies a function on the data
+* groupby(String label, String[ ] aggregate)	: groups the data depending on the label then applies functions on the data
 
 ## Tools used :
 * Github - For collaborative development
