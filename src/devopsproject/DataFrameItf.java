@@ -1,567 +1,194 @@
 package devopsproject;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-public class DataFrame {
-
-    private int linesNumber; // Stocke la taille de la plus grande colonne pour l'affichage du Dataframe
-    private List<String> orderedLabels; // Stocke l'ordre des labels pour afficher les colonnes du Dataframe dans le même ordre que celui donné lors de la construction
-    private HashMap<String, Integer> indexLabels; // Permet de retrouver la position d'un label/d'une colonne
-    private TreeMap<String, List> data; // Table d'association Label -> données
-
-    // Comparator pour ordonner les labels selon leur position donnée à la construction
-    private class DataComparator implements Comparator<String> {
-
-        public int compare(String o1, String o2) {
-            return indexLabels.get(o1) < indexLabels.get(o2) ? -1
-                    : indexLabels.get(o1) > indexLabels.get(o2) ? 1 : 0;
-        }
-    }
-
-    public DataFrame() {
-        this.linesNumber = 0;
-        this.orderedLabels = new ArrayList<>();
-        this.indexLabels = new HashMap<>();
-        this.data = new TreeMap<>(new DataComparator());
-    }
-
-    public DataFrame(String[] labels, List<List> elements) {
-        this();
-        for (int i = 0; i < elements.size(); i++) {
-            this.linesNumber = Math.max(linesNumber, elements.get(i).size());
-            this.orderedLabels.add(labels[i]);
-            this.indexLabels.put(labels[i], i);
-            this.data.put(labels[i], elements.get(i));
-        }
-    }
-
-    public DataFrame(String nameFile, String separator) throws IOException {
-        this();
-        FileReader fr = null;
-        BufferedReader br;
-        String extension;
-        List donnees;
-        String[] values;
-        Pattern pattern = Pattern.compile("[a-zA-Z0-9]");
-        Matcher matcher;
-        extension = nameFile.substring(nameFile.lastIndexOf(".") + 1);
-        if (!extension.equals("csv")) {
-            throw new IOException("The file extension is incorrect, please give a .csv file");
-        } else {
-            try {
-                fr = new FileReader(nameFile);
-                br = new BufferedReader(fr);
-                String linea;
-                linea = br.readLine();
-                String[] labels = linea.split(separator, -1);
-                for (int j = 0; j < labels.length; j++) {
-                    donnees = new ArrayList<>();
-                    this.orderedLabels.add(labels[j]);
-                    this.indexLabels.put(labels[j], j);
-                    this.data.put(labels[j], donnees);
-                }
-
-                // Stockage de la première ligne et inférence de classe (ou du type) de chacun de ses éléments
-                String lineaType = br.readLine();
-                String[] firstElement = lineaType.split(separator, -1);
-                String elementString;
-
-                for (int j = 0; j < firstElement.length; j++) {
-                    matcher = pattern.matcher(firstElement[j]);
-                    if (!matcher.find()) {
-                        throw new NumberFormatException("The first line cannot have null values");
-                    }
-
-                    try {
-                        int op1 = Integer.parseInt(firstElement[j]);
-                        donnees = this.data.get(labels[j]);
-                        donnees.add(op1);
-
-                    } catch (NumberFormatException e1) {
-                        try {
-                            float op2 = Float.parseFloat(firstElement[j]);
-                            donnees = this.data.get(labels[j]);
-                            donnees.add(op2);
-                        } catch (NumberFormatException e2) {
-                            elementString = firstElement[j];
-                            donnees = this.data.get(labels[j]);
-                            donnees.add(elementString);
-                        }
-                    }
-                }
-                // Stockage des lignes restantes, inférence des classes de chaun de leus éléments et comparaison des classes avec la classe du premier élément
-                while ((linea = br.readLine()) != null) {
-                    values = linea.split(separator, -1);
-                    for (int i = 0; i < labels.length; i++) {
-                        donnees = this.data.get(labels[i]);
-
-                        try {
-                            Integer op1 = Integer.parseInt(values[i]);
-                            if (op1.getClass().equals(donnees.get(0).getClass())) {
-                                donnees.add(op1);
-                            } else {
-                                throw new IllegalArgumentException("The data at the label " + "'" + labels[i] + "'" + " don't have a good type. Line : " + linea + " Data : " + op1);
-                            }
-
-                        } catch (NumberFormatException e1) {
-                            try {
-                                Float op2 = Float.parseFloat(values[i]);
-                                if (op2.getClass().equals(donnees.get(0).getClass())) {
-                                    donnees.add(op2);
-                                } else {
-                                    throw new IllegalArgumentException("The data at the label " + "'" + labels[i] + "'" + " don't have a good type. Line : " + linea + " Data : " + op2);
-                                }
-                            } catch (NumberFormatException e2) {
-                                String op3 = values[i];
-
-                                matcher = pattern.matcher(values[i]);
-
-                                if (matcher.find()) {
-                                    if (op3.getClass().equals((donnees.get(0).getClass()))) {
-                                        donnees.add(op3);
-                                    } else {
-                                        throw new IllegalArgumentException("The data at the label " + "'" + labels[i] + "'" + " don't have a good type. Line : " + linea + " Data : " + op3);
-                                    }
-
-                                } else {
-
-                                    donnees.add(op3);
-                                }
-
-                            }
-                        }
-                    }
-                }
-
-                // Stockage de la taille de la plus grande colonne
-                for (Map.Entry<String, List> entry : data.entrySet()) {
-
-                    linesNumber = Math.max(linesNumber, entry.getValue().size());
-                }
-
-                fr.close();
-
-            } catch (FileNotFoundException e) {
-                System.out.println("Error: The file wasn't found");
-                System.out.println(e.getMessage());
-            } catch (IOException type) {
-                System.err.print(type);
-            }
-        }
-    }
-
-    private void print(int deb, int n) {
-        int l = deb;
-        showLabels();
-        while (l < n) {
-            String values = "";
-            for (Map.Entry<String, List> entry : data.entrySet()) {
-                values = values + " | "
-                        + (l < entry.getValue().size() && entry.getValue().get(l) != null
-                        ? entry.getValue().get(l).toString() : " ");
-            }
-            values = l + " " + values;
-            System.out.println(values);
-            l++;
-        }
-    }
-
-    public void head(int n) {
-        print(0, checkingLinesNumber(n, PrintingType.HEAD));
-    }
-
-    public void tail(int n) {
-        print(checkingLinesNumber(n, PrintingType.TAIL), linesNumber);
-    }
-
-    private enum PrintingType {
-        HEAD, TAIL
-    };
-
-    private int checkingLinesNumber(int n, PrintingType type) {
-        if (linesNumber - n < 0) {
-            throw new IllegalArgumentException("Number of lines > Number of lines of Dataframe !");
-        }
-        if (n < 0) {
-            throw new IllegalArgumentException("Number of lines < 0 !");
-        }
-        return type == PrintingType.HEAD ? n : linesNumber - n;
-    }
-
-    public void show() {
-        print(0, linesNumber);
-    }
-
-    public void head(String label, int n) {
-        column(label);
-        System.out.println(label + " : " + data.get(label).subList(0, checkingLinesNumber(n, PrintingType.HEAD)));
-    }
-
-    public void tail(String label, int n) {
-        column(label);
-        System.out.println(label + " : " + data.get(label).subList(checkingLinesNumber(n, PrintingType.TAIL), data.get(label).size()));
-    }
-
-    public void showLabels() {
-        String lab = " ";
-        for (String orderedLabel : orderedLabels) {
-            lab = lab + " | " + orderedLabel;
-        }
-        System.out.println(lab);
-    }
-
-    public int size() {
-        int size = 0;
-        for (Map.Entry<String, List> entry : this.data.entrySet()) {
-            for (Object object : entry.getValue()) {
-                if (object != null) {
-                    size++;
-                }
-            }
-        }
-        return size;
-    }
-
-    private List column(String label) {
-        try {
-            data.containsKey(label);
-        } catch (NullPointerException ex) {
-            throw new IllegalArgumentException("Label " + label + " does not exist !");
-        }
-        return data.get(label);
-    }
-
-    public DataFrame loc(String label) {
-        List<List> elements = new ArrayList<>();
-        elements.add(new ArrayList<>(column(label)));
-        String[] labels = {label};
-        return new DataFrame(labels, elements);
-    }
-
-    public DataFrame loc(List<String> labels) {
-        List<List> elements = new ArrayList<>(labels.size());
-        for (String label : labels) {
-            elements.add(new ArrayList<>(column(label)));
-        }
-        String[] labelsArray = new String[labels.size()];
-        return new DataFrame(labels.toArray(labelsArray), elements);
-    }
-
-    public DataFrame loc(String labelInf, String labelSup) {
-
-        column(labelInf);
-        column(labelSup);
-
-        int inf = indexLabels.get(labelInf), sup = indexLabels.get(labelSup);
-
-        int size = Math.abs(sup - inf) + 1;
-        List<List> elements = new ArrayList<>(size);
-        String[] labels = new String[size];
-
-        if (inf > sup) {
-            int tmp = inf;
-            inf = sup;
-            sup = tmp;
-        }
-        for (int i = inf, j = 0; i <= sup; i++, j++) {
-            labels[j] = this.orderedLabels.get(i);
-            elements.add(data.get(this.orderedLabels.get(i)));
-        }
-
-        return new DataFrame(labels, elements);
-
-    }
-
-    public DataFrame loc(String... labels) {
-        List<String> labelsList = new ArrayList<>(labels.length);
-        labelsList.addAll(Arrays.asList(labels));
-        return loc(labelsList);
-    }
-
-    private DataFrame initDataFrameBeforeSelectingLines(int linesNumber) {
-        DataFrame df = new DataFrame();
-        df.linesNumber = linesNumber;
-        df.orderedLabels = new ArrayList<>(orderedLabels);
-        df.indexLabels = new HashMap<>(indexLabels);
-        df.data = new TreeMap<>(data);
-        return df;
-    }
-
-    private void checkingIndex(int index) {
-        if (index > linesNumber) {
-            throw new IllegalArgumentException("index > Number of lines of DataFrame !");
-        }
-        if (index < 0) {
-            throw new IllegalArgumentException("index < 0 !");
-        }
-    }
-
-    public DataFrame iloc(int index) {
-        checkingIndex(index);
-        DataFrame df = initDataFrameBeforeSelectingLines(1);
-        for (String label : orderedLabels) {
-            df.data.replace(label, new ArrayList(Arrays.asList(data.get(label).get(index))));
-        }
-        return df;
-    }
-
-    // Pour chaque index de indexes est associé l'élement de elements correspondant
-    private List indexToElement(List<Integer> indexes, List elements) {
-        return indexes.stream().map(new Function<Integer, Object>() {
-            @Override
-            public Object apply(Integer index) {
-                return elements.get(index);
-            }
-        }).collect(Collectors.toList());
-    }
-
-    public DataFrame iloc(List<Integer> indexes) {
-        for (Integer index : indexes) {
-            checkingIndex(index);
-        }
-        DataFrame df = initDataFrameBeforeSelectingLines(indexes.size());
-        for (String label : orderedLabels) {
-            df.data.replace(label, indexToElement(indexes, data.get(label)));
-        }
-        return df;
-    }
-
-    public DataFrame iloc(Integer... indexes) {
-        for (Integer index : indexes) {
-            checkingIndex(index);
-        }
-        DataFrame df = initDataFrameBeforeSelectingLines(indexes.length);
-        for (String label : orderedLabels) {
-            df.data.replace(label, indexToElement(Arrays.asList(indexes), data.get(label)));
-        }
-        return df;
-    }
-
-    public DataFrame iloc(int indexInf, int indexSup) {
-        int inf = indexInf, sup = indexSup;
-        if (inf > sup) {
-            int tmp = inf;
-            inf = sup;
-            sup = tmp;
-        }
-        checkingIndex(inf);
-        checkingIndex(sup);
-        DataFrame df = initDataFrameBeforeSelectingLines(sup - inf + 1);
-        for (String label : orderedLabels) {
-            df.data.replace(label, IntStream.range(inf, sup + 1).boxed().map(new Function<Integer, Object>() {
-
-                @Override
-                public Object apply(Integer index) {
-                    return data.get(label).get(index);
-                }
-            }).collect(Collectors.toList()));
-        }
-        return df;
-    }
-
-    private void checkingNumberFormat(String label) {
-        try {
-            if (!(data.get(label).get(0) instanceof Number)) {
-                throw new IllegalArgumentException("Column at Label " + label + " is not Numeric !");
-            }
-        } catch (NullPointerException ex) {
-            throw new IllegalArgumentException("Label " + label + " does not exist !");
-        }
-    }
-
-    private Class<?> checkingComparable(String label) {
-        try {
-            if (!(data.get(label).get(0) instanceof Comparable)) {
-                throw new IllegalArgumentException("Column at Label " + label + " is not Comparable !");
-            }
-        } catch (NullPointerException ex) {
-            throw new IllegalArgumentException("Label " + label + " does not exist !");
-        }
-        return data.get(label).get(0).getClass();
-    }
-
-    public void showStatitic(String label) {
-        System.out.println("Label : " + label);
-        System.out.println("Mean : " + meanColumn(label));
-        System.out.println("Minimum : " + minColumn(label));
-        System.out.println("Maximum : " + maxColumn(label));
-    }
-
-    public Float meanColumn(String label) {
-        column(label);
-        checkingNumberFormat(label);
-        List donnee;
-        float mean = 0;
-        Float num;
-        for (Map.Entry<String, List> entry : this.data.entrySet()) {
-            if (label.equals(entry.getKey())) {
-                donnee = entry.getValue();
-                for (int i = 0; i < donnee.size(); i++) {
-                    if (!donnee.get(i).toString().equals("") && !donnee.get(i).toString().equals(" ")) {
-                        num = new Float(donnee.get(i).toString());
-                        mean = mean + num;
-                    }
-                }
-                mean = mean / donnee.size();
-            }
-        }
-        return mean;
-    }
-
-    public Comparable minColumn(String label) {
-        column(label);
-        Class<?> classe = checkingComparable(label);
-        Comparable min = (Comparable) data.get(label).get(0);
-        for (int i = 1; i < data.get(label).size(); i++) {
-            if (!(data.get(label).get(i).getClass().equals(classe))) {
-                throw new IllegalArgumentException(data.get(label).get(i) + "is not Comparable !");
-            }
-            Comparable currentElt = (Comparable) data.get(label).get(i);
-            min = currentElt.compareTo(min) == -1 ? currentElt : min;
-        }
-        return min;
-    }
-
-    public Comparable maxColumn(String label) {
-        column(label);
-        Class<?> classe = checkingComparable(label);
-        Comparable max = (Comparable) data.get(label).get(0);
-        for (int i = 1; i < data.get(label).size(); i++) {
-            if (!(data.get(label).get(i).getClass().equals(classe))) {
-                throw new IllegalArgumentException(data.get(label).get(i) + "is not Comparable !");
-            }
-            Comparable currentElt = (Comparable) data.get(label).get(i);
-            max = currentElt.compareTo(max) == 1 ? currentElt : max;
-        }
-        return max;
-    }
-
-    public void orderBy(String label) {
-        column(label);
-        checkingComparable(label);
-    }
-
-    public Integer getMaxColumnSize() {
-        return linesNumber;
-    }
-
-    public TreeMap<String, List> groupby(String[] labels) {
-        TreeMap<String, List> dataReturnd = new TreeMap<String, List>();
-        List listReturnd;
-        for (int i = 0; i < labels.length; i++) {
-            listReturnd = groupby(labels[i]);
-            dataReturnd.put(labels[i], listReturnd);
-        }
-        return dataReturnd;
-    }
-
-    /*
-       groupby one column, it takes the label as param then it returns the list 
+public interface DataFrameItf {
+    
+    /**
+     * Prints the dataframe
      */
-    public List groupby(String label) {
-        List dataReturnd = new ArrayList();
-        List data = this.data.get(label);
-        for (int i = 0; i < data.size(); i++) {
-            if (!dataReturnd.contains(data.get(i))) {
-                dataReturnd.add(data.get(i));
-            }
-        }
-        return dataReturnd;
-    }
-
-    /*
-          it takes the label and the aggreagate as an optional param "{max, sum} of column"
+    public void show();
+    
+    /**
+     * Prints the first n lines of the dataframe
+     * @param n The number of lines to print
      */
-    public TreeMap<String, Object> groupby(String label, Optional<String> aggregate) {
-        TreeMap<String, Object> dataReturnd = new TreeMap<String, Object>();
-        List data = this.data.get(label);
-        if (aggregate.isPresent()) {
-            switch (aggregate.get()) {
-                case "sum":
-                    dataReturnd.put(aggregate.get() + "(" + label + ")", sum(data));
-                    break;
-                case "max":
-                    dataReturnd.put(aggregate.get() + "(" + label + ")", Collections.max(data));
-                    break;
-                default:
-                    throw new IllegalArgumentException("The aggregate : " + aggregate + " doesn't exist");
-            }
-        }
-        return dataReturnd;
-    }
-
-    /*
-        it takes a list of labels and aggreagate as optional (just count)
+    public void head(int n);
+    
+    /**
+     * Prints the first n lines of the dataframe for the label
+     * @param label The label for which to show the dataframe
+     * @param n The number of lines to print
      */
-    public TreeMap<String, List> groupby(String[] labels, String aggregate) {
-        TreeMap<String, List> dataReturned = new TreeMap<String, List>();
-        List listReturnd;
-        List labelListData;
-        List aggregateList;
-        if (aggregate.equals("count")) {
-            for (int i = 0; i < labels.length; i++) {
-                labelListData = this.data.get(labels[i]);
-                aggregateList = new ArrayList<Integer>();
-                listReturnd = new ArrayList();
-                for (int j = 0; j < labelListData.size(); j++) {
-                    if (!listReturnd.contains(labelListData.get(i))) {
-                        listReturnd.add(labelListData.get(i));
-                        aggregateList.add(count(labelListData, labelListData.get(i)));
-                    }
-                }
-                dataReturned.put(labels[i], listReturnd);
-                dataReturned.put(aggregate + "(" + labels[i] + ")", aggregateList);
-            }
-        } else {
-            throw new IllegalArgumentException("The aggregate : " + aggregate + " doesn't exist");
-        }
-        return dataReturned;
-    }
+    public void head(String label, int n);
+    
+    /**
+     * Prints the last n lines of the dataframe
+     * @param n The number of lines to print
+     */
+    public void tail(int n);
+    
+    /**
+     * Prints the last n lines of the dataframe for the label
+     * @param label The label for which to show the dataframe
+     * @param n The number of lines to print
+     */
+    public void tail(String label, int n);
+    
+    /**
+     * Selects a subset of the dataframe that is associated with the column "label"
+     * @param label The column to select
+     * @return A dataframe containing the label and the column associated
+     */
+    public DataFrame loc(String label);
+    
+    /**
+     * Selects a subset of the dataframe that is associated with the columns that are in the list "labels"
+     * @param labels The list of columns to select
+     * @return A dataframe containing the labels and the columns associated
+     */
+    public DataFrameItf loc(List<String> labels);
+    
+    /**
+     * Selects a subset of the dataframe that is associated with the columns "labels"
+     * Note : If only two strings are given, the loc(labelInf, labelSup) will be executed instead of this one
+     * @param labels The columns to select
+     * @example loc("a","b","c") -> selects the columns labeled "a","b","c"
+     * @return A dataframe containing the labels and the columns associated
+     */
+    public DataFrameItf loc(String ... labels);
+    
+    /**
+     * Selects a subset of the dataframe that is associated with the columns in between the inferior and the superior label
+     * @param labelInf The label to select from
+     * @param labelSup The label to select to
+     * @return A dataframe containing the labels and the columns in between them
+     */
+    public DataFrameItf loc(String labelInf, String labelSup);
+    
 
-    public int count(List list, Object element) {
-        int cpt = 0;
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).equals(element)) {
-                cpt++;
-            }
-        }
-        return cpt;
-    }
 
-    private Object sum(List list) {
-        if (list.get(0) instanceof Integer) {
-            int somme = 0;
-            for (int i = 0; i < list.size(); i++) {
-                somme = somme + (Integer) list.get(i);
-            }
-            return somme;
-        } else {
-            if (list.get(0) instanceof Float) {
-                float somme = 0;
-                for (int i = 0; i < list.size(); i++) {
-                    somme = somme + (Float) list.get(i);
-                }
-                return somme;
-            } else {
-                throw new IllegalArgumentException("Cannot aggregate a string");
-            }
-        }
-    }
+    /**
+     * Selects the lines of the dataframe that are at the index
+     * @param index A line index
+     * @return All the values at the line index
+     */
+    public DataFrameItf iloc(int index);
+    
+    /**
+     * Selects the lines of the dataframe that are at the indexes
+     * @param indexes A list of indexes
+     * @return The values that are at the lines of indexes
+     */
+    public DataFrameItf iloc(List<Integer> indexes) ;
+    
+    /**
+     * Selects the lines of the dataframe that are at the indexes
+     * Note : If only two strings are given, the iloc(indexInf, indexSup) will be executed instead of this one
+     * @param indexes Multiple indexes
+     * @example iloc(1,2,3) -> a dataframe containing the first, second and third rows
+     * @return The values contained at line indexes
+     */
+    public DataFrameItf iloc(Integer ... indexes);
+    
+    /**
+     * Selects the lines of the dataframe that are in between the inferior and the superior index
+     * @param indexInf Lower bound index
+     * @param indexSup Upper bound index
+     * @return A dataframe containing the lines in between the indexInf and indexSup
+     */
+    public DataFrameItf iloc(int indexInf, int indexSup);
+    
+    /**
+     * Calculates the mean of the column at the label "label" 
+     * @param label The label of the column to calculate the mean on
+     * @return The mean on the column
+     */
+    public Float meanColumn(String label);
+    
+    /**
+     * Finds the minimum of the column at the label "label" 
+     * @param label The label of the column to calculate the min on
+     * @return The minimum of the column
+     */
+    public Comparable minColumn(String label);
+    
+    /**
+     * Finds the maximum of the column at the label "label"
+     * @param label The label of the column to calculate the max on
+     * @return The maximum of the column
+     */
+    public Comparable maxColumn(String label);
+    
+    /**
+     * Shows the labels
+     */
+    public void showLabels();
+    
+    /**
+     * Finds the size of the dataframe
+     * @return The size of the dataframe
+     */
+    public int size();
+    
+    /**
+     * Groups the information by the labels
+     * @param labels The labels to group by
+     * @return A treemap containing the information associated to the labels
+     */
+    public TreeMap<String, List> groupby(String[] labels);
+    
+    /**
+     * Groups the information with a label
+     * @param label The label to group by
+     * @return A list containing the information associated to the label
+     */
+    public List groupby(String label);
+    
+    /**
+     * Groups the information with the labels and aggregates it
+     * Aggregate methods : count
+     * @param labels The labels to group by
+     * @param aggregate The aggregation method 
+     * @return A treemap containing the information associated to the label, that has been aggregated
+     */
+    public TreeMap<String, List> groupby(String[] labels, String aggregate);
+    
+    /**
+     * Groups the information with the labels and aggregates it
+     * Aggregate methods : sum, max
+     * @param labels The labels to group by
+     * @param aggregate The aggregation method 
+     * @return A treemap containing the information associated to the label, that has been aggregated
+     */
+    public TreeMap<String, Object> groupby(String label, Optional<String> aggregate);
+    
+    /**
+     * Orders the dataframe by the label
+     * @param label The label to order by
+     */
+    public void orderBy(String label);
+    
+    /**
+     * Shows all the statistics (mean, min, max) for the label
+     * @param label The label to show the statistics for
+     */
+    public void showStatitic(String label);
+    
+    /**
+     * Gives the maximum column size
+     * @return The maximum column size
+     */
+    public Integer getMaxColumnSize();
+    
+    /**
+     * Counts the occurences of the element in the list
+     * @param list The list to verify the occurences in
+     * @param element The element to check the occurences for
+     * @return The number of the occurences
+     */
+    public int count(List list, Object element);
+    
 }
