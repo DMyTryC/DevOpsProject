@@ -134,21 +134,21 @@ public interface DataFrameItf {
     public int size();
     
     /**
-     * Groups the information by the labels
+     * Groups the information depending on the labels
      * @param labels The labels to group by
      * @return A treemap containing the information associated to the labels
      */
     public TreeMap<String, List> groupby(String[] labels);
     
     /**
-     * Groups the information with a label
+     * Groups the information depending on label
      * @param label The label to group by
      * @return A list containing the information associated to the label
      */
     public List groupby(String label);
     
     /**
-     * Groups the information with the labels and aggregates it
+     * Groups the information depending on the labels and aggregates it
      * Aggregate methods : count
      * @param labels The labels to group by
      * @param aggregate The aggregation method 
@@ -157,9 +157,9 @@ public interface DataFrameItf {
     public TreeMap<String, List> groupby(String[] labels, String aggregate);
     
     /**
-     * Groups the information with the labels and aggregates it
+     * Groups the information depending on the labels and aggregates it
      * Aggregate methods : sum, max
-     * @param labels The labels to group by
+     * @param label The label to group by
      * @param aggregate The aggregation method 
      * @return A treemap containing the information associated to the label, that has been aggregated
      */
