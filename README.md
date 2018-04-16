@@ -2,7 +2,7 @@
 
 ## Project explanation
 
-This project was made for the DevOps project consisting in creating a Java library similar to the "pandas" package for Python.
+This is a DevOps project consisting in creating a Java library similar to the "pandas" package for Python.
 The idea was to code some show/selection/statistics functions that will work similarly to those in the Python package. Some other functions were also created.
 A full list of functions can be found lower.
 
