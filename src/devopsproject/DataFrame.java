@@ -19,16 +19,18 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+@SuppressWarnings({"rawtypes","unchecked"})
 public class DataFrame implements DataFrameItf{
 
-    private int linesNumber; // Stocke la taille de la plus grande colonne pour l'affichage du Dataframe
-    private List<String> orderedLabels; // Stocke l'ordre des labels pour afficher les colonnes du Dataframe dans le même ordre que celui donné lors de la construction
-    private HashMap<String, Integer> indexLabels; // Permet de retrouver la position d'un label/d'une colonne
-    private TreeMap<String, List> data; // Table d'association Label -> données
+    private int linesNumber; // Stores size of the greatest column
+    private List<String> orderedLabels; // Stores labels positionning to print columns in the same order as th one given by the constructor
+    private HashMap<String, Integer> indexLabels; // Enables to retrieve label/column position
+    private TreeMap<String, List> data; // Map : label -> data ordered by labels positions
 
-    // Comparator pour ordonner les labels selon leur position donnée à la construction
+    // Comparator to sort labels by their position
     private class DataComparator implements Comparator<String> {
 
+        @Override
         public int compare(String o1, String o2) {
             return indexLabels.get(o1) < indexLabels.get(o2) ? -1
                     : indexLabels.get(o1) > indexLabels.get(o2) ? 1 : 0;
@@ -54,7 +56,7 @@ public class DataFrame implements DataFrameItf{
 
     public DataFrame(String nameFile, String separator) throws IOException {
         this();
-        FileReader fr = null;
+        FileReader fr ;
         BufferedReader br;
         String extension;
         List donnees;
@@ -78,7 +80,7 @@ public class DataFrame implements DataFrameItf{
                     this.data.put(labels[j], donnees);
                 }
 
-                // Stockage de la première ligne et inférence de classe (ou du type) de chacun de ses éléments
+                // Storage of the first line and inference of the class/type of all elements
                 String lineaType = br.readLine();
                 String[] firstElement = lineaType.split(separator, -1);
                 String elementString;
@@ -106,7 +108,7 @@ public class DataFrame implements DataFrameItf{
                         }
                     }
                 }
-                // Stockage des lignes restantes, inférence des classes de chaun de leus éléments et comparaison des classes avec la classe du premier élément
+                // Storage of the remaining lines, inference of the class/type of all elements and comparison with the classes of the elements of the first line
                 while ((linea = br.readLine()) != null) {
                     values = linea.split(separator, -1);
                     for (int i = 0; i < labels.length; i++) {
@@ -150,7 +152,7 @@ public class DataFrame implements DataFrameItf{
                     }
                 }
 
-                // Stockage de la taille de la plus grande colonne
+                // Storage of the size of the greatest column
                 for (Map.Entry<String, List> entry : data.entrySet()) {
 
                     linesNumber = Math.max(linesNumber, entry.getValue().size());
@@ -188,10 +190,12 @@ public class DataFrame implements DataFrameItf{
         }
     }
 
+    @Override
     public void head(int n) {
         print(0, checkingLinesNumber(n, PrintingType.HEAD));
     }
 
+    @Override
     public void tail(int n) {
         print(checkingLinesNumber(n, PrintingType.TAIL), linesNumber);
     }
@@ -322,7 +326,12 @@ public class DataFrame implements DataFrameItf{
         labelsList.addAll(Arrays.asList(labels));
         return loc(labelsList);
     }
-
+    
+    /**
+     * Initialize a DataFrame in order to assign lines to it
+     * @param linesNumber the number of selected lines
+     * @return a copy of this Dataframe with "linesNumber" lines
+     */
     private DataFrame initDataFrameBeforeSelectingLines(int linesNumber) {
         DataFrame df = new DataFrame();
         df.linesNumber = linesNumber;
@@ -331,7 +340,11 @@ public class DataFrame implements DataFrameItf{
         df.data = new TreeMap<>(data);
         return df;
     }
-
+    
+    /**
+     * Checks if the index > 0 and < linesNumber
+     * @param idex The index which must be checked
+     */
     private void checkingIndex(int index) {
         if (index > linesNumber) {
             throw new IllegalArgumentException("index > Number of lines of DataFrame !");
@@ -351,7 +364,12 @@ public class DataFrame implements DataFrameItf{
         return df;
     }
 
-    // Pour chaque index de indexes est associé l'élement de elements correspondant
+    /**
+     * For each index of a List of indexes, maps its corresponding element
+     * @param indexes List of indexes of the elements we want to retrieve
+     * @param elements List of Objects containing the elements we want to retrieve
+     * @return List of wanted elements
+     */
     private List indexToElement(List<Integer> indexes, List elements) {
         return indexes.stream().map(new Function<Integer, Object>() {
             @Override
@@ -499,19 +517,18 @@ public class DataFrame implements DataFrameItf{
     }
 
     @Override
-    public void orderBy(String label) {
-        column(label);
-        checkingComparable(label);
-    }
-
-    @Override
     public Integer getMaxColumnSize() {
         return linesNumber;
     }
 
     @Override
+    public void orderBy(String label) {
+        checkingComparable(label) ;
+    }
+
+    @Override
     public TreeMap<String, List> groupby(String[] labels) {
-        TreeMap<String, List> dataReturnd = new TreeMap<String, List>();
+        TreeMap<String, List> dataReturnd = new TreeMap<>();
         List listReturnd;
         for (int i = 0; i < labels.length; i++) {
             listReturnd = groupby(labels[i]);
@@ -541,7 +558,7 @@ public class DataFrame implements DataFrameItf{
      */
     @Override
     public TreeMap<String, Object> groupby(String label, Optional<String> aggregate) {
-        TreeMap<String, Object> dataReturnd = new TreeMap<String, Object>();
+        TreeMap<String, Object> dataReturnd = new TreeMap<>();
         List data = this.data.get(label);
         if (aggregate.isPresent()) {
             switch (aggregate.get()) {
@@ -563,14 +580,14 @@ public class DataFrame implements DataFrameItf{
      */
     @Override
     public TreeMap<String, List> groupby(String[] labels, String aggregate) {
-        TreeMap<String, List> dataReturned = new TreeMap<String, List>();
+        TreeMap<String, List> dataReturned = new TreeMap<>();
         List listReturnd;
         List labelListData;
         List aggregateList;
         if (aggregate.equals("count")) {
             for (int i = 0; i < labels.length; i++) {
                 labelListData = this.data.get(labels[i]);
-                aggregateList = new ArrayList<Integer>();
+                aggregateList = new ArrayList<>();
                 listReturnd = new ArrayList();
                 for (int j = 0; j < labelListData.size(); j++) {
                     if (!listReturnd.contains(labelListData.get(i))) {
@@ -597,7 +614,11 @@ public class DataFrame implements DataFrameItf{
         }
         return cpt;
     }
-
+    
+    /**
+     * @param list List of Numbers
+     * @return The sum of the Numbers of the List
+     */
     private Object sum(List list) {
         if (list.get(0) instanceof Integer) {
             int somme = 0;
