@@ -12,11 +12,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestsStats {
-    
-    private DataFrame df ;
-    
-    public TestsStats() throws IOException{
-        df = new DataFrame("tests/resources/test.csv", ","); 
+
+    private DataFrame df;
+
+    public TestsStats() throws IOException {
+        df = new DataFrame("tests/resources/test.csv", ",");
     }
     
     @BeforeClass
@@ -44,7 +44,7 @@ public class TestsStats {
     }
     
     @Test
-    public void meanColumnFloat() throws IOException{
+    public void meanColumnFloat() throws IOException {
         System.out.println("MEAN COLUMN FLOAT");
         df = new DataFrame("tests/resources/test1.csv", ",");
         System.out.println("-----------------------------");

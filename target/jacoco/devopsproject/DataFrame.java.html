@@ -6,18 +6,18 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class DataFrame {
 
@@ -29,439 +29,540 @@ public class DataFrame {
     // Comparator pour ordonner les labels selon leur position donnée à la construction
 <span class="fc" id="L30">    private class DataComparator implements Comparator&lt;String&gt; {</span>
 
-        @Override
         public int compare(String o1, String o2) {
-<span class="fc bfc" id="L34" title="All 2 branches covered.">            return indexLabels.get(o1) &lt; indexLabels.get(o2) ? -1</span>
-<span class="fc bfc" id="L35" title="All 2 branches covered.">                    : indexLabels.get(o1) &gt; indexLabels.get(o2) ? 1 : 0;</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">            return indexLabels.get(o1) &lt; indexLabels.get(o2) ? -1</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">                    : indexLabels.get(o1) &gt; indexLabels.get(o2) ? 1 : 0;</span>
         }
     }
 
-<span class="fc" id="L39">    public DataFrame() {</span>
-<span class="fc" id="L40">        this.linesNumber = 0;</span>
-<span class="fc" id="L41">        this.orderedLabels = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L42">        this.indexLabels = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L43">        this.data = new TreeMap&lt;&gt;(new DataComparator());</span>
-<span class="fc" id="L44">    }</span>
+<span class="fc" id="L38">    public DataFrame() {</span>
+<span class="fc" id="L39">        this.linesNumber = 0;</span>
+<span class="fc" id="L40">        this.orderedLabels = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L41">        this.indexLabels = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L42">        this.data = new TreeMap&lt;&gt;(new DataComparator());</span>
+<span class="fc" id="L43">    }</span>
 
     public DataFrame(String[] labels, List&lt;List&gt; elements) {
-<span class="fc" id="L47">        this();</span>
-<span class="fc bfc" id="L48" title="All 2 branches covered.">        for (int i = 0; i &lt; elements.size(); i++) {</span>
-<span class="fc" id="L49">            this.linesNumber = Math.max(linesNumber, elements.get(i).size());</span>
-<span class="fc" id="L50">            this.orderedLabels.add(labels[i]);</span>
-<span class="fc" id="L51">            this.indexLabels.put(labels[i], i);</span>
-<span class="fc" id="L52">            this.data.put(labels[i], elements.get(i));</span>
+<span class="fc" id="L46">        this();</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">        for (int i = 0; i &lt; elements.size(); i++) {</span>
+<span class="fc" id="L48">            this.linesNumber = Math.max(linesNumber, elements.get(i).size());</span>
+<span class="fc" id="L49">            this.orderedLabels.add(labels[i]);</span>
+<span class="fc" id="L50">            this.indexLabels.put(labels[i], i);</span>
+<span class="fc" id="L51">            this.data.put(labels[i], elements.get(i));</span>
         }
-<span class="fc" id="L54">    }</span>
+<span class="fc" id="L53">    }</span>
 
     public DataFrame(String nameFile, String separator) throws IOException {
-<span class="fc" id="L57">        this();</span>
-<span class="fc" id="L58">        FileReader fr = null;</span>
+<span class="fc" id="L56">        this();</span>
+<span class="fc" id="L57">        FileReader fr = null;</span>
         BufferedReader br;
         String extension;
         List donnees;
         String[] values;
-<span class="fc" id="L63">        Pattern pattern = Pattern.compile(&quot;[a-zA-Z0-9]&quot;);</span>
+<span class="fc" id="L62">        Pattern pattern = Pattern.compile(&quot;[a-zA-Z0-9]&quot;);</span>
         Matcher matcher;
-<span class="fc" id="L65">        extension = nameFile.substring(nameFile.lastIndexOf(&quot;.&quot;) + 1);</span>
-<span class="fc bfc" id="L66" title="All 2 branches covered.">        if (!extension.equals(&quot;csv&quot;)) {</span>
-<span class="fc" id="L67">            throw new IOException(&quot;L'extension du fichier est incorrecte&quot;);</span>
+<span class="fc" id="L64">        extension = nameFile.substring(nameFile.lastIndexOf(&quot;.&quot;) + 1);</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">        if (!extension.equals(&quot;csv&quot;)) {</span>
+<span class="fc" id="L66">            throw new IOException(&quot;The file extension is incorrect, please give a .csv file&quot;);</span>
         } else {
             try {
-<span class="fc" id="L70">                fr = new FileReader(nameFile);</span>
-<span class="fc" id="L71">                br = new BufferedReader(fr);</span>
+<span class="fc" id="L69">                fr = new FileReader(nameFile);</span>
+<span class="fc" id="L70">                br = new BufferedReader(fr);</span>
                 String linea;
-<span class="fc" id="L73">                linea = br.readLine();</span>
-<span class="fc" id="L74">                String[] labels = linea.split(separator, -1);</span>
-<span class="fc bfc" id="L75" title="All 2 branches covered.">                for (int j = 0; j &lt; labels.length; j++) {</span>
-<span class="fc" id="L76">                    donnees = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L77">                    this.orderedLabels.add(labels[j]);</span>
-<span class="fc" id="L78">                    this.indexLabels.put(labels[j], j);</span>
-<span class="fc" id="L79">                    this.data.put(labels[j], donnees);</span>
+<span class="fc" id="L72">                linea = br.readLine();</span>
+<span class="fc" id="L73">                String[] labels = linea.split(separator, -1);</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">                for (int j = 0; j &lt; labels.length; j++) {</span>
+<span class="fc" id="L75">                    donnees = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L76">                    this.orderedLabels.add(labels[j]);</span>
+<span class="fc" id="L77">                    this.indexLabels.put(labels[j], j);</span>
+<span class="fc" id="L78">                    this.data.put(labels[j], donnees);</span>
                 }
 
                 // Stockage de la première ligne et inférence de classe (ou du type) de chacun de ses éléments
-<span class="fc" id="L83">                String lineaType = br.readLine();</span>
-<span class="fc" id="L84">                String[] firstElement = lineaType.split(separator, -1);</span>
+<span class="fc" id="L82">                String lineaType = br.readLine();</span>
+<span class="fc" id="L83">                String[] firstElement = lineaType.split(separator, -1);</span>
                 String elementString;
 
-<span class="fc bfc" id="L87" title="All 2 branches covered.">                for (int j = 0; j &lt; firstElement.length; j++) {</span>
-<span class="fc" id="L88">                    matcher = pattern.matcher(firstElement[j]);</span>
-<span class="pc bpc" id="L89" title="1 of 2 branches missed.">                    if (!matcher.find()) {</span>
-<span class="nc" id="L90">                        throw new NumberFormatException(&quot;La premiere ligne ne peut pas avoir des valeurs nuls&quot;);</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">                for (int j = 0; j &lt; firstElement.length; j++) {</span>
+<span class="fc" id="L87">                    matcher = pattern.matcher(firstElement[j]);</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">                    if (!matcher.find()) {</span>
+<span class="fc" id="L89">                        throw new NumberFormatException(&quot;The first line cannot have null values&quot;);</span>
                     }
 
                     try {
-<span class="fc" id="L94">                        int op1 = Integer.parseInt(firstElement[j]);</span>
-<span class="fc" id="L95">                        donnees = this.data.get(labels[j]);</span>
-<span class="fc" id="L96">                        donnees.add(op1);</span>
+<span class="fc" id="L93">                        int op1 = Integer.parseInt(firstElement[j]);</span>
+<span class="fc" id="L94">                        donnees = this.data.get(labels[j]);</span>
+<span class="fc" id="L95">                        donnees.add(op1);</span>
 
-<span class="fc" id="L98">                    } catch (NumberFormatException e1) {</span>
+<span class="fc" id="L97">                    } catch (NumberFormatException e1) {</span>
                         try {
-<span class="fc" id="L100">                            float op2 = Float.parseFloat(firstElement[j]);</span>
-<span class="fc" id="L101">                            donnees = this.data.get(labels[j]);</span>
-<span class="fc" id="L102">                            donnees.add(op2);</span>
-<span class="fc" id="L103">                        } catch (NumberFormatException e2) {</span>
-<span class="fc" id="L104">                            elementString = firstElement[j];</span>
-<span class="fc" id="L105">                            donnees = this.data.get(labels[j]);</span>
-<span class="fc" id="L106">                            donnees.add(elementString);</span>
-<span class="fc" id="L107">                        }</span>
-<span class="fc" id="L108">                    }</span>
+<span class="fc" id="L99">                            float op2 = Float.parseFloat(firstElement[j]);</span>
+<span class="fc" id="L100">                            donnees = this.data.get(labels[j]);</span>
+<span class="fc" id="L101">                            donnees.add(op2);</span>
+<span class="fc" id="L102">                        } catch (NumberFormatException e2) {</span>
+<span class="fc" id="L103">                            elementString = firstElement[j];</span>
+<span class="fc" id="L104">                            donnees = this.data.get(labels[j]);</span>
+<span class="fc" id="L105">                            donnees.add(elementString);</span>
+<span class="fc" id="L106">                        }</span>
+<span class="fc" id="L107">                    }</span>
                 }
                 // Stockage des lignes restantes, inférence des classes de chaun de leus éléments et comparaison des classes avec la classe du premier élément
-<span class="fc bfc" id="L111" title="All 2 branches covered.">                while ((linea = br.readLine()) != null) {</span>
-<span class="fc" id="L112">                    values = linea.split(separator, -1);</span>
-<span class="fc bfc" id="L113" title="All 2 branches covered.">                    for (int i = 0; i &lt; labels.length; i++) {</span>
-<span class="fc" id="L114">                        donnees = this.data.get(labels[i]);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">                while ((linea = br.readLine()) != null) {</span>
+<span class="fc" id="L111">                    values = linea.split(separator, -1);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">                    for (int i = 0; i &lt; labels.length; i++) {</span>
+<span class="fc" id="L113">                        donnees = this.data.get(labels[i]);</span>
 
                         try {
-<span class="fc" id="L117">                            Integer op1 = Integer.parseInt(values[i]);</span>
-<span class="fc bfc" id="L118" title="All 2 branches covered.">                            if (op1.getClass().equals(donnees.get(0).getClass())) {</span>
-<span class="fc" id="L119">                                donnees.add(op1);</span>
+<span class="fc" id="L116">                            Integer op1 = Integer.parseInt(values[i]);</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">                            if (op1.getClass().equals(donnees.get(0).getClass())) {</span>
+<span class="fc" id="L118">                                donnees.add(op1);</span>
                             } else {
-<span class="fc" id="L121">                                throw new IllegalArgumentException(&quot;Les donnees dans le label &quot; + &quot;'&quot; + labels[i] + &quot;'&quot; + &quot; ne sont pas bien type. Linea : &quot; + linea + &quot; Donnee : &quot; + op1);</span>
+<span class="fc" id="L120">                                throw new IllegalArgumentException(&quot;The data at the label &quot; + &quot;'&quot; + labels[i] + &quot;'&quot; + &quot; don't have a good type. Line : &quot; + linea + &quot; Data : &quot; + op1);</span>
                             }
 
-<span class="fc" id="L124">                        } catch (NumberFormatException e1) {</span>
+<span class="fc" id="L123">                        } catch (NumberFormatException e1) {</span>
                             try {
-<span class="fc" id="L126">                                Float op2 = Float.parseFloat(values[i]);</span>
-<span class="pc bpc" id="L127" title="1 of 2 branches missed.">                                if (op2.getClass().equals(donnees.get(0).getClass())) {</span>
-<span class="fc" id="L128">                                    donnees.add(op2);</span>
+<span class="fc" id="L125">                                Float op2 = Float.parseFloat(values[i]);</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">                                if (op2.getClass().equals(donnees.get(0).getClass())) {</span>
+<span class="fc" id="L127">                                    donnees.add(op2);</span>
                                 } else {
-<span class="nc" id="L130">                                    throw new IllegalArgumentException(&quot;Les donnees dans le label &quot; + &quot;'&quot; + labels[i] + &quot;'&quot; + &quot; ne sont pas bien type. Linea : &quot; + linea + &quot; Donnee : &quot; + op2);</span>
+<span class="fc" id="L129">                                    throw new IllegalArgumentException(&quot;The data at the label &quot; + &quot;'&quot; + labels[i] + &quot;'&quot; + &quot; don't have a good type. Line : &quot; + linea + &quot; Data : &quot; + op2);</span>
                                 }
-<span class="fc" id="L132">                            } catch (NumberFormatException e2) {</span>
-<span class="fc" id="L133">                                String op3 = values[i];</span>
+<span class="fc" id="L131">                            } catch (NumberFormatException e2) {</span>
+<span class="fc" id="L132">                                String op3 = values[i];</span>
 
-<span class="fc" id="L135">                                matcher = pattern.matcher(values[i]);</span>
+<span class="fc" id="L134">                                matcher = pattern.matcher(values[i]);</span>
 
-<span class="fc bfc" id="L137" title="All 2 branches covered.">                                if (matcher.find()) {</span>
-<span class="pc bpc" id="L138" title="1 of 2 branches missed.">                                    if (op3.getClass().equals((donnees.get(0).getClass()))) {</span>
-<span class="fc" id="L139">                                        donnees.add(op3);</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">                                if (matcher.find()) {</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">                                    if (op3.getClass().equals((donnees.get(0).getClass()))) {</span>
+<span class="fc" id="L138">                                        donnees.add(op3);</span>
                                     } else {
-<span class="nc" id="L141">                                        throw new IllegalArgumentException(&quot;Les donnees dans le label &quot; + &quot;'&quot; + labels[i] + &quot;'&quot; + &quot; ne sont pas bien type. Linea : &quot; + linea + &quot; Donnee : &quot; + op3);</span>
+<span class="fc" id="L140">                                        throw new IllegalArgumentException(&quot;The data at the label &quot; + &quot;'&quot; + labels[i] + &quot;'&quot; + &quot; don't have a good type. Line : &quot; + linea + &quot; Data : &quot; + op3);</span>
                                     }
 
                                 } else {
 
-<span class="fc" id="L146">                                    donnees.add(op3);</span>
+<span class="fc" id="L145">                                    donnees.add(op3);</span>
                                 }
 
-<span class="fc" id="L149">                            }</span>
-<span class="fc" id="L150">                        }</span>
+<span class="fc" id="L148">                            }</span>
+<span class="fc" id="L149">                        }</span>
                     }
                 }
 
                 // Stockage de la taille de la plus grande colonne
-<span class="fc bfc" id="L155" title="All 2 branches covered.">                for (Map.Entry&lt;String, List&gt; entry : data.entrySet()) {</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">                for (Map.Entry&lt;String, List&gt; entry : data.entrySet()) {</span>
 
-<span class="fc" id="L157">                    linesNumber = Math.max(linesNumber, entry.getValue().size());</span>
-<span class="fc" id="L158">                }</span>
+<span class="fc" id="L156">                    linesNumber = Math.max(linesNumber, entry.getValue().size());</span>
+<span class="fc" id="L157">                }</span>
 
-<span class="fc" id="L160">                fr.close();</span>
+<span class="fc" id="L159">                fr.close();</span>
 
-<span class="nc" id="L162">            } catch (FileNotFoundException e) {</span>
-<span class="nc" id="L163">                System.out.println(&quot;Error: Fichier pas trouve&quot;);</span>
-<span class="nc" id="L164">                System.out.println(e.getMessage());</span>
-<span class="nc" id="L165">            } catch (IOException type) {</span>
-<span class="nc" id="L166">                System.err.print(type);</span>
-
-<span class="pc" id="L168">            }</span>
+<span class="nc" id="L161">            } catch (FileNotFoundException e) {</span>
+<span class="nc" id="L162">                System.out.println(&quot;Error: The file wasn't found&quot;);</span>
+<span class="nc" id="L163">                System.out.println(e.getMessage());</span>
+<span class="nc" id="L164">            } catch (IOException type) {</span>
+<span class="nc" id="L165">                System.err.print(type);</span>
+<span class="pc" id="L166">            }</span>
         }
-<span class="fc" id="L170">    }</span>
+<span class="fc" id="L168">    }</span>
 
     private void print(int deb, int n) {
-<span class="fc" id="L173">        int l = deb;</span>
-<span class="fc" id="L174">        showLabels();</span>
-<span class="fc bfc" id="L175" title="All 2 branches covered.">        while (l &lt; n) {</span>
-<span class="fc" id="L176">            String values = &quot;&quot;;</span>
-<span class="fc bfc" id="L177" title="All 2 branches covered.">            for (Map.Entry&lt;String, List&gt; entry : data.entrySet()) {</span>
-<span class="fc" id="L178">                values = values + &quot; | &quot;</span>
-<span class="pc bpc" id="L179" title="2 of 4 branches missed.">                        + (l &lt; entry.getValue().size() &amp;&amp; entry.getValue().get(l) != null</span>
-<span class="pc" id="L180">                        ? entry.getValue().get(l).toString() : &quot; &quot;);</span>
-<span class="fc" id="L181">            }</span>
-<span class="fc" id="L182">            values = l + &quot; &quot; + values;</span>
-<span class="fc" id="L183">            System.out.println(values);</span>
-<span class="fc" id="L184">            l++;</span>
-<span class="fc" id="L185">        }</span>
-<span class="fc" id="L186">    }</span>
+<span class="fc" id="L171">        int l = deb;</span>
+<span class="fc" id="L172">        showLabels();</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">        while (l &lt; n) {</span>
+<span class="fc" id="L174">            String values = &quot;&quot;;</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">            for (Map.Entry&lt;String, List&gt; entry : data.entrySet()) {</span>
+<span class="fc" id="L176">                values = values + &quot; | &quot;</span>
+<span class="pc bpc" id="L177" title="2 of 4 branches missed.">                        + (l &lt; entry.getValue().size() &amp;&amp; entry.getValue().get(l) != null</span>
+<span class="pc" id="L178">                        ? entry.getValue().get(l).toString() : &quot; &quot;);</span>
+<span class="fc" id="L179">            }</span>
+<span class="fc" id="L180">            values = l + &quot; &quot; + values;</span>
+<span class="fc" id="L181">            System.out.println(values);</span>
+<span class="fc" id="L182">            l++;</span>
+<span class="fc" id="L183">        }</span>
+<span class="fc" id="L184">    }</span>
 
     public void head(int n) {
-<span class="fc" id="L189">        print(0, checkingLinesNumber(n, PrintingType.HEAD));</span>
-<span class="fc" id="L190">    }</span>
+<span class="fc" id="L187">        print(0, checkingLinesNumber(n, PrintingType.HEAD));</span>
+<span class="fc" id="L188">    }</span>
 
     public void tail(int n) {
-<span class="fc" id="L193">        print(checkingLinesNumber(n, PrintingType.TAIL), linesNumber);</span>
-<span class="fc" id="L194">    }</span>
+<span class="fc" id="L191">        print(checkingLinesNumber(n, PrintingType.TAIL), linesNumber);</span>
+<span class="fc" id="L192">    }</span>
 
-<span class="pc" id="L196">    private enum PrintingType {</span>
-<span class="fc" id="L197">        HEAD, TAIL</span>
+<span class="pc" id="L194">    private enum PrintingType {</span>
+<span class="fc" id="L195">        HEAD, TAIL</span>
     };
 
     private int checkingLinesNumber(int n, PrintingType type) {
-<span class="fc bfc" id="L201" title="All 2 branches covered.">        if (linesNumber - n &lt; 0) {</span>
-<span class="fc" id="L202">            throw new IllegalArgumentException(&quot;Number of lines &gt; Number of lines of Dataframe !&quot;);</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">        if (linesNumber - n &lt; 0) {</span>
+<span class="fc" id="L200">            throw new IllegalArgumentException(&quot;Number of lines &gt; Number of lines of Dataframe !&quot;);</span>
         }
-<span class="fc bfc" id="L204" title="All 2 branches covered.">        if (n &lt; 0) {</span>
-<span class="fc" id="L205">            throw new IllegalArgumentException(&quot;Number of lines &lt; 0 !&quot;);</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">        if (n &lt; 0) {</span>
+<span class="fc" id="L203">            throw new IllegalArgumentException(&quot;Number of lines &lt; 0 !&quot;);</span>
         }
-<span class="fc bfc" id="L207" title="All 2 branches covered.">        return type == PrintingType.HEAD ? n : linesNumber - n;</span>
+<span class="fc bfc" id="L205" title="All 2 branches covered.">        return type == PrintingType.HEAD ? n : linesNumber - n;</span>
     }
 
     public void show() {
-<span class="fc" id="L211">        print(0, linesNumber);</span>
-<span class="fc" id="L212">    }</span>
+<span class="fc" id="L209">        print(0, linesNumber);</span>
+<span class="fc" id="L210">    }</span>
 
     public void head(String label, int n) {
-<span class="fc" id="L215">        column(label);</span>
-<span class="fc" id="L216">        System.out.println(label + &quot; : &quot; + data.get(label).subList(0, checkingLinesNumber(n, PrintingType.HEAD)));</span>
-<span class="fc" id="L217">    }</span>
+<span class="fc" id="L213">        column(label);</span>
+<span class="fc" id="L214">        System.out.println(label + &quot; : &quot; + data.get(label).subList(0, checkingLinesNumber(n, PrintingType.HEAD)));</span>
+<span class="fc" id="L215">    }</span>
 
     public void tail(String label, int n) {
-<span class="fc" id="L220">        column(label);</span>
-<span class="fc" id="L221">        System.out.println(label + &quot; : &quot; + data.get(label).subList(checkingLinesNumber(n, PrintingType.TAIL), data.get(label).size()));</span>
-<span class="fc" id="L222">    }</span>
+<span class="fc" id="L218">        column(label);</span>
+<span class="fc" id="L219">        System.out.println(label + &quot; : &quot; + data.get(label).subList(checkingLinesNumber(n, PrintingType.TAIL), data.get(label).size()));</span>
+<span class="fc" id="L220">    }</span>
 
     public void showLabels() {
-<span class="fc" id="L225">        String lab = &quot; &quot;;</span>
-<span class="fc bfc" id="L226" title="All 2 branches covered.">        for (String orderedLabel : orderedLabels) {</span>
-<span class="fc" id="L227">            lab = lab + &quot; | &quot; + orderedLabel;</span>
-<span class="fc" id="L228">        }</span>
-<span class="fc" id="L229">        System.out.println(lab);</span>
-<span class="fc" id="L230">    }</span>
+<span class="fc" id="L223">        String lab = &quot; &quot;;</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">        for (String orderedLabel : orderedLabels) {</span>
+<span class="fc" id="L225">            lab = lab + &quot; | &quot; + orderedLabel;</span>
+<span class="fc" id="L226">        }</span>
+<span class="fc" id="L227">        System.out.println(lab);</span>
+<span class="fc" id="L228">    }</span>
 
     public int size() {
-<span class="fc" id="L233">        int size = 0;</span>
-<span class="fc bfc" id="L234" title="All 2 branches covered.">        for (Map.Entry&lt;String, List&gt; entry : this.data.entrySet()) {</span>
-<span class="fc bfc" id="L235" title="All 2 branches covered.">            for (Object object : entry.getValue()) {</span>
-<span class="pc bpc" id="L236" title="1 of 2 branches missed.">                if (object != null) {</span>
-<span class="fc" id="L237">                    size++;</span>
+<span class="fc" id="L231">        int size = 0;</span>
+<span class="fc bfc" id="L232" title="All 2 branches covered.">        for (Map.Entry&lt;String, List&gt; entry : this.data.entrySet()) {</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">            for (Object object : entry.getValue()) {</span>
+<span class="pc bpc" id="L234" title="1 of 2 branches missed.">                if (object != null) {</span>
+<span class="fc" id="L235">                    size++;</span>
                 }
-<span class="fc" id="L239">            }</span>
-<span class="fc" id="L240">        }</span>
-<span class="fc" id="L241">        return size;</span>
+<span class="fc" id="L237">            }</span>
+<span class="fc" id="L238">        }</span>
+<span class="fc" id="L239">        return size;</span>
     }
 
     private List column(String label) {
         try {
-<span class="fc" id="L246">            data.containsKey(label);</span>
-<span class="fc" id="L247">        } catch (NullPointerException ex) {</span>
-<span class="fc" id="L248">            throw new IllegalArgumentException(&quot;Label &quot; + label + &quot; does not exist !&quot;);</span>
-<span class="fc" id="L249">        }</span>
-<span class="fc" id="L250">        return data.get(label);</span>
+<span class="fc" id="L244">            data.containsKey(label);</span>
+<span class="fc" id="L245">        } catch (NullPointerException ex) {</span>
+<span class="fc" id="L246">            throw new IllegalArgumentException(&quot;Label &quot; + label + &quot; does not exist !&quot;);</span>
+<span class="fc" id="L247">        }</span>
+<span class="fc" id="L248">        return data.get(label);</span>
     }
 
     public DataFrame loc(String label) {
-<span class="fc" id="L254">        List&lt;List&gt; elements = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L255">        elements.add(new ArrayList&lt;&gt;(column(label)));</span>
-<span class="fc" id="L256">        String[] labels = {label};</span>
-<span class="fc" id="L257">        return new DataFrame(labels, elements);</span>
+<span class="fc" id="L252">        List&lt;List&gt; elements = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L253">        elements.add(new ArrayList&lt;&gt;(column(label)));</span>
+<span class="fc" id="L254">        String[] labels = {label};</span>
+<span class="fc" id="L255">        return new DataFrame(labels, elements);</span>
     }
 
     public DataFrame loc(List&lt;String&gt; labels) {
-<span class="fc" id="L261">        List&lt;List&gt; elements = new ArrayList&lt;&gt;(labels.size());</span>
-<span class="fc bfc" id="L262" title="All 2 branches covered.">        for (String label : labels) {</span>
-<span class="fc" id="L263">            elements.add(new ArrayList&lt;&gt;(column(label)));</span>
-<span class="fc" id="L264">        }</span>
-<span class="fc" id="L265">        String[] labelsArray = new String[labels.size()];</span>
-<span class="fc" id="L266">        return new DataFrame(labels.toArray(labelsArray), elements);</span>
+<span class="fc" id="L259">        List&lt;List&gt; elements = new ArrayList&lt;&gt;(labels.size());</span>
+<span class="fc bfc" id="L260" title="All 2 branches covered.">        for (String label : labels) {</span>
+<span class="fc" id="L261">            elements.add(new ArrayList&lt;&gt;(column(label)));</span>
+<span class="fc" id="L262">        }</span>
+<span class="fc" id="L263">        String[] labelsArray = new String[labels.size()];</span>
+<span class="fc" id="L264">        return new DataFrame(labels.toArray(labelsArray), elements);</span>
     }
 
     public DataFrame loc(String labelInf, String labelSup) {
 
-<span class="fc" id="L271">        column(labelInf);</span>
-<span class="fc" id="L272">        column(labelSup);</span>
+<span class="fc" id="L269">        column(labelInf);</span>
+<span class="fc" id="L270">        column(labelSup);</span>
 
-<span class="fc" id="L274">        int inf = indexLabels.get(labelInf), sup = indexLabels.get(labelSup);</span>
+<span class="fc" id="L272">        int inf = indexLabels.get(labelInf), sup = indexLabels.get(labelSup);</span>
 
-<span class="fc" id="L276">        int size = Math.abs(sup - inf) + 1;</span>
-<span class="fc" id="L277">        List&lt;List&gt; elements = new ArrayList&lt;&gt;(size);</span>
-<span class="fc" id="L278">        String[] labels = new String[size];</span>
+<span class="fc" id="L274">        int size = Math.abs(sup - inf) + 1;</span>
+<span class="fc" id="L275">        List&lt;List&gt; elements = new ArrayList&lt;&gt;(size);</span>
+<span class="fc" id="L276">        String[] labels = new String[size];</span>
 
-<span class="fc bfc" id="L280" title="All 2 branches covered.">        if (inf &gt; sup) {</span>
-<span class="fc" id="L281">            int tmp = inf;</span>
-<span class="fc" id="L282">            inf = sup;</span>
-<span class="fc" id="L283">            sup = tmp;</span>
+<span class="fc bfc" id="L278" title="All 2 branches covered.">        if (inf &gt; sup) {</span>
+<span class="fc" id="L279">            int tmp = inf;</span>
+<span class="fc" id="L280">            inf = sup;</span>
+<span class="fc" id="L281">            sup = tmp;</span>
         }
-<span class="fc bfc" id="L285" title="All 2 branches covered.">        for (int i = inf, j = 0; i &lt;= sup; i++, j++) {</span>
-<span class="fc" id="L286">            labels[j] = this.orderedLabels.get(i);</span>
-<span class="fc" id="L287">            elements.add(data.get(this.orderedLabels.get(i)));</span>
+<span class="fc bfc" id="L283" title="All 2 branches covered.">        for (int i = inf, j = 0; i &lt;= sup; i++, j++) {</span>
+<span class="fc" id="L284">            labels[j] = this.orderedLabels.get(i);</span>
+<span class="fc" id="L285">            elements.add(data.get(this.orderedLabels.get(i)));</span>
         }
 
-<span class="fc" id="L290">        return new DataFrame(labels, elements);</span>
+<span class="fc" id="L288">        return new DataFrame(labels, elements);</span>
 
     }
 
     public DataFrame loc(String... labels) {
-<span class="fc" id="L295">        List&lt;String&gt; labelsList = new ArrayList&lt;&gt;(labels.length);</span>
-<span class="fc" id="L296">        labelsList.addAll(Arrays.asList(labels));</span>
-<span class="fc" id="L297">        return loc(labelsList);</span>
+<span class="fc" id="L293">        List&lt;String&gt; labelsList = new ArrayList&lt;&gt;(labels.length);</span>
+<span class="fc" id="L294">        labelsList.addAll(Arrays.asList(labels));</span>
+<span class="fc" id="L295">        return loc(labelsList);</span>
     }
 
     private DataFrame initDataFrameBeforeSelectingLines(int linesNumber) {
-<span class="fc" id="L301">        DataFrame df = new DataFrame();</span>
-<span class="fc" id="L302">        df.linesNumber = linesNumber;</span>
-<span class="fc" id="L303">        df.orderedLabels = new ArrayList&lt;&gt;(orderedLabels);</span>
-<span class="fc" id="L304">        df.indexLabels = new HashMap&lt;&gt;(indexLabels);</span>
-<span class="fc" id="L305">        df.data = new TreeMap&lt;&gt;(data);</span>
-<span class="fc" id="L306">        return df;</span>
+<span class="fc" id="L299">        DataFrame df = new DataFrame();</span>
+<span class="fc" id="L300">        df.linesNumber = linesNumber;</span>
+<span class="fc" id="L301">        df.orderedLabels = new ArrayList&lt;&gt;(orderedLabels);</span>
+<span class="fc" id="L302">        df.indexLabels = new HashMap&lt;&gt;(indexLabels);</span>
+<span class="fc" id="L303">        df.data = new TreeMap&lt;&gt;(data);</span>
+<span class="fc" id="L304">        return df;</span>
     }
 
     private void checkingIndex(int index) {
-<span class="fc bfc" id="L310" title="All 2 branches covered.">        if (index &gt; linesNumber) {</span>
-<span class="fc" id="L311">            throw new IllegalArgumentException(&quot;index &gt; Number of lines of DataFrame !&quot;);</span>
+<span class="fc bfc" id="L308" title="All 2 branches covered.">        if (index &gt; linesNumber) {</span>
+<span class="fc" id="L309">            throw new IllegalArgumentException(&quot;index &gt; Number of lines of DataFrame !&quot;);</span>
         }
-<span class="fc bfc" id="L313" title="All 2 branches covered.">        if (index &lt; 0) {</span>
-<span class="fc" id="L314">            throw new IllegalArgumentException(&quot;index &lt; 0 !&quot;);</span>
+<span class="fc bfc" id="L311" title="All 2 branches covered.">        if (index &lt; 0) {</span>
+<span class="fc" id="L312">            throw new IllegalArgumentException(&quot;index &lt; 0 !&quot;);</span>
         }
-<span class="fc" id="L316">    }</span>
+<span class="fc" id="L314">    }</span>
 
     public DataFrame iloc(int index) {
-<span class="fc" id="L319">        checkingIndex(index);</span>
-<span class="fc" id="L320">        DataFrame df = initDataFrameBeforeSelectingLines(1);</span>
-<span class="fc bfc" id="L321" title="All 2 branches covered.">        for (String label : orderedLabels) {</span>
-<span class="fc" id="L322">            df.data.replace(label, new ArrayList(Arrays.asList(data.get(label).get(index))));</span>
-<span class="fc" id="L323">        }</span>
-<span class="fc" id="L324">        return df;</span>
+<span class="fc" id="L317">        checkingIndex(index);</span>
+<span class="fc" id="L318">        DataFrame df = initDataFrameBeforeSelectingLines(1);</span>
+<span class="fc bfc" id="L319" title="All 2 branches covered.">        for (String label : orderedLabels) {</span>
+<span class="fc" id="L320">            df.data.replace(label, new ArrayList(Arrays.asList(data.get(label).get(index))));</span>
+<span class="fc" id="L321">        }</span>
+<span class="fc" id="L322">        return df;</span>
     }
 
     // Pour chaque index de indexes est associé l'élement de elements correspondant
     private List indexToElement(List&lt;Integer&gt; indexes, List elements) {
-<span class="fc" id="L329">        return indexes.stream().map(new Function&lt;Integer, Object&gt;() {</span>
+<span class="fc" id="L327">        return indexes.stream().map(new Function&lt;Integer, Object&gt;() {</span>
             @Override
             public Object apply(Integer index) {
-<span class="fc" id="L332">                return elements.get(index);</span>
+<span class="fc" id="L330">                return elements.get(index);</span>
             }
-<span class="fc" id="L334">        }).collect(Collectors.toList());</span>
+<span class="fc" id="L332">        }).collect(Collectors.toList());</span>
     }
 
     public DataFrame iloc(List&lt;Integer&gt; indexes) {
-<span class="fc bfc" id="L338" title="All 2 branches covered.">        for (Integer index : indexes) {</span>
-<span class="fc" id="L339">            checkingIndex(index);</span>
-<span class="fc" id="L340">        }</span>
-<span class="fc" id="L341">        DataFrame df = initDataFrameBeforeSelectingLines(indexes.size());</span>
-<span class="fc bfc" id="L342" title="All 2 branches covered.">        for (String label : orderedLabels) {</span>
-<span class="fc" id="L343">            df.data.replace(label, indexToElement(indexes, data.get(label)));</span>
-<span class="fc" id="L344">        }</span>
-<span class="fc" id="L345">        return df;</span>
+<span class="fc bfc" id="L336" title="All 2 branches covered.">        for (Integer index : indexes) {</span>
+<span class="fc" id="L337">            checkingIndex(index);</span>
+<span class="fc" id="L338">        }</span>
+<span class="fc" id="L339">        DataFrame df = initDataFrameBeforeSelectingLines(indexes.size());</span>
+<span class="fc bfc" id="L340" title="All 2 branches covered.">        for (String label : orderedLabels) {</span>
+<span class="fc" id="L341">            df.data.replace(label, indexToElement(indexes, data.get(label)));</span>
+<span class="fc" id="L342">        }</span>
+<span class="fc" id="L343">        return df;</span>
     }
 
     public DataFrame iloc(Integer... indexes) {
-<span class="fc bfc" id="L349" title="All 2 branches covered.">        for (Integer index : indexes) {</span>
-<span class="fc" id="L350">            checkingIndex(index);</span>
+<span class="fc bfc" id="L347" title="All 2 branches covered.">        for (Integer index : indexes) {</span>
+<span class="fc" id="L348">            checkingIndex(index);</span>
         }
-<span class="fc" id="L352">        DataFrame df = initDataFrameBeforeSelectingLines(indexes.length);</span>
-<span class="fc bfc" id="L353" title="All 2 branches covered.">        for (String label : orderedLabels) {</span>
-<span class="fc" id="L354">            df.data.replace(label, indexToElement(Arrays.asList(indexes), data.get(label)));</span>
-<span class="fc" id="L355">        }</span>
-<span class="fc" id="L356">        return df;</span>
+<span class="fc" id="L350">        DataFrame df = initDataFrameBeforeSelectingLines(indexes.length);</span>
+<span class="fc bfc" id="L351" title="All 2 branches covered.">        for (String label : orderedLabels) {</span>
+<span class="fc" id="L352">            df.data.replace(label, indexToElement(Arrays.asList(indexes), data.get(label)));</span>
+<span class="fc" id="L353">        }</span>
+<span class="fc" id="L354">        return df;</span>
     }
 
     public DataFrame iloc(int indexInf, int indexSup) {
-<span class="fc" id="L360">        int inf = indexInf, sup = indexSup;</span>
-<span class="fc bfc" id="L361" title="All 2 branches covered.">        if (inf &gt; sup) {</span>
-<span class="fc" id="L362">            int tmp = inf;</span>
-<span class="fc" id="L363">            inf = sup;</span>
-<span class="fc" id="L364">            sup = tmp;</span>
+<span class="fc" id="L358">        int inf = indexInf, sup = indexSup;</span>
+<span class="fc bfc" id="L359" title="All 2 branches covered.">        if (inf &gt; sup) {</span>
+<span class="fc" id="L360">            int tmp = inf;</span>
+<span class="fc" id="L361">            inf = sup;</span>
+<span class="fc" id="L362">            sup = tmp;</span>
         }
-<span class="fc" id="L366">        checkingIndex(inf);</span>
-<span class="fc" id="L367">        checkingIndex(sup);</span>
-<span class="fc" id="L368">        DataFrame df = initDataFrameBeforeSelectingLines(sup - inf + 1);</span>
-<span class="fc bfc" id="L369" title="All 2 branches covered.">        for (String label : orderedLabels) {</span>
-<span class="fc" id="L370">            df.data.replace(label, IntStream.range(inf, sup + 1).boxed().map(new Function&lt;Integer, Object&gt;() {</span>
+<span class="fc" id="L364">        checkingIndex(inf);</span>
+<span class="fc" id="L365">        checkingIndex(sup);</span>
+<span class="fc" id="L366">        DataFrame df = initDataFrameBeforeSelectingLines(sup - inf + 1);</span>
+<span class="fc bfc" id="L367" title="All 2 branches covered.">        for (String label : orderedLabels) {</span>
+<span class="fc" id="L368">            df.data.replace(label, IntStream.range(inf, sup + 1).boxed().map(new Function&lt;Integer, Object&gt;() {</span>
 
                 @Override
                 public Object apply(Integer index) {
-<span class="fc" id="L374">                    return data.get(label).get(index);</span>
+<span class="fc" id="L372">                    return data.get(label).get(index);</span>
                 }
-<span class="fc" id="L376">            }).collect(Collectors.toList()));</span>
-<span class="fc" id="L377">        }</span>
-<span class="fc" id="L378">        return df;</span>
+<span class="fc" id="L374">            }).collect(Collectors.toList()));</span>
+<span class="fc" id="L375">        }</span>
+<span class="fc" id="L376">        return df;</span>
     }
 
     private void checkingNumberFormat(String label) {
         try {
-<span class="fc bfc" id="L383" title="All 2 branches covered.">            if (!(data.get(label).get(0) instanceof Number)) {</span>
-<span class="fc" id="L384">                throw new IllegalArgumentException(&quot;Column at Label &quot; + label + &quot; is not Numeric !&quot;);</span>
+<span class="fc bfc" id="L381" title="All 2 branches covered.">            if (!(data.get(label).get(0) instanceof Number)) {</span>
+<span class="fc" id="L382">                throw new IllegalArgumentException(&quot;Column at Label &quot; + label + &quot; is not Numeric !&quot;);</span>
             }
-<span class="fc" id="L386">        } catch (NullPointerException ex) {</span>
-<span class="fc" id="L387">            throw new IllegalArgumentException(&quot;Label &quot; + label + &quot; does not exist !&quot;);</span>
-<span class="fc" id="L388">        }</span>
-<span class="fc" id="L389">    }</span>
+<span class="fc" id="L384">        } catch (NullPointerException ex) {</span>
+<span class="fc" id="L385">            throw new IllegalArgumentException(&quot;Label &quot; + label + &quot; does not exist !&quot;);</span>
+<span class="fc" id="L386">        }</span>
+<span class="fc" id="L387">    }</span>
 
     private Class&lt;?&gt; checkingComparable(String label) {
         try {
-<span class="fc bfc" id="L393" title="All 2 branches covered.">            if (!(data.get(label).get(0) instanceof Comparable)) {</span>
-<span class="fc" id="L394">                throw new IllegalArgumentException(&quot;Column at Label &quot; + label + &quot; is not Comparable !&quot;);</span>
+<span class="fc bfc" id="L391" title="All 2 branches covered.">            if (!(data.get(label).get(0) instanceof Comparable)) {</span>
+<span class="fc" id="L392">                throw new IllegalArgumentException(&quot;Column at Label &quot; + label + &quot; is not Comparable !&quot;);</span>
             }
-<span class="nc" id="L396">        } catch (NullPointerException ex) {</span>
-<span class="nc" id="L397">            throw new IllegalArgumentException(&quot;Label &quot; + label + &quot; does not exist !&quot;);</span>
-<span class="fc" id="L398">        }</span>
-<span class="fc" id="L399">        return data.get(label).get(0).getClass();</span>
+<span class="nc" id="L394">        } catch (NullPointerException ex) {</span>
+<span class="nc" id="L395">            throw new IllegalArgumentException(&quot;Label &quot; + label + &quot; does not exist !&quot;);</span>
+<span class="fc" id="L396">        }</span>
+<span class="fc" id="L397">        return data.get(label).get(0).getClass();</span>
     }
 
     public void showStatitic(String label) {
-<span class="fc" id="L403">        System.out.println(&quot;Label : &quot; + label);</span>
-<span class="fc" id="L404">        System.out.println(&quot;Mean : &quot; + meanColumn(label));</span>
-<span class="fc" id="L405">        System.out.println(&quot;Minimum : &quot; + minColumn(label));</span>
-<span class="fc" id="L406">        System.out.println(&quot;Maximum : &quot; + maxColumn(label));</span>
-<span class="fc" id="L407">    }</span>
+<span class="fc" id="L401">        System.out.println(&quot;Label : &quot; + label);</span>
+<span class="fc" id="L402">        System.out.println(&quot;Mean : &quot; + meanColumn(label));</span>
+<span class="fc" id="L403">        System.out.println(&quot;Minimum : &quot; + minColumn(label));</span>
+<span class="fc" id="L404">        System.out.println(&quot;Maximum : &quot; + maxColumn(label));</span>
+<span class="fc" id="L405">    }</span>
 
     public Float meanColumn(String label) {
-<span class="fc" id="L410">        column(label);</span>
-<span class="fc" id="L411">        checkingNumberFormat(label);</span>
+<span class="fc" id="L408">        column(label);</span>
+<span class="fc" id="L409">        checkingNumberFormat(label);</span>
         List donnee;
-<span class="fc" id="L413">        float mean = 0;</span>
+<span class="fc" id="L411">        float mean = 0;</span>
         Float num;
-<span class="fc bfc" id="L415" title="All 2 branches covered.">        for (Map.Entry&lt;String, List&gt; entry : this.data.entrySet()) {</span>
-<span class="fc bfc" id="L416" title="All 2 branches covered.">            if (label.equals(entry.getKey())) {</span>
-<span class="fc" id="L417">                donnee = entry.getValue();</span>
-<span class="fc bfc" id="L418" title="All 2 branches covered.">                for (int i = 0; i &lt; donnee.size(); i++) {</span>
-<span class="pc bpc" id="L419" title="1 of 4 branches missed.">                    if (!donnee.get(i).toString().equals(&quot;&quot;) &amp;&amp; !donnee.get(i).toString().equals(&quot; &quot;)) {</span>
-<span class="fc" id="L420">                        num = new Float(donnee.get(i).toString());</span>
-<span class="fc" id="L421">                        mean = mean + num;</span>
+<span class="fc bfc" id="L413" title="All 2 branches covered.">        for (Map.Entry&lt;String, List&gt; entry : this.data.entrySet()) {</span>
+<span class="fc bfc" id="L414" title="All 2 branches covered.">            if (label.equals(entry.getKey())) {</span>
+<span class="fc" id="L415">                donnee = entry.getValue();</span>
+<span class="fc bfc" id="L416" title="All 2 branches covered.">                for (int i = 0; i &lt; donnee.size(); i++) {</span>
+<span class="pc bpc" id="L417" title="1 of 4 branches missed.">                    if (!donnee.get(i).toString().equals(&quot;&quot;) &amp;&amp; !donnee.get(i).toString().equals(&quot; &quot;)) {</span>
+<span class="fc" id="L418">                        num = new Float(donnee.get(i).toString());</span>
+<span class="fc" id="L419">                        mean = mean + num;</span>
                     }
                 }
-<span class="fc" id="L424">                mean = mean / donnee.size();</span>
+<span class="fc" id="L422">                mean = mean / donnee.size();</span>
             }
-<span class="fc" id="L426">        }</span>
-<span class="fc" id="L427">        return mean;</span>
+<span class="fc" id="L424">        }</span>
+<span class="fc" id="L425">        return mean;</span>
     }
 
     public Comparable minColumn(String label) {
-<span class="fc" id="L431">        column(label);</span>
-<span class="fc" id="L432">        Class&lt;?&gt; classe = checkingComparable(label);</span>
-<span class="fc" id="L433">        Comparable min = (Comparable) data.get(label).get(0);</span>
-<span class="fc bfc" id="L434" title="All 2 branches covered.">        for (int i = 1; i &lt; data.get(label).size(); i++) {</span>
-<span class="fc bfc" id="L435" title="All 2 branches covered.">            if (!(data.get(label).get(i).getClass().equals(classe))) {</span>
-<span class="fc" id="L436">                throw new IllegalArgumentException(data.get(label).get(i) + &quot;is not Comparable !&quot;);</span>
+<span class="fc" id="L429">        column(label);</span>
+<span class="fc" id="L430">        Class&lt;?&gt; classe = checkingComparable(label);</span>
+<span class="fc" id="L431">        Comparable min = (Comparable) data.get(label).get(0);</span>
+<span class="fc bfc" id="L432" title="All 2 branches covered.">        for (int i = 1; i &lt; data.get(label).size(); i++) {</span>
+<span class="fc bfc" id="L433" title="All 2 branches covered.">            if (!(data.get(label).get(i).getClass().equals(classe))) {</span>
+<span class="fc" id="L434">                throw new IllegalArgumentException(data.get(label).get(i) + &quot;is not Comparable !&quot;);</span>
             }
-<span class="fc" id="L438">            Comparable currentElt = (Comparable) data.get(label).get(i);</span>
-<span class="fc bfc" id="L439" title="All 2 branches covered.">            min = currentElt.compareTo(min) == -1 ? currentElt : min;</span>
+<span class="fc" id="L436">            Comparable currentElt = (Comparable) data.get(label).get(i);</span>
+<span class="fc bfc" id="L437" title="All 2 branches covered.">            min = currentElt.compareTo(min) == -1 ? currentElt : min;</span>
         }
-<span class="fc" id="L441">        return min;</span>
+<span class="fc" id="L439">        return min;</span>
     }
 
     public Comparable maxColumn(String label) {
-<span class="fc" id="L445">        column(label);</span>
-<span class="fc" id="L446">        Class&lt;?&gt; classe = checkingComparable(label);</span>
-<span class="fc" id="L447">        Comparable max = (Comparable) data.get(label).get(0);</span>
-<span class="fc bfc" id="L448" title="All 2 branches covered.">        for (int i = 1; i &lt; data.get(label).size(); i++) {</span>
-<span class="fc bfc" id="L449" title="All 2 branches covered.">            if (!(data.get(label).get(i).getClass().equals(classe))) {</span>
-<span class="fc" id="L450">                throw new IllegalArgumentException(data.get(label).get(i) + &quot;is not Comparable !&quot;);</span>
+<span class="fc" id="L443">        column(label);</span>
+<span class="fc" id="L444">        Class&lt;?&gt; classe = checkingComparable(label);</span>
+<span class="fc" id="L445">        Comparable max = (Comparable) data.get(label).get(0);</span>
+<span class="fc bfc" id="L446" title="All 2 branches covered.">        for (int i = 1; i &lt; data.get(label).size(); i++) {</span>
+<span class="fc bfc" id="L447" title="All 2 branches covered.">            if (!(data.get(label).get(i).getClass().equals(classe))) {</span>
+<span class="fc" id="L448">                throw new IllegalArgumentException(data.get(label).get(i) + &quot;is not Comparable !&quot;);</span>
             }
-<span class="fc" id="L452">            Comparable currentElt = (Comparable) data.get(label).get(i);</span>
-<span class="fc bfc" id="L453" title="All 2 branches covered.">            max = currentElt.compareTo(max) == 1 ? currentElt : max;</span>
+<span class="fc" id="L450">            Comparable currentElt = (Comparable) data.get(label).get(i);</span>
+<span class="fc bfc" id="L451" title="All 2 branches covered.">            max = currentElt.compareTo(max) == 1 ? currentElt : max;</span>
         }
-<span class="fc" id="L455">        return max;</span>
+<span class="fc" id="L453">        return max;</span>
     }
 
     public void orderBy(String label) {
-<span class="nc" id="L459">        column(label);</span>
-<span class="nc" id="L460">        checkingComparable(label);</span>
-<span class="nc" id="L461">    }</span>
+<span class="fc" id="L457">        column(label);</span>
+<span class="fc" id="L458">        checkingComparable(label);</span>
+<span class="fc" id="L459">    }</span>
 
     public Integer getMaxColumnSize() {
-<span class="fc" id="L464">        return linesNumber;</span>
+<span class="fc" id="L462">        return linesNumber;</span>
+    }
+
+    public TreeMap&lt;String, List&gt; groupby(String[] labels) {
+<span class="fc" id="L466">        TreeMap&lt;String, List&gt; dataReturnd = new TreeMap&lt;String, List&gt;();</span>
+        List listReturnd;
+<span class="fc bfc" id="L468" title="All 2 branches covered.">        for (int i = 0; i &lt; labels.length; i++) {</span>
+<span class="fc" id="L469">            listReturnd = groupby(labels[i]);</span>
+<span class="fc" id="L470">            dataReturnd.put(labels[i], listReturnd);</span>
+        }
+<span class="fc" id="L472">        return dataReturnd;</span>
+    }
+
+    /*
+       groupby one column, it takes the label as param then it returns the list 
+     */
+    public List groupby(String label) {
+<span class="fc" id="L479">        List dataReturnd = new ArrayList();</span>
+<span class="fc" id="L480">        List data = this.data.get(label);</span>
+<span class="fc bfc" id="L481" title="All 2 branches covered.">        for (int i = 0; i &lt; data.size(); i++) {</span>
+<span class="fc bfc" id="L482" title="All 2 branches covered.">            if (!dataReturnd.contains(data.get(i))) {</span>
+<span class="fc" id="L483">                dataReturnd.add(data.get(i));</span>
+            }
+        }
+<span class="fc" id="L486">        return dataReturnd;</span>
+    }
+
+    /*
+          it takes the label and the aggreagate as an optional param &quot;{max, sum} of column&quot;
+     */
+    public TreeMap&lt;String, Object&gt; groupby(String label, Optional&lt;String&gt; aggregate) {
+<span class="fc" id="L493">        TreeMap&lt;String, Object&gt; dataReturnd = new TreeMap&lt;String, Object&gt;();</span>
+<span class="fc" id="L494">        List data = this.data.get(label);</span>
+<span class="pc bpc" id="L495" title="1 of 2 branches missed.">        if (aggregate.isPresent()) {</span>
+<span class="pc bpc" id="L496" title="2 of 10 branches missed.">            switch (aggregate.get()) {</span>
+                case &quot;sum&quot;:
+<span class="fc" id="L498">                    dataReturnd.put(aggregate.get() + &quot;(&quot; + label + &quot;)&quot;, sum(data));</span>
+<span class="fc" id="L499">                    break;</span>
+                case &quot;max&quot;:
+<span class="fc" id="L501">                    dataReturnd.put(aggregate.get() + &quot;(&quot; + label + &quot;)&quot;, Collections.max(data));</span>
+<span class="fc" id="L502">                    break;</span>
+                default:
+<span class="fc" id="L504">                    throw new IllegalArgumentException(&quot;The aggregate : &quot; + aggregate + &quot; doesn't exist&quot;);</span>
+            }
+        }
+<span class="fc" id="L507">        return dataReturnd;</span>
+    }
+
+    /*
+        it takes a list of labels and aggreagate as optional (just count)
+     */
+    public TreeMap&lt;String, List&gt; groupby(String[] labels, String aggregate) {
+<span class="fc" id="L514">        TreeMap&lt;String, List&gt; dataReturned = new TreeMap&lt;String, List&gt;();</span>
+        List listReturnd;
+        List labelListData;
+        List aggregateList;
+<span class="fc bfc" id="L518" title="All 2 branches covered.">        if (aggregate.equals(&quot;count&quot;)) {</span>
+<span class="fc bfc" id="L519" title="All 2 branches covered.">            for (int i = 0; i &lt; labels.length; i++) {</span>
+<span class="fc" id="L520">                labelListData = this.data.get(labels[i]);</span>
+<span class="fc" id="L521">                aggregateList = new ArrayList&lt;Integer&gt;();</span>
+<span class="fc" id="L522">                listReturnd = new ArrayList();</span>
+<span class="fc bfc" id="L523" title="All 2 branches covered.">                for (int j = 0; j &lt; labelListData.size(); j++) {</span>
+<span class="fc bfc" id="L524" title="All 2 branches covered.">                    if (!listReturnd.contains(labelListData.get(i))) {</span>
+<span class="fc" id="L525">                        listReturnd.add(labelListData.get(i));</span>
+<span class="fc" id="L526">                        aggregateList.add(count(labelListData, labelListData.get(i)));</span>
+                    }
+                }
+<span class="fc" id="L529">                dataReturned.put(labels[i], listReturnd);</span>
+<span class="fc" id="L530">                dataReturned.put(aggregate + &quot;(&quot; + labels[i] + &quot;)&quot;, aggregateList);</span>
+            }
+        } else {
+<span class="fc" id="L533">            throw new IllegalArgumentException(&quot;The aggregate : &quot; + aggregate + &quot; doesn't exist&quot;);</span>
+        }
+<span class="fc" id="L535">        return dataReturned;</span>
+    }
+
+    public int count(List list, Object element) {
+<span class="fc" id="L539">        int cpt = 0;</span>
+<span class="fc bfc" id="L540" title="All 2 branches covered.">        for (int i = 0; i &lt; list.size(); i++) {</span>
+<span class="fc bfc" id="L541" title="All 2 branches covered.">            if (list.get(i).equals(element)) {</span>
+<span class="fc" id="L542">                cpt++;</span>
+            }
+        }
+<span class="fc" id="L545">        return cpt;</span>
+    }
+
+    private Object sum(List list) {
+<span class="fc bfc" id="L549" title="All 2 branches covered.">        if (list.get(0) instanceof Integer) {</span>
+<span class="fc" id="L550">            int somme = 0;</span>
+<span class="fc bfc" id="L551" title="All 2 branches covered.">            for (int i = 0; i &lt; list.size(); i++) {</span>
+<span class="fc" id="L552">                somme = somme + (Integer) list.get(i);</span>
+            }
+<span class="fc" id="L554">            return somme;</span>
+        } else {
+<span class="fc bfc" id="L556" title="All 2 branches covered.">            if (list.get(0) instanceof Float) {</span>
+<span class="fc" id="L557">                float somme = 0;</span>
+<span class="fc bfc" id="L558" title="All 2 branches covered.">                for (int i = 0; i &lt; list.size(); i++) {</span>
+<span class="fc" id="L559">                    somme = somme + (Float) list.get(i);</span>
+                }
+<span class="fc" id="L561">                return somme;</span>
+            } else {
+<span class="fc" id="L563">                throw new IllegalArgumentException(&quot;Cannot aggregate a string&quot;);</span>
+            }
+        }
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
