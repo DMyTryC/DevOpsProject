@@ -22,7 +22,7 @@ public class Main {
     
      public static void main(String [] args) throws IOException {
      
-
+        System.out.print("hello");
         /*TreeMap<String, List> data;
         
         List<List> lists = new ArrayList<List>();
