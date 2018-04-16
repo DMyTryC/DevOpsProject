@@ -16,7 +16,6 @@ public class TestsColumnsSelection {
 
     public TestsColumnsSelection() throws IOException {
         df = new DataFrame("tests/resources/test1.csv", ",");
-
     }
 
     @BeforeClass

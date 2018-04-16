@@ -134,10 +134,10 @@ public class DataFrame {
 <span class="fc" id="L134">                                matcher = pattern.matcher(values[i]);</span>
 
 <span class="fc bfc" id="L136" title="All 2 branches covered.">                                if (matcher.find()) {</span>
-<span class="pc bpc" id="L137" title="1 of 2 branches missed.">                                    if (op3.getClass().equals((donnees.get(0).getClass()))) {</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">                                    if (op3.getClass().equals((donnees.get(0).getClass()))) {</span>
 <span class="fc" id="L138">                                        donnees.add(op3);</span>
                                     } else {
-<span class="nc" id="L140">                                        throw new IllegalArgumentException(&quot;The data at the label &quot; + &quot;'&quot; + labels[i] + &quot;'&quot; + &quot; don't have a good type. Line : &quot; + linea + &quot; Data : &quot; + op3);</span>
+<span class="fc" id="L140">                                        throw new IllegalArgumentException(&quot;The data at the label &quot; + &quot;'&quot; + labels[i] + &quot;'&quot; + &quot; don't have a good type. Line : &quot; + linea + &quot; Data : &quot; + op3);</span>
                                     }
 
                                 } else {
