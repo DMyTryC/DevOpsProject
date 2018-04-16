@@ -523,7 +523,7 @@ public class DataFrame implements DataFrameItf{
 
     @Override
     public void orderBy(String label) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        checkingComparable(label) ;
     }
 
     @Override
